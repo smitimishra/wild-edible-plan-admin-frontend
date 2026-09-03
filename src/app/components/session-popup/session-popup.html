@@ -1,0 +1,58 @@
+@if (visible) {
+
+  <!-- ── Backdrop ─────────────────────────────────────────── -->
+  <div
+    class="fixed inset-0 z-[9999] flex items-center justify-center bg-black/55 px-4"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="sp-title"
+  >
+
+    <!-- ── Card ─────────────────────────────────────────────── -->
+    <div
+      class="w-full max-w-sm rounded-2xl border border-slate-200 bg-white p-8 shadow-2xl"
+      style="animation: sp-in .2s ease"
+    >
+
+      <!-- Icon -->
+      <div
+        class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-amber-100 text-2xl"
+      >
+        ⚠️
+      </div>
+
+      <!-- Title -->
+      <h2
+        id="sp-title"
+        class="mb-2 text-center text-lg font-bold text-slate-900"
+      >
+        Session Expired
+      </h2>
+
+      <!-- Message -->
+      <p class="mb-6 text-center text-sm leading-6 text-slate-600">
+        Your account has been logged in from another device.<br />
+        Click <strong>OK</strong> to go back to the login page.
+      </p>
+
+      <!-- OK button -->
+      <button
+        type="button"
+        (click)="ok()"
+        class="w-full rounded-xl bg-emerald-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
+      >
+        OK
+      </button>
+
+    </div>
+
+  </div>
+
+}
+
+<style>
+  @keyframes sp-in {
+    from { transform: scale(.88); opacity: 0; }
+    to   { transform: scale(1);   opacity: 1; }
+  }
+</style>

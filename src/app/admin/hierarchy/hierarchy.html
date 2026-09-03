@@ -1,0 +1,531 @@
+<div class="min-h-screen bg-slate-50 p-6">
+
+  <!-- ========================================================
+       HEADER
+  ========================================================= -->
+
+  <div class="mx-auto max-w-6xl">
+
+    <div class="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+
+      <div>
+
+        <button
+          type="button"
+          (click)="goBack()"
+          class="mb-3 inline-flex items-center gap-2 text-sm font-medium text-slate-600 transition hover:text-slate-900"
+        >
+          <span class="text-lg">←</span>
+          Back to Admin
+        </button>
+
+
+        <h1 class="text-3xl font-bold tracking-tight text-slate-900">
+          Manage Approval Hierarchy
+        </h1>
+
+
+        <p class="mt-2 text-sm text-slate-500">
+          Configure the order in which requests move through approval.
+        </p>
+
+      </div>
+
+
+      <div
+        class="rounded-lg border border-indigo-100 bg-indigo-50 px-4 py-3 text-sm text-indigo-700"
+      >
+        Changes to the hierarchy affect the approval workflow.
+      </div>
+
+    </div>
+
+
+
+    <!-- ======================================================
+         MAIN CONTENT
+    ======================================================= -->
+
+    <div
+      class="grid grid-cols-1 gap-6 lg:grid-cols-[40%_60%]"
+    >
+
+
+      <!-- ====================================================
+           LEFT — FLOWCHART
+      ===================================================== -->
+
+      <div
+        class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
+      >
+
+        <div class="mb-6">
+
+          <h2 class="text-lg font-semibold text-slate-900">
+            Workflow Preview
+          </h2>
+
+          <p class="mt-1 text-sm text-slate-500">
+            Current approval flow
+          </p>
+
+        </div>
+
+
+
+        <!-- LOADING -->
+
+        @if (loading) {
+
+          <div class="flex min-h-[400px] items-center justify-center">
+
+            <div class="text-sm text-slate-500">
+              Loading workflow...
+            </div>
+
+          </div>
+
+        }
+
+
+        <!-- ERROR -->
+
+        @else if (errorMessage) {
+
+          <div
+            class="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700"
+          >
+
+            {{ errorMessage }}
+
+          </div>
+
+        }
+
+
+        <!-- EMPTY -->
+
+        @else if (hierarchy.length === 0) {
+
+          <div
+            class="flex min-h-[400px] items-center justify-center rounded-xl border border-dashed border-slate-300"
+          >
+
+            <div class="text-center">
+
+              <div class="mb-2 text-3xl">
+                ↕
+              </div>
+
+              <p class="font-medium text-slate-700">
+                No approval levels found
+              </p>
+
+              <p class="mt-1 text-sm text-slate-500">
+                Add an approval level to create the workflow.
+              </p>
+
+            </div>
+
+          </div>
+
+        }
+
+
+        <!-- ==================================================
+             FLOWCHART
+        =================================================== -->
+
+        @else {
+
+          <div class="flex min-h-[400px] flex-col items-center">
+
+            @for (
+              level of hierarchy;
+              track level.id;
+              let last = $last
+            ) {
+
+              <!-- LEVEL NODE -->
+
+              <div
+                class="group relative w-full max-w-[260px]"
+              >
+
+                <div
+                  class="rounded-2xl border border-indigo-200 bg-indigo-50 px-5 py-4 text-center shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-indigo-400 hover:shadow-md"
+                >
+
+                  <div
+                    class="text-xs font-semibold uppercase tracking-wider text-indigo-500"
+                  >
+                    Level {{ level.approval_level }}
+                  </div>
+
+
+                  <div
+                    class="mt-1 text-lg font-bold text-slate-900"
+                  >
+                    {{ level.role }}
+                  </div>
+
+                </div>
+
+              </div>
+
+
+
+              <!-- CONNECTOR -->
+
+              @if (!last) {
+
+                <div
+                  class="flex flex-col items-center"
+                >
+
+                  <div
+                    class="h-7 w-px bg-slate-300"
+                  ></div>
+
+                  <div
+                    class="text-xl leading-none text-slate-400"
+                  >
+                    ↓
+                  </div>
+
+                </div>
+
+              }
+
+            }
+
+          </div>
+
+        }
+
+      </div>
+
+
+
+      <!-- ====================================================
+           RIGHT — HIERARCHY LEVELS
+      ===================================================== -->
+
+      <div
+        class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
+      >
+
+        <div
+          class="mb-6 flex items-start justify-between gap-4"
+        >
+
+          <div>
+
+            <h2 class="text-lg font-semibold text-slate-900">
+              Approval Levels
+            </h2>
+
+            <p class="mt-1 text-sm text-slate-500">
+              Manage the roles in your approval workflow.
+            </p>
+
+          </div>
+
+
+          <button
+            type="button"
+            (click)="openAddHierarchy()"
+            class="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700"
+          >
+
+            <span class="text-lg leading-none">
+              +
+            </span>
+
+            Add Level
+
+          </button>
+
+        </div>
+
+
+        @if (hierarchySuccessMessage) {
+
+          <div
+            class="mb-4 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700"
+          >
+            {{ hierarchySuccessMessage }}
+          </div>
+
+        }
+
+
+        @if (hierarchyErrorMessage) {
+
+          <div
+            class="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700"
+          >
+            {{ hierarchyErrorMessage }}
+          </div>
+
+        }
+
+
+
+        <!-- LOADING -->
+
+        @if (loading) {
+
+          <div class="py-10 text-center text-sm text-slate-500">
+            Loading approval levels...
+          </div>
+
+        }
+
+
+        <!-- EMPTY -->
+
+        @else if (hierarchy.length === 0) {
+
+          <div
+            class="rounded-xl border border-dashed border-slate-300 p-8 text-center"
+          >
+
+            <p class="font-medium text-slate-700">
+              No approval levels configured.
+            </p>
+
+            <p class="mt-1 text-sm text-slate-500">
+              Use "Add Level" to create the first level.
+            </p>
+
+          </div>
+
+        }
+
+
+        <!-- LEVEL LIST -->
+
+        @else {
+
+          <div class="space-y-3">
+
+            @for (
+              level of hierarchy;
+              track level.id
+            ) {
+
+              <div
+                class="flex items-center gap-4 rounded-xl border border-slate-200 bg-slate-50 p-4 transition hover:border-indigo-200 hover:bg-indigo-50/40"
+              >
+
+                <!-- NUMBER -->
+
+                <div
+                  class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-indigo-100 text-sm font-bold text-indigo-700"
+                >
+                  {{ level.approval_level }}
+                </div>
+
+
+                <!-- ROLE -->
+
+                <div class="min-w-0 flex-1">
+
+                  <div class="text-xs font-medium uppercase tracking-wide text-slate-400">
+                    Approval Role
+                  </div>
+
+                  <div class="truncate font-semibold text-slate-900">
+                    {{ level.role }}
+                  </div>
+
+                </div>
+
+
+                <!-- ACTIONS -->
+
+                <div class="flex shrink-0 gap-2">
+
+                  <button
+                    type="button"
+                    (click)="openEditHierarchy(level)"
+                    class="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-600 transition hover:border-indigo-300 hover:text-indigo-600"
+                  >
+                    Edit
+                  </button>
+
+
+                  <button
+                    type="button"
+                    (click)="deleteHierarchy(level)"
+                    class="rounded-lg border border-red-200 bg-white px-3 py-2 text-sm font-medium text-red-600 transition hover:bg-red-50"
+                  >
+                    Delete
+                  </button>
+
+                </div>
+
+              </div>
+
+            }
+
+          </div>
+
+        }
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- ========================================================
+       ADD / EDIT LEVEL MODAL
+  ========================================================= -->
+
+  @if (showHierarchyModal) {
+
+    <div
+      class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 px-4 py-6"
+    >
+
+      <div
+        class="w-full max-w-md overflow-hidden rounded-2xl bg-white shadow-2xl"
+      >
+
+        <!-- MODAL HEADER -->
+
+        <div class="border-b border-slate-200 px-6 py-5">
+
+          <div class="flex items-start justify-between">
+
+            <div>
+
+              <h3 class="text-lg font-bold text-slate-900">
+                {{ editingHierarchy ? 'Edit Approval Level' : 'Add Approval Level' }}
+              </h3>
+
+              <p class="mt-1 text-sm text-slate-500">
+                {{
+                  editingHierarchy
+                    ? 'Update this level in the approval workflow.'
+                    : 'Add a new level to the approval workflow.'
+                }}
+              </p>
+
+            </div>
+
+
+            <button
+              type="button"
+              (click)="closeHierarchyModal()"
+              class="rounded-lg p-2 text-slate-400 transition hover:bg-slate-100 hover:text-slate-600"
+            >
+              ✕
+            </button>
+
+          </div>
+
+        </div>
+
+
+        <!-- MODAL BODY -->
+
+        <div class="space-y-5 px-6 py-6">
+
+          @if (hierarchyErrorMessage) {
+
+            <div
+              class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+            >
+              {{ hierarchyErrorMessage }}
+            </div>
+
+          }
+
+
+          <!-- APPROVAL LEVEL -->
+
+          <div>
+
+            <label class="mb-1.5 block text-sm font-medium text-slate-700">
+              Approval Level
+            </label>
+
+            <input
+              type="number"
+              min="1"
+              [(ngModel)]="hierarchyForm.approval_level"
+              class="w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+            />
+
+            <p class="mt-1.5 text-xs text-slate-400">
+              The order in which this role approves requests (1 = first).
+            </p>
+
+          </div>
+
+
+          <!-- ROLE -->
+
+          <div>
+
+            <label class="mb-1.5 block text-sm font-medium text-slate-700">
+              Role
+            </label>
+
+            <input
+              type="text"
+              [(ngModel)]="hierarchyForm.role"
+              placeholder="e.g. Manager, Assistant Manager, HR"
+              class="w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+            />
+
+            <p class="mt-1.5 text-xs text-slate-400">
+              The value will be saved in uppercase.
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <!-- MODAL FOOTER -->
+
+        <div class="flex justify-end gap-3 border-t border-slate-200 bg-slate-50 px-6 py-4">
+
+          <button
+            type="button"
+            (click)="closeHierarchyModal()"
+            class="rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-100"
+          >
+            Cancel
+          </button>
+
+
+          <button
+            type="button"
+            (click)="saveHierarchy()"
+            [disabled]="hierarchySaving"
+            class="rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+
+            @if (hierarchySaving) {
+              <span>Saving...</span>
+            } @else {
+              <span>{{ editingHierarchy ? 'Save Changes' : 'Add Level' }}</span>
+            }
+
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  }
+
+</div>

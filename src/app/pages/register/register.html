@@ -1,0 +1,215 @@
+<div class="min-h-screen bg-slate-50">
+
+  <div class="flex min-h-screen items-center justify-center px-6 py-12">
+
+    <div class="w-full max-w-lg">
+
+      <!-- Brand -->
+      <div class="mb-8 text-center">
+
+        <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-indigo-600 text-lg font-bold text-white shadow-sm">
+          AW
+        </div>
+
+        <h1 class="mt-4 text-2xl font-bold tracking-tight text-slate-900">
+          Approval Workflow
+        </h1>
+
+        <p class="mt-1 text-sm text-slate-500">
+          Employee request management system
+        </p>
+
+      </div>
+
+
+      <!-- Register Card -->
+      <div class="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
+
+        <div class="mb-6">
+
+          <h2 class="text-2xl font-bold text-slate-900">
+            Create Account
+          </h2>
+
+          <p class="mt-2 text-sm text-slate-500">
+            Register as an employee to get started.
+          </p>
+
+        </div>
+
+
+        <!-- Registration Form -->
+        <form
+          (ngSubmit)="register()"
+          class="space-y-5"
+        >
+
+          <!-- Employee Code -->
+          <div>
+
+            <label
+              for="employeeCode"
+              class="mb-2 block text-sm font-semibold text-slate-700"
+            >
+              Employee Code
+            </label>
+
+            <input
+              id="employeeCode"
+              type="text"
+              [(ngModel)]="employee_code"
+              name="employee_code"
+              placeholder="EMP004"
+              autocomplete="off"
+              required
+              class="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+            >
+
+          </div>
+
+
+          <!-- Full Name -->
+          <div>
+
+            <label
+              for="name"
+              class="mb-2 block text-sm font-semibold text-slate-700"
+            >
+              Full Name
+            </label>
+
+            <input
+              id="name"
+              type="text"
+              [(ngModel)]="name"
+              name="name"
+              placeholder="Your full name"
+              autocomplete="name"
+              required
+              class="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+            >
+
+          </div>
+
+
+          <!-- Email -->
+          <div>
+
+            <label
+              for="email"
+              class="mb-2 block text-sm font-semibold text-slate-700"
+            >
+              Email
+            </label>
+
+            <input
+              id="email"
+              type="email"
+              [(ngModel)]="email"
+              name="email"
+              placeholder="you@example.com"
+              autocomplete="email"
+              required
+              class="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+            >
+
+          </div>
+
+
+          <!-- Password -->
+          <div>
+
+            <label
+              for="password"
+              class="mb-2 block text-sm font-semibold text-slate-700"
+            >
+              Password
+            </label>
+
+            <input
+              id="password"
+              type="password"
+              [(ngModel)]="password"
+              name="password"
+              placeholder="Create a password"
+              autocomplete="new-password"
+              required
+              class="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+            >
+
+          </div>
+
+
+          <!-- Message -->
+          @if (message) {
+
+            <div class="rounded-lg border border-red-200 bg-red-50 px-4 py-3">
+
+              <p class="text-sm font-medium text-red-700">
+                {{ message }}
+              </p>
+
+            </div>
+
+          }
+
+
+          <!-- Create Account Button -->
+          <button
+            type="submit"
+            [disabled]="loading"
+            class="w-full rounded-lg bg-indigo-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+
+            @if (loading) {
+
+              <span class="flex items-center justify-center gap-2">
+
+                <span class="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white"></span>
+
+                Creating account...
+
+              </span>
+
+            } @else {
+
+              Create Account
+
+            }
+
+          </button>
+
+        </form>
+
+
+        <!-- Login Link -->
+        <div class="mt-6 border-t border-slate-200 pt-6 text-center">
+
+          <p class="text-sm text-slate-500">
+
+            Already have an account?
+
+            <a
+              routerLink="/login"
+              class="font-semibold text-indigo-600 transition hover:text-indigo-700 hover:underline"
+            >
+              Login
+            </a>
+
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <!-- Footer -->
+      <p class="mt-6 text-center text-xs text-slate-400">
+        Secure employee request management
+      </p>
+
+    </div>
+
+  </div>
+
+</div>
