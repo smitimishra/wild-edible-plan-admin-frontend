@@ -14,7 +14,7 @@ const MOUSE_DEBOUNCE_MS = 5_000;          // mouse check — at most every 5 s
 @Injectable({ providedIn: 'root' })
 export class AuthService implements OnDestroy {
 
-  private apiUrl = 'http://192.168.29.51:3000/api/auth';
+  private apiUrl = 'http://192.168.29.51:3001/api/auth';
 
   // URL for the wildplant portal backend (port 8080)
   // The admin/manager/reviewer JWT tokens are issued by this backend.
