@@ -1403,7 +1403,7 @@ export class Manager implements OnInit {
 
 
     this.authService.logout(
-      'http://192.168.29.51:64959/'
+      'http://192.168.29.216:8200/'
     );
 
   }

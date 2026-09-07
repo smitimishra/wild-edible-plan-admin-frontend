@@ -940,7 +940,7 @@ export class Admin implements OnInit {
     }
 
 
-    this.authService.logout('http://192.168.29.51:64959/');
+    this.authService.logout('http://192.168.29.216:8200/');
 
   }
 

@@ -478,7 +478,7 @@ export class Hr implements OnInit {
       'HR logging out.'
     );
 
-    this.authService.logout('http://192.168.29.51:64959/');
+    this.authService.logout('http://192.168.29.216:8200/');
   }
 
 

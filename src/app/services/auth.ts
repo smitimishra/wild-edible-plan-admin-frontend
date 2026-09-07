@@ -7,18 +7,18 @@ import { BehaviorSubject, Observable } from 'rxjs';
 // the user is shown a popup then redirected here.
 // ============================================================
 
-const LOGIN_PORTAL_URL = 'http://192.168.29.51:64959/welcome';
+const LOGIN_PORTAL_URL = 'http://192.168.29.216:8200/welcome';
 const POLL_INTERVAL_MS = 15_000;          // background poll — 15 s
 const MOUSE_DEBOUNCE_MS = 5_000;          // mouse check — at most every 5 s
 
 @Injectable({ providedIn: 'root' })
 export class AuthService implements OnDestroy {
 
-  private apiUrl = 'http://192.168.29.51:3000/api/auth';
+  private apiUrl = 'http://192.168.29.216:3000/api/auth';
 
   // URL for the wildplant portal backend (port 8080)
   // The admin/manager/reviewer JWT tokens are issued by this backend.
-  private portalApiUrl = 'http://192.168.29.51:8080/api/auth';
+  private portalApiUrl = 'http://192.168.29.216:8080/api/auth';
 
   // ── Session-invalid signal ──────────────────────────────────
   // Components subscribe to this and show the popup when true.

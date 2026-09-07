@@ -186,7 +186,7 @@ export interface DeleteHierarchyResponse {
 export class AdminService {
 
   private apiUrl =
-    'http://192.168.29.51:3000/api/admin';
+    'http://192.168.29.216:3000/api/admin';
 
 
   constructor(
