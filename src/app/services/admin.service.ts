@@ -94,6 +94,14 @@ export interface UpdateUserResponse {
 
 }
 
+export interface UpdateUserRoleResponse {
+
+  message: string;
+
+  user: AdminUser;
+
+}
+
 
 // ============================================================
 // DELETE USER
@@ -297,6 +305,8 @@ export class AdminService {
 
     }
 
+  //UPDATE USER ROLE   
+
   ): Observable<UpdateUserResponse> {
 
     return this.http.put<UpdateUserResponse>(
@@ -313,7 +323,32 @@ export class AdminService {
     );
 
   }
+  
 
+  updateUserRole(
+
+  id: number,
+
+  role: string
+
+): Observable<UpdateUserRoleResponse> {
+
+  return this.http.put<UpdateUserRoleResponse>(
+
+    `${this.apiUrl}/users/${id}/role`,
+
+    {
+      role: role.trim().toUpperCase()
+    },
+
+    {
+      headers:
+        this.getHeaders()
+    }
+
+  );
+
+}
 
   // ==========================================================
   // DEACTIVATE USER
