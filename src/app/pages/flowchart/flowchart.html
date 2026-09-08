@@ -1,0 +1,631 @@
+<div class="flex h-screen flex-col overflow-hidden bg-slate-100">
+
+  <!-- ============================================================
+       TOP BAR
+  ============================================================= -->
+  <div class="flex flex-shrink-0 items-center justify-between border-b border-slate-200 bg-white px-5 py-3 shadow-sm">
+
+    <div class="flex items-center gap-3">
+      <button type="button" (click)="goBack()"
+        class="flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-600 transition hover:bg-slate-50">
+        ← Back to Login
+      </button>
+      <div>
+        <p class="text-sm font-bold text-slate-900">Application Workflow</p>
+        <p class="text-xs text-slate-400">Hover any node to highlight its database tables</p>
+      </div>
+    </div>
+
+    <!-- SECTION TABS -->
+    <div class="flex gap-1.5">
+      <button type="button" (click)="setSection('login')"
+        [class]="activeSection==='login'
+          ? 'rounded-lg bg-blue-600 px-4 py-2 text-xs font-bold text-white shadow'
+          : 'rounded-lg border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-50 transition'">
+        🔐 Login Flow
+      </button>
+      <button type="button" (click)="setSection('admin')"
+        [class]="activeSection==='admin'
+          ? 'rounded-lg bg-indigo-600 px-4 py-2 text-xs font-bold text-white shadow'
+          : 'rounded-lg border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-50 transition'">
+        🔑 Admin
+      </button>
+      <button type="button" (click)="setSection('reviewer')"
+        [class]="activeSection==='reviewer'
+          ? 'rounded-lg bg-violet-600 px-4 py-2 text-xs font-bold text-white shadow'
+          : 'rounded-lg border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-50 transition'">
+        🔍 Reviewer
+      </button>
+      <button type="button" (click)="setSection('fieldstaff')"
+        [class]="activeSection==='fieldstaff'
+          ? 'rounded-lg bg-emerald-600 px-4 py-2 text-xs font-bold text-white shadow'
+          : 'rounded-lg border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-50 transition'">
+        🌿 Field Staff
+      </button>
+    </div>
+
+  </div>
+
+  <!-- ============================================================
+       BODY: FLOWCHART LEFT + DB RIGHT
+  ============================================================= -->
+  <div class="flex flex-1 overflow-hidden">
+
+    <!-- ──────────────────────────────────────────────────
+         LEFT: FLOWCHART AREA
+    ─────────────────────────────────────────────────── -->
+    <div class="fc-scroll flex-1 overflow-y-auto px-10 py-8">
+
+
+      <!-- ====================================================
+           LOGIN FLOW
+      ===================================================== -->
+      <div *ngIf="activeSection === 'login'">
+
+        <div class="mb-5 text-center">
+          <span class="inline-block rounded-xl bg-blue-700 px-5 py-2 text-sm font-bold text-white shadow">User Login Workflow</span>
+        </div>
+
+        <!-- Legend -->
+        <div class="mb-6 flex flex-wrap justify-center gap-4 text-xs">
+          <span class="flex items-center gap-1.5"><span class="inline-block h-3.5 w-6 rounded-sm bg-blue-200 border border-blue-400"></span>User / UI</span>
+          <span class="flex items-center gap-1.5"><span class="inline-block h-3.5 w-6 rounded-sm bg-purple-200 border border-purple-400"></span>App Layer</span>
+          <span class="flex items-center gap-1.5"><span class="inline-block h-3.5 w-6 rounded-sm" style="background:#f87171;border:1px dashed #dc2626"></span>Error / Return</span>
+          <span class="flex items-center gap-1.5"><span class="inline-block h-3.5 w-6" style="background:#f59e0b;clip-path:polygon(50% 0%,100% 50%,50% 100%,0% 50%)"></span>Decision</span>
+          <span class="flex items-center gap-1.5"><span class="inline-block h-3.5 w-6 rounded-full bg-emerald-600"></span>Start / End</span>
+          <span class="flex items-center gap-1.5 border border-dashed border-slate-300 px-2 rounded text-slate-500">- - -&gt; DB Operation</span>
+        </div>
+
+        <!-- FLOW COLUMN -->
+        <div class="flex flex-col items-center">
+
+          <!-- START -->
+          <div class="fc-node fc-pill fc-green-d" (mouseenter)="highlight('L1')" (mouseleave)="highlight(null)">
+            🚀 Start
+          </div>
+          <div class="fc-line fc-arrow-down" style="height:24px"></div>
+          <div class="fc-label">User opens browser</div>
+          <div class="fc-line" style="height:12px"></div>
+
+          <!-- 1. Open Login Page -->
+          <div class="fc-node fc-rect fc-blue" (mouseenter)="highlight('L2')" (mouseleave)="highlight(null)">
+            <p class="font-bold">1. Open Login Page</p>
+            <p class="text-xs font-normal mt-0.5 opacity-70">Web / Mobile Application</p>
+          </div>
+          <div class="fc-line fc-arrow-down" style="height:24px"></div>
+
+          <!-- 2. Enter Credentials -->
+          <div class="fc-node fc-rect fc-blue" (mouseenter)="highlight('L3')" (mouseleave)="highlight(null)">
+            <p class="font-bold">2. Enter Email &amp; Password</p>
+            <p class="text-xs font-normal mt-0.5 opacity-70">Form input validation (client-side)</p>
+          </div>
+          <div class="fc-line fc-arrow-down" style="height:24px"></div>
+
+          <!-- 3. Send Request -->
+          <div class="fc-node fc-rect fc-purple" (mouseenter)="highlight('L3')" (mouseleave)="highlight(null)">
+            <p class="font-bold">3. Send HTTPS Request</p>
+            <p class="text-xs font-normal mt-0.5 opacity-70">POST /api/auth/login</p>
+          </div>
+          <div class="fc-line fc-arrow-down" style="height:24px"></div>
+
+          <!-- 4. Validate Input -->
+          <div class="fc-node fc-rect fc-purple" (mouseenter)="highlight('L4')" (mouseleave)="highlight(null)">
+            <p class="font-bold">4. Validate Input</p>
+            <p class="text-xs font-normal mt-0.5 opacity-70">Check empty / invalid format</p>
+          </div>
+          <div class="fc-line fc-arrow-down" style="height:20px"></div>
+
+          <!-- DECISION: Input Valid? -->
+          <div class="relative flex items-center" style="width:360px">
+            <div class="flex-1 flex flex-col items-center">
+              <div class="fc-diamond-shape fc-amber-d" style="width:160px;height:80px"
+                (mouseenter)="highlight('L4')" (mouseleave)="highlight(null)">
+                <div class="fc-diamond-text text-white">Input Valid?</div>
+              </div>
+            </div>
+            <!-- NO → error bubble on right -->
+            <div class="absolute right-0 flex items-center gap-1" style="top:50%;transform:translateY(-50%)">
+              <div class="fc-line-h" style="width:40px"></div>
+              <div class="flex flex-col items-center">
+                <span class="fc-label mb-1 text-red-500">No</span>
+                <div class="fc-error" (mouseenter)="highlight('L5')" (mouseleave)="highlight(null)">
+                  Return Error to UI<br><span class="font-normal opacity-80">Validation message</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- YES down -->
+          <div class="fc-label mt-1 text-emerald-600">Yes</div>
+          <div class="fc-line fc-arrow-down" style="height:20px"></div>
+
+          <!-- 5. Query DB -->
+          <div class="fc-node fc-rect fc-purple" (mouseenter)="highlight('L6')" (mouseleave)="highlight(null)">
+            <p class="font-bold">5. Fetch User from DB</p>
+            <p class="text-xs font-normal mt-0.5 opacity-70">SELECT from users WHERE email = $1</p>
+          </div>
+          <div class="fc-line fc-arrow-down" style="height:20px"></div>
+
+          <!-- 6. Verify Password -->
+          <div class="fc-node fc-rect fc-purple" (mouseenter)="highlight('L7')" (mouseleave)="highlight(null)">
+            <p class="font-bold">6. Verify Password</p>
+            <p class="text-xs font-normal mt-0.5 opacity-70">bcrypt.compare(password, hash)</p>
+          </div>
+          <div class="fc-line fc-arrow-down" style="height:20px"></div>
+
+          <!-- DECISION: Credentials Valid? -->
+          <div class="relative flex items-center" style="width:360px">
+            <div class="flex-1 flex flex-col items-center">
+              <div class="fc-diamond-shape fc-red-d" style="width:160px;height:80px"
+                (mouseenter)="highlight('L7')" (mouseleave)="highlight(null)">
+                <div class="fc-diamond-text text-white">Credentials Valid?</div>
+              </div>
+            </div>
+            <div class="absolute right-0 flex items-center gap-1" style="top:50%;transform:translateY(-50%)">
+              <div class="fc-line-h" style="width:40px"></div>
+              <div class="flex flex-col items-center">
+                <span class="fc-label mb-1 text-red-500">No</span>
+                <div class="fc-error" (mouseenter)="highlight('L8')" (mouseleave)="highlight(null)">
+                  Invalid credentials<br><span class="font-normal opacity-80">401 Unauthorized</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="fc-label mt-1 text-emerald-600">Yes</div>
+          <div class="fc-line fc-arrow-down" style="height:20px"></div>
+
+          <!-- 7. Check Active Session -->
+          <div class="fc-node fc-rect fc-purple" (mouseenter)="highlight('L9')" (mouseleave)="highlight(null)">
+            <p class="font-bold">7. Check Active Session</p>
+            <p class="text-xs font-normal mt-0.5 opacity-70">SELECT from user_sessions WHERE user_id &amp; is_active</p>
+          </div>
+          <div class="fc-line fc-arrow-down" style="height:20px"></div>
+
+          <!-- DECISION: Session Exists? -->
+          <div class="relative flex items-center" style="width:380px">
+            <div class="flex-1 flex flex-col items-center">
+              <div class="fc-diamond-shape fc-amber-d" style="width:180px;height:80px"
+                (mouseenter)="highlight('L9')" (mouseleave)="highlight(null)">
+                <div class="fc-diamond-text text-white">Active Session Exists?</div>
+              </div>
+            </div>
+            <div class="absolute right-0 flex items-center gap-1" style="top:50%;transform:translateY(-50%)">
+              <div class="fc-line-h" style="width:36px"></div>
+              <div class="flex flex-col items-center">
+                <span class="fc-label mb-1 text-red-500">Yes</span>
+                <div class="fc-error" style="min-width:155px" (mouseenter)="highlight('L9')" (mouseleave)="highlight(null)">
+                  409 Conflict Popup<br><span class="font-normal opacity-80">Force-logout old session</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="fc-label mt-1 text-emerald-600">No</div>
+          <div class="fc-line fc-arrow-down" style="height:20px"></div>
+
+          <!-- 8. Check is_active -->
+          <div class="fc-node fc-rect fc-purple" (mouseenter)="highlight('L10')" (mouseleave)="highlight(null)">
+            <p class="font-bold">8. Check Account Status</p>
+            <p class="text-xs font-normal mt-0.5 opacity-70">is_active = TRUE in users table</p>
+          </div>
+          <div class="fc-line fc-arrow-down" style="height:20px"></div>
+
+          <!-- DECISION: Account Active? -->
+          <div class="relative flex items-center" style="width:360px">
+            <div class="flex-1 flex flex-col items-center">
+              <div class="fc-diamond-shape fc-red-d" style="width:160px;height:80px"
+                (mouseenter)="highlight('L10')" (mouseleave)="highlight(null)">
+                <div class="fc-diamond-text text-white">Account Active?</div>
+              </div>
+            </div>
+            <div class="absolute right-0 flex items-center gap-1" style="top:50%;transform:translateY(-50%)">
+              <div class="fc-line-h" style="width:40px"></div>
+              <div class="flex flex-col items-center">
+                <span class="fc-label mb-1 text-red-500">No</span>
+                <div class="fc-error" (mouseenter)="highlight('L11')" (mouseleave)="highlight(null)">
+                  Account deactivated<br><span class="font-normal opacity-80">403 Forbidden</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="fc-label mt-1 text-emerald-600">Yes</div>
+          <div class="fc-line fc-arrow-down" style="height:20px"></div>
+
+          <!-- 9. Create JWT + Session -->
+          <div class="fc-node fc-rect fc-purple" (mouseenter)="highlight('L12')" (mouseleave)="highlight(null)">
+            <p class="font-bold">9. Create JWT + Session</p>
+            <p class="text-xs font-normal mt-0.5 opacity-70">INSERT into user_sessions · JWT expires 1h</p>
+          </div>
+          <div class="fc-line fc-arrow-down" style="height:20px"></div>
+
+          <!-- 10. Load Role + Redirect -->
+          <div class="fc-node fc-rect fc-purple" (mouseenter)="highlight('L13')" (mouseleave)="highlight(null)">
+            <p class="font-bold">10. Read Role → Redirect</p>
+            <p class="text-xs font-normal mt-0.5 opacity-70">ADMIN / MANAGER / HR / EMPLOYEE</p>
+          </div>
+          <div class="fc-line fc-arrow-down" style="height:24px"></div>
+
+          <!-- END -->
+          <div class="fc-node fc-pill fc-green-d" (mouseenter)="highlight('L13')" (mouseleave)="highlight(null)">
+            ✅ Logged In — Dashboard Opens
+          </div>
+
+        </div><!-- /login flow col -->
+
+      </div><!-- /login -->
+
+
+      <!-- ====================================================
+           ADMIN FLOW
+      ===================================================== -->
+      <div *ngIf="activeSection === 'admin'">
+
+        <div class="mb-5 text-center">
+          <span class="inline-block rounded-xl bg-indigo-700 px-5 py-2 text-sm font-bold text-white shadow">🔑 Admin Workflow</span>
+          <p class="mt-1 text-xs text-slate-500">Full system control — users, hierarchy, all requests</p>
+        </div>
+
+        <div class="flex flex-col items-center">
+
+          <!-- START -->
+          <div class="fc-node fc-pill" style="background:#4f46e5;color:#fff;border-color:#3730a3"
+            (mouseenter)="highlight('A1')" (mouseleave)="highlight(null)">
+            🔐 Admin Login
+          </div>
+          <div class="fc-line fc-arrow-down" style="height:24px"></div>
+          <div class="fc-label">POST /auth/login · JWT issued</div>
+          <div class="fc-line" style="height:12px"></div>
+
+          <!-- Manage Users -->
+          <div class="fc-node fc-rect" style="background:#e0e7ff;border-color:#a5b4fc;color:#3730a3;min-width:220px"
+            (mouseenter)="highlight('A2')" (mouseleave)="highlight(null)">
+            <p class="font-bold">Create / Edit Users</p>
+            <p class="text-xs font-normal mt-0.5 opacity-70">POST · PUT /api/admin/users<br>Temp password auto-generated</p>
+          </div>
+          <div class="fc-line fc-arrow-down" style="height:20px"></div>
+
+          <!-- Deactivate / Reactivate -->
+          <div class="fc-node fc-rect" style="background:#e0e7ff;border-color:#a5b4fc;color:#3730a3;min-width:220px"
+            (mouseenter)="highlight('A3')" (mouseleave)="highlight(null)">
+            <p class="font-bold">Activate / Deactivate Users</p>
+            <p class="text-xs font-normal mt-0.5 opacity-70">PATCH /api/admin/users/:id/deactivate<br>PATCH /api/admin/users/:id/reactivate</p>
+          </div>
+          <div class="fc-line fc-arrow-down" style="height:20px"></div>
+
+          <!-- Hierarchy -->
+          <div class="fc-node fc-rect" style="background:#ede9fe;border-color:#c4b5fd;color:#5b21b6;min-width:220px"
+            (mouseenter)="highlight('A4')" (mouseleave)="highlight(null)">
+            <p class="font-bold">Manage Approval Hierarchy</p>
+            <p class="text-xs font-normal mt-0.5 opacity-70">POST · PUT · DELETE /api/admin/hierarchy<br>Level 1 = MANAGER, Level 2 = HR</p>
+          </div>
+          <div class="fc-line fc-arrow-down" style="height:20px"></div>
+
+          <!-- View all requests -->
+          <div class="fc-node fc-rect" style="background:#e0e7ff;border-color:#a5b4fc;color:#3730a3;min-width:220px"
+            (mouseenter)="highlight('A5')" (mouseleave)="highlight(null)">
+            <p class="font-bold">View All Requests</p>
+            <p class="text-xs font-normal mt-0.5 opacity-70">GET /api/requests<br>Any status — full details + history</p>
+          </div>
+          <div class="fc-line fc-arrow-down" style="height:24px"></div>
+
+          <!-- END -->
+          <div class="fc-node fc-pill" style="background:#4f46e5;color:#fff;border-color:#3730a3"
+            (mouseenter)="highlight('A6')" (mouseleave)="highlight(null)">
+            🚪 Logout — Session Invalidated
+          </div>
+
+        </div>
+
+      </div><!-- /admin -->
+
+
+      <!-- ====================================================
+           REVIEWER FLOW
+      ===================================================== -->
+      <div *ngIf="activeSection === 'reviewer'">
+
+        <div class="mb-5 text-center">
+          <span class="inline-block rounded-xl bg-violet-700 px-5 py-2 text-sm font-bold text-white shadow">🔍 Reviewer Workflow — Manager → HR</span>
+          <p class="mt-1 text-xs text-slate-500">Two-level approval chain. Manager Level 1, HR Level 2</p>
+        </div>
+
+        <!-- LEVEL LABELS -->
+        <div class="mb-4 flex justify-center gap-6 text-xs font-bold">
+          <span class="rounded-full bg-violet-100 px-4 py-1 text-violet-700">Level 1 — MANAGER</span>
+          <span class="rounded-full bg-purple-100 px-4 py-1 text-purple-700">Level 2 — HR</span>
+        </div>
+
+        <div class="flex flex-col items-center">
+
+          <!-- LOGIN -->
+          <div class="fc-node fc-pill" style="background:#7c3aed;color:#fff;border-color:#6d28d9"
+            (mouseenter)="highlight('R1')" (mouseleave)="highlight(null)">
+            🔐 Reviewer Login
+          </div>
+          <div class="fc-line fc-arrow-down" style="height:24px"></div>
+          <div class="fc-label">JWT role = MANAGER or HR</div>
+          <div class="fc-line" style="height:12px"></div>
+
+          <!-- ── MANAGER LEVEL ── -->
+          <div class="w-full max-w-xs rounded-xl border-2 border-violet-300 bg-violet-50 p-4 mb-0">
+            <p class="mb-3 text-center text-xs font-bold uppercase tracking-wide text-violet-700">Manager — Level 1</p>
+
+            <div class="flex flex-col items-center gap-0">
+
+              <div class="fc-node fc-rect" style="background:#ede9fe;border-color:#c4b5fd;color:#5b21b6;min-width:200px"
+                (mouseenter)="highlight('R2')" (mouseleave)="highlight(null)">
+                <p class="font-bold">View Pending Requests</p>
+                <p class="text-xs font-normal mt-0.5 opacity-70">GET /api/requests/pending-manager</p>
+              </div>
+              <div class="fc-line fc-arrow-down" style="height:18px"></div>
+
+              <div class="fc-node fc-proc" style="border-color:#c4b5fd;background:#f5f3ff;color:#6d28d9;min-width:200px"
+                (mouseenter)="highlight('R3')" (mouseleave)="highlight(null)">
+                <p class="font-semibold">Review Plant + Photos</p>
+                <p class="text-xs font-normal mt-0.5 opacity-70">plant_name, images, common_name</p>
+              </div>
+              <div class="fc-line fc-arrow-down" style="height:18px"></div>
+
+              <!-- DECISION -->
+              <div class="relative flex items-center" style="width:320px">
+                <div class="flex-1 flex flex-col items-center">
+                  <div class="fc-diamond-shape" style="width:160px;height:80px;background:#7c3aed"
+                    (mouseenter)="highlight('R4')" (mouseleave)="highlight(null)">
+                    <div class="fc-diamond-text text-white">Approve?<br><span style="font-size:9px;font-weight:400">Requires scientific_name</span></div>
+                  </div>
+                </div>
+                <div class="absolute right-0 flex items-center gap-1" style="top:50%;transform:translateY(-50%)">
+                  <div class="fc-line-h" style="width:32px"></div>
+                  <div class="flex flex-col items-center">
+                    <span class="fc-label mb-1 text-red-500">Reject</span>
+                    <div class="fc-error" style="min-width:130px" (mouseenter)="highlight('R4')" (mouseleave)="highlight(null)">
+                      status → REJECTED<br>PUT /:id/reject
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="fc-label mt-1 text-emerald-600">Approve ↓</div>
+              <div class="fc-line" style="height:10px"></div>
+              <div class="fc-node fc-proc" style="border-color:#a7f3d0;background:#ecfdf5;color:#065f46;min-width:200px"
+                (mouseenter)="highlight('R4')" (mouseleave)="highlight(null)">
+                <p class="font-semibold">status → PENDING_HR</p>
+                <p class="text-xs font-normal mt-0.5 opacity-70">current_approval_level = 2<br>PUT /:id/manager-approve</p>
+              </div>
+
+            </div>
+          </div>
+
+          <div class="fc-line fc-arrow-down" style="height:24px"></div>
+
+          <!-- ── HR LEVEL ── -->
+          <div class="w-full max-w-xs rounded-xl border-2 border-purple-300 bg-purple-50 p-4">
+            <p class="mb-3 text-center text-xs font-bold uppercase tracking-wide text-purple-700">HR — Level 2 Final Review</p>
+
+            <div class="flex flex-col items-center gap-0">
+
+              <div class="fc-node fc-rect" style="background:#f3e8ff;border-color:#d8b4fe;color:#6b21a8;min-width:200px"
+                (mouseenter)="highlight('R5')" (mouseleave)="highlight(null)">
+                <p class="font-bold">View Pending HR Requests</p>
+                <p class="text-xs font-normal mt-0.5 opacity-70">GET /api/requests/pending-hr<br>Includes scientific_name from Manager</p>
+              </div>
+              <div class="fc-line fc-arrow-down" style="height:18px"></div>
+
+              <!-- DECISION -->
+              <div class="relative flex items-center" style="width:320px">
+                <div class="flex-1 flex flex-col items-center">
+                  <div class="fc-diamond-shape" style="width:160px;height:80px;background:#9333ea"
+                    (mouseenter)="highlight('R6')" (mouseleave)="highlight(null)">
+                    <div class="fc-diamond-text text-white">Final Approve?</div>
+                  </div>
+                </div>
+                <div class="absolute right-0 flex items-center gap-1" style="top:50%;transform:translateY(-50%)">
+                  <div class="fc-line-h" style="width:32px"></div>
+                  <div class="flex flex-col items-center">
+                    <span class="fc-label mb-1 text-red-500">Reject</span>
+                    <div class="fc-error" style="min-width:130px" (mouseenter)="highlight('R6')" (mouseleave)="highlight(null)">
+                      status → REJECTED<br>PUT /:id/reject
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="fc-label mt-1 text-emerald-600">Approve ↓</div>
+              <div class="fc-line" style="height:10px"></div>
+
+              <div class="fc-node fc-proc" style="border-color:#a7f3d0;background:#ecfdf5;color:#065f46;min-width:200px"
+                (mouseenter)="highlight('R7')" (mouseleave)="highlight(null)">
+                <p class="font-semibold">Plant Saved to DB</p>
+                <p class="text-xs font-normal mt-0.5 opacity-70">INSERT → plant_details<br>status → APPROVED</p>
+              </div>
+
+            </div>
+          </div>
+
+          <div class="fc-line fc-arrow-down" style="height:20px"></div>
+          <div class="fc-node fc-pill" style="background:#7c3aed;color:#fff;border-color:#6d28d9"
+            (mouseenter)="highlight('R7')" (mouseleave)="highlight(null)">
+            ✅ Review Complete
+          </div>
+
+        </div>
+
+      </div><!-- /reviewer -->
+
+
+      <!-- ====================================================
+           FIELD STAFF FLOW
+      ===================================================== -->
+      <div *ngIf="activeSection === 'fieldstaff'">
+
+        <div class="mb-5 text-center">
+          <span class="inline-block rounded-xl bg-emerald-700 px-5 py-2 text-sm font-bold text-white shadow">🌿 Field Staff Workflow</span>
+          <p class="mt-1 text-xs text-slate-500">Employee — register, submit plant requests, track status</p>
+        </div>
+
+        <div class="flex flex-col items-center">
+
+          <!-- START -->
+          <div class="fc-node fc-pill fc-green-d"
+            (mouseenter)="highlight('F1')" (mouseleave)="highlight(null)">
+            🚀 Start
+          </div>
+          <div class="fc-line fc-arrow-down" style="height:20px"></div>
+
+          <!-- Register -->
+          <div class="fc-node fc-rect" style="background:#d1fae5;border-color:#6ee7b7;color:#065f46;min-width:220px"
+            (mouseenter)="highlight('F1')" (mouseleave)="highlight(null)">
+            <p class="font-bold">1. Register Account</p>
+            <p class="text-xs font-normal mt-0.5 opacity-70">POST /auth/register<br>role = EMPLOYEE auto-assigned</p>
+          </div>
+          <div class="fc-line fc-arrow-down" style="height:20px"></div>
+
+          <!-- Login -->
+          <div class="fc-node fc-rect" style="background:#d1fae5;border-color:#6ee7b7;color:#065f46;min-width:220px"
+            (mouseenter)="highlight('F2')" (mouseleave)="highlight(null)">
+            <p class="font-bold">2. Login</p>
+            <p class="text-xs font-normal mt-0.5 opacity-70">POST /auth/login → JWT issued<br>Session tracked in user_sessions</p>
+          </div>
+          <div class="fc-line fc-arrow-down" style="height:20px"></div>
+
+          <!-- Submit Request -->
+          <div class="fc-node fc-rect" style="background:#d1fae5;border-color:#6ee7b7;color:#065f46;min-width:220px"
+            (mouseenter)="highlight('F3')" (mouseleave)="highlight(null)">
+            <p class="font-bold">3. Submit Plant Request</p>
+            <p class="text-xs font-normal mt-0.5 opacity-70">POST /api/requests (multipart)<br>plant_name + 1–10 photos required</p>
+          </div>
+          <div class="fc-line fc-arrow-down" style="height:14px"></div>
+          <div class="fc-label">status = PENDING_MANAGER · level = 1</div>
+          <div class="fc-line" style="height:10px"></div>
+          <div class="fc-line fc-arrow-down" style="height:14px"></div>
+
+          <!-- Track -->
+          <div class="fc-node fc-proc" style="border-color:#6ee7b7;background:#ecfdf5;color:#065f46;min-width:220px"
+            (mouseenter)="highlight('F4')" (mouseleave)="highlight(null)">
+            <p class="font-semibold">4. Track Request Status</p>
+            <p class="text-xs font-normal mt-0.5 opacity-70">GET /api/requests/my</p>
+          </div>
+          <div class="fc-line fc-arrow-down" style="height:20px"></div>
+
+          <!-- DECISION: Status? -->
+          <div class="relative flex items-center" style="width:380px">
+            <div class="flex-1 flex flex-col items-center">
+              <div class="fc-diamond-shape" style="width:180px;height:80px;background:#059669"
+                (mouseenter)="highlight('F5')" (mouseleave)="highlight(null)">
+                <div class="fc-diamond-text text-white">Request Outcome?</div>
+              </div>
+            </div>
+            <div class="absolute right-0 flex items-center gap-1" style="top:50%;transform:translateY(-50%)">
+              <div class="fc-line-h" style="width:36px"></div>
+              <div class="flex flex-col items-center">
+                <span class="fc-label mb-1 text-red-500">REJECTED</span>
+                <div class="fc-error" style="min-width:150px"
+                  (mouseenter)="highlight('F5')" (mouseleave)="highlight(null)">
+                  Reason in approval_history<br>.comments field
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="fc-label mt-1 text-emerald-600">APPROVED ↓</div>
+          <div class="fc-line fc-arrow-down" style="height:20px"></div>
+
+          <!-- View Plant -->
+          <div class="fc-node fc-rect" style="background:#d1fae5;border-color:#6ee7b7;color:#065f46;min-width:220px"
+            (mouseenter)="highlight('F6')" (mouseleave)="highlight(null)">
+            <p class="font-bold">5. View Approved Plant</p>
+            <p class="text-xs font-normal mt-0.5 opacity-70">GET /api/requests/:id<br>plant_details + full history</p>
+          </div>
+          <div class="fc-line fc-arrow-down" style="height:24px"></div>
+
+          <!-- END -->
+          <div class="fc-node fc-pill fc-green-d"
+            (mouseenter)="highlight('F6')" (mouseleave)="highlight(null)">
+            ✅ Plant Identified &amp; Stored
+          </div>
+
+        </div>
+
+      </div><!-- /fieldstaff -->
+
+
+    </div><!-- /left fc -->
+
+
+    <!-- ──────────────────────────────────────────────
+         RIGHT: DATABASE PANEL
+    ─────────────────────────────────────────────── -->
+    <div class="w-72 flex-shrink-0 border-l border-slate-200 bg-white">
+
+      <div class="db-panel">
+
+        <!-- Header -->
+        <div class="sticky top-0 z-10 border-b border-slate-100 bg-white px-4 py-3">
+          <div class="flex items-center gap-2">
+            <span class="text-lg">🗄️</span>
+            <div>
+              <p class="text-xs font-bold text-slate-800">Database (PostgreSQL)</p>
+              <p class="text-xs text-slate-400">
+                <ng-container *ngIf="activeNodeId; else hint">
+                  <span class="font-semibold text-indigo-600">{{ activeNodeTables.length }} table(s) active</span>
+                </ng-container>
+                <ng-template #hint>Hover a node to highlight tables</ng-template>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tables -->
+        <div class="divide-y divide-slate-100">
+          <div
+            *ngFor="let table of tables"
+            class="db-table-row px-4 py-3"
+            [class.db-table-active]="isTableActive(table.name)"
+          >
+            <!-- Table Name -->
+            <div class="flex items-center justify-between mb-1.5">
+              <div class="flex items-center gap-1.5">
+                <span class="text-sm">{{ table.icon }}</span>
+                <p class="db-table-name text-xs font-mono font-semibold text-slate-700">{{ table.name }}</p>
+              </div>
+              <span *ngIf="isTableActive(table.name)"
+                class="rounded-full bg-indigo-600 px-2 py-0.5 text-xs font-bold text-white">
+                ACTIVE
+              </span>
+            </div>
+
+            <!-- Columns -->
+            <div class="pl-1 space-y-0.5">
+              <div *ngFor="let col of table.columns" class="flex items-center gap-1.5">
+                <span class="text-xs w-4 text-center flex-shrink-0"
+                  [class.text-yellow-500]="col.pk"
+                  [class.text-blue-400]="col.fk && !col.pk"
+                  [class.text-slate-300]="!col.pk && !col.fk">
+                  {{ col.pk ? '🔑' : col.fk ? '🔗' : '▪' }}
+                </span>
+                <span class="font-mono text-xs"
+                  [class.text-slate-600]="isTableActive(table.name)"
+                  [class.text-slate-400]="!isTableActive(table.name)">
+                  {{ col.name }}
+                </span>
+                <span class="ml-auto font-mono text-xs"
+                  [class.text-slate-400]="isTableActive(table.name)"
+                  [class.text-slate-300]="!isTableActive(table.name)">
+                  {{ col.type }}
+                </span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="border-t border-slate-100 px-4 py-3">
+          <div class="flex gap-4 text-xs text-slate-400">
+            <span>🔑 PK</span>
+            <span>🔗 FK</span>
+            <span>▪ Column</span>
+          </div>
+        </div>
+
+      </div>
+    </div><!-- /right -->
+
+  </div><!-- /body -->
+
+</div>

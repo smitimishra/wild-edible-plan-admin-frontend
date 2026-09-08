@@ -255,7 +255,7 @@ export class RequestDetails implements OnInit {
   // ============================================================
 
   private readonly backendUrl =
-    'http://192.168.29.216:3000';
+    'http://192.168.29.216:3001';
 
 
   // ============================================================
@@ -293,7 +293,7 @@ export class RequestDetails implements OnInit {
       this.currentUserRole =
         String(
           this.currentUser.role || ''
-        ).toUpperCase();
+        ).trim().toUpperCase();
 
     }
 
@@ -348,8 +348,12 @@ export class RequestDetails implements OnInit {
           // not response.request.
           // ----------------------------------------------------
 
-          this.request =
-            response || null;
+          this.request = response
+            ? {
+                ...response,
+                status: String(response.status || '').trim().toUpperCase()
+              }
+            : null;
 
 
           // ----------------------------------------------------

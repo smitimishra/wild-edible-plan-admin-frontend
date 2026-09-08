@@ -1,1402 +1,1870 @@
 <div class="min-h-screen bg-slate-50">
 
-  <!-- ============================================================
-       LEFT ADMIN SIDEBAR
-  ============================================================= -->
+  <!-- SIDEBAR -->
   <aside
-    class="fixed left-0 top-0 z-50 flex h-screen w-64 flex-col border-r border-slate-200 bg-white"
+    class="fixed left-0 top-0 z-40 flex h-screen w-[290px] flex-col border-r border-slate-200 bg-white shadow-sm"
   >
-    <!-- HEADER -->
-    <div class="border-b border-slate-200 px-7 py-7">
-      <p class="text-sm font-bold uppercase tracking-widest text-indigo-600">
-        ADMIN
-      </p>
 
-      <h1 class="mt-1 text-xl font-bold text-slate-900">
-        Approval System
-      </h1>
+    <!-- BRAND -->
+    <div class="border-b border-slate-200 px-7 py-7">
+
+      <div class="flex items-center gap-3">
+
+        <div
+          class="flex h-11 w-11 items-center justify-center rounded-xl bg-indigo-600 text-sm font-bold text-white shadow-sm"
+        >
+          A
+        </div>
+
+        <div>
+          <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-indigo-600">
+            Admin
+          </p>
+
+          <h1 class="mt-0.5 text-lg font-bold tracking-tight text-slate-900">
+            Approval System
+          </h1>
+        </div>
+
+      </div>
+
     </div>
 
+
     <!-- NAVIGATION -->
-    <nav class="flex-1 overflow-y-auto px-4 py-6">
+    <nav class="flex-1 space-y-1.5 px-4 py-5">
 
-      <!-- DASHBOARD -->
+      <!-- Dashboard -->
       <button
         type="button"
-        (click)="selectMenu('dashboard')"
-        [style.background-color]="activeMenu === 'dashboard' ? '#37eb34' : 'white'"
-        class="mb-2 flex w-full items-center gap-3 rounded-lg px-4 py-3 text-left text-sm font-medium text-black transition hover:bg-green-100"
+        (click)="setActiveMenu('dashboard')"
+        [class.bg-indigo-600]="activeMenu === 'dashboard'"
+        [class.text-white]="activeMenu === 'dashboard'"
+        [class.shadow-sm]="activeMenu === 'dashboard'"
+        class="group flex w-full items-center gap-3 rounded-xl px-4 py-3.5 text-left text-sm font-semibold text-slate-700 transition-all duration-200 hover:bg-slate-100 hover:text-slate-900"
       >
-        <span class="flex w-6 justify-center text-lg">▣</span>
+
+        <svg
+          class="h-5 w-5 shrink-0"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          viewBox="0 0 24 24"
+        >
+          <rect x="3" y="3" width="7" height="7" rx="1"></rect>
+          <rect x="14" y="3" width="7" height="7" rx="1"></rect>
+          <rect x="3" y="14" width="7" height="7" rx="1"></rect>
+          <rect x="14" y="14" width="7" height="7" rx="1"></rect>
+        </svg>
+
         <span>Dashboard</span>
+
       </button>
 
-      <!-- USER MANAGEMENT -->
+
+      <!-- User Management -->
       <button
         type="button"
-        (click)="selectMenu('users')"
-        [style.background-color]="isUserMenuActive() ? '#37eb34' : 'white'"
-        class="mb-2 flex w-full items-center gap-3 rounded-lg px-4 py-3 text-left text-sm font-medium text-black transition hover:bg-green-100"
+        (click)="setActiveMenu('users')"
+        [class.bg-indigo-600]="activeMenu === 'users'"
+        [class.text-white]="activeMenu === 'users'"
+        [class.shadow-sm]="activeMenu === 'users'"
+        class="group flex w-full items-center gap-3 rounded-xl px-4 py-3.5 text-left text-sm font-semibold text-slate-700 transition-all duration-200 hover:bg-slate-100 hover:text-slate-900"
       >
-        <span class="flex w-6 justify-center text-lg">👥</span>
+
+        <svg
+          class="h-5 w-5 shrink-0"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          viewBox="0 0 24 24"
+        >
+          <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+          <circle cx="9" cy="7" r="4"></circle>
+          <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+        </svg>
+
         <span>User Management</span>
+
       </button>
 
-      <!-- HIERARCHY MANAGEMENT -->
-      <button
-        type="button"
-        (click)="selectMenu('hierarchy')"
-        [style.background-color]="activeMenu === 'hierarchy' ? '#37eb34' : 'white'"
-        class="mb-2 flex w-full items-center gap-3 rounded-lg px-4 py-3 text-left text-sm font-medium text-black transition hover:bg-green-100"
-      >
-        <span class="flex w-6 justify-center text-lg">⇅</span>
-        <span>Hierarchy Management</span>
-      </button>
 
-      <!-- ROLE MANAGEMENT -->
+      <!-- Role Management -->
       <button
         type="button"
-        (click)="selectMenu('roles')"
-        [style.background-color]="activeMenu === 'roles' ? '#37eb34' : 'white'"
-        class="mb-2 flex w-full items-center gap-3 rounded-lg px-4 py-3 text-left text-sm font-medium text-black transition hover:bg-green-100"
+        (click)="setActiveMenu('roles')"
+        [class.bg-indigo-600]="activeMenu === 'roles'"
+        [class.text-white]="activeMenu === 'roles'"
+        [class.shadow-sm]="activeMenu === 'roles'"
+        class="group flex w-full items-center gap-3 rounded-xl px-4 py-3.5 text-left text-sm font-semibold text-slate-700 transition-all duration-200 hover:bg-slate-100 hover:text-slate-900"
       >
-        <span class="flex w-6 justify-center text-lg">🔐</span>
+
+        <svg
+          class="h-5 w-5 shrink-0"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          viewBox="0 0 24 24"
+        >
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+          <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+
         <span>Role Management</span>
+
       </button>
 
-      <!-- SETTINGS -->
+
+      <!-- Hierarchy Management -->
       <button
         type="button"
-        (click)="selectMenu('settings')"
-        [style.background-color]="activeMenu === 'settings' ? '#37eb34' : 'white'"
-        class="mb-2 flex w-full items-center gap-3 rounded-lg px-4 py-3 text-left text-sm font-medium text-black transition hover:bg-green-100"
+        (click)="goToHierarchy()"
+        class="group flex w-full items-center gap-3 rounded-xl px-4 py-3.5 text-left text-sm font-semibold text-slate-700 transition-all duration-200 hover:bg-slate-100 hover:text-slate-900"
       >
-        <span class="flex w-6 justify-center text-lg">⚙</span>
-        <span>Settings</span>
+
+        <svg
+          class="h-5 w-5 shrink-0"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          viewBox="0 0 24 24"
+        >
+          <rect x="9" y="3" width="6" height="4" rx="1"></rect>
+          <rect x="3" y="17" width="6" height="4" rx="1"></rect>
+          <rect x="15" y="17" width="6" height="4" rx="1"></rect>
+          <path d="M12 7v5"></path>
+          <path d="M6 17v-3h12v3"></path>
+        </svg>
+
+        <span>Hierarchy Management</span>
+
       </button>
 
+
+      <!-- Health Analysis -->
+      <button
+  type="button"
+  (click)="showHealthAnalysisMessage()"
+  class="group flex w-full items-center gap-3 rounded-xl px-4 py-3.5 text-left text-sm font-semibold text-slate-700 transition-all duration-200 hover:bg-slate-100 hover:text-slate-900"
+>
+  <svg
+    class="h-5 w-5 shrink-0"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="1.8"
+    viewBox="0 0 24 24"
+  >
+    <path d="M3 3v18h18"></path>
+    <path d="M7 16l4-5 3 3 5-7"></path>
+  </svg>
+
+  <span>Health Analysis</span>
+</button>
     </nav>
 
-    <!-- LOGOUT -->
+
+    <!-- BOTTOM MENU -->
     <div class="border-t border-slate-200 p-4">
+
+      <!-- Settings -->
+      <button
+        type="button"
+        class="group mb-1 flex w-full items-center gap-3 rounded-xl px-4 py-3.5 text-left text-sm font-semibold text-slate-700 transition-all duration-200 hover:bg-slate-100 hover:text-slate-900"
+      >
+
+        <svg
+          class="h-5 w-5 shrink-0"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"
+          ></path>
+
+          <path
+            d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-1.7 1.7-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1.03 1.56V20h-2.4v-.2a1.7 1.7 0 0 0-1.03-1.56 1.7 1.7 0 0 0-1.88.34l-.06.06-1.7-1.7.06-.06A1.7 1.7 0 0 0 8.46 15a1.7 1.7 0 0 0-1.56-1.03H6.7v-2.4h.2a1.7 1.7 0 0 0 1.56-1.03 1.7 1.7 0 0 0-.34-1.88l-.06-.06 1.7-1.7.06.06a1.7 1.7 0 0 0 1.88.34A1.7 1.7 0 0 0 12.73 5.7v-.2h2.4v.2a1.7 1.7 0 0 0 1.03 1.56 1.7 1.7 0 0 0 1.88-.34l.06-.06 1.7 1.7-.06.06a1.7 1.7 0 0 0-.34 1.88A1.7 1.7 0 0 0 20.96 11h.2v2.4h-.2A1.7 1.7 0 0 0 19.4 15Z"
+          ></path>
+        </svg>
+
+        <span>Settings</span>
+
+      </button>
+
+
+      <!-- Logout -->
       <button
         type="button"
         (click)="logout()"
-        class="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-left text-sm font-medium text-red-600 transition hover:bg-red-50"
+        class="group flex w-full items-center gap-3 rounded-xl px-4 py-3.5 text-left text-sm font-semibold text-red-600 transition-all duration-200 hover:bg-red-50 hover:text-red-700"
       >
-        <span class="flex w-6 justify-center text-lg">🚪</span>
+
+        <svg
+          class="h-5 w-5 shrink-0"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          viewBox="0 0 24 24"
+        >
+          <path d="M10 17l5-5-5-5"></path>
+          <path d="M15 12H3"></path>
+          <path d="M21 3v18"></path>
+        </svg>
+
         <span>Logout</span>
+
       </button>
+
     </div>
+
   </aside>
 
 
-  <!-- ============================================================
-       MAIN CONTENT
-  ============================================================= -->
-  <div class="ml-64 min-h-screen">
+  <!-- MAIN CONTENT -->
+  <main class="ml-[290px] min-h-screen">
 
-    <!-- ==========================================================
-         PAGE HEADER
-    =========================================================== -->
-    <header class="border-b border-slate-200 bg-white">
-      <div class="flex flex-col gap-2 px-8 py-6">
-        <p class="text-sm font-medium text-blue-600">Administration</p>
+    <!-- TOP HEADER -->
+    <header
+      class="sticky top-0 z-30 border-b border-slate-200 bg-white/95 backdrop-blur"
+    >
 
-        <h1 class="text-2xl font-bold tracking-tight text-slate-900">
-          @if (activeMenu === 'dashboard') {
-            Admin Dashboard
-          } @else if (activeMenu === 'users') {
-            User Management
-          } @else if (activeMenu === 'active-users') {
-            Active Users
-          } @else if (activeMenu === 'inactive-users') {
-            Inactive Users
-          } @else if (activeMenu === 'hierarchy') {
-            Hierarchy Management
-          } @else if (activeMenu === 'roles') {
-            Role Management
-          } @else {
-            Settings
-          }
-        </h1>
+      <div class="flex min-h-[78px] items-center justify-between px-8">
 
-        <p class="text-sm text-slate-500">
-          @if (activeMenu === 'dashboard') {
-            Manage users and configure the approval workflow.
-          } @else if (activeMenu === 'users') {
-            Create, update and manage system users.
-          } @else if (activeMenu === 'active-users') {
-            View all currently active users and their last login information.
-          } @else if (activeMenu === 'inactive-users') {
-            View inactive users and when their inactivity started.
-          } @else if (activeMenu === 'hierarchy') {
-            Configure the order in which requests must be approved.
-          } @else if (activeMenu === 'roles') {
-            Manage application roles and permissions.
-          } @else {
-            Configure administrative and security settings.
-          }
-        </p>
+        <div>
+
+          <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">
+            Administration
+          </p>
+
+          <h2 class="mt-1 text-2xl font-bold tracking-tight text-slate-900">
+
+            @if (activeMenu === 'dashboard') {
+              Dashboard
+            }
+
+            @else if (activeMenu === 'users') {
+              User Management
+            }
+
+            @else if (activeMenu === 'roles') {
+              Role Management
+            }
+
+            @else {
+              Administration
+            }
+
+          </h2>
+
+        </div>
+
+
+        <!-- ADMIN PROFILE -->
+        <div class="flex items-center gap-3">
+
+          <div class="hidden text-right sm:block">
+
+            <p class="text-sm font-semibold text-slate-900">
+              Administrator
+            </p>
+
+            <p class="text-xs text-slate-500">
+              Admin Panel
+            </p>
+
+          </div>
+
+
+          <div
+            class="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-600 text-xs font-bold text-white shadow-sm"
+          >
+            A
+          </div>
+
+        </div>
+
       </div>
+
     </header>
 
 
-    <!-- ==========================================================
-         GLOBAL MESSAGES
-    =========================================================== -->
-    <main class="px-8 py-8">
+    <!-- CONTENT -->
+    <div class="px-8 py-8">
 
+      <!-- SUCCESS MESSAGE -->
       @if (successMessage) {
-        <div class="mb-6 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700">
-          {{ successMessage }}
+
+        <div
+          class="mb-6 flex items-start gap-3 rounded-xl border border-emerald-200 bg-emerald-50 px-5 py-4 shadow-sm"
+        >
+
+          <div
+            class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-600 text-xs font-bold text-white"
+          >
+            ✓
+          </div>
+
+          <p class="text-sm font-medium text-emerald-800">
+            {{ successMessage }}
+          </p>
+
         </div>
+
       }
 
+
+      <!-- ERROR MESSAGE -->
       @if (errorMessage) {
-        <div class="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
-          {{ errorMessage }}
+
+        <div
+          class="mb-6 flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 px-5 py-4 shadow-sm"
+        >
+
+          <div
+            class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-red-600 text-xs font-bold text-white"
+          >
+            !
+          </div>
+
+          <p class="text-sm font-medium text-red-800">
+            {{ errorMessage }}
+          </p>
+
         </div>
+
       }
 
 
-      <!-- ========================================================
-           DASHBOARD
-      ========================================================= -->
+      <!-- ====================================================== -->
+      <!-- DASHBOARD -->
+      <!-- ====================================================== -->
+
       @if (activeMenu === 'dashboard') {
 
-        <!-- STATISTICS -->
-        <section class="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-4">
+        <section>
 
-          <!-- TOTAL USERS -->
-          <div class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-            <div class="flex items-center justify-between">
-              <div>
-                <p class="text-sm font-medium text-slate-500">Total Users</p>
-                <p class="mt-2 text-3xl font-bold text-slate-900">{{ totalUsers }}</p>
-              </div>
-              <div class="flex h-12 w-12 items-center justify-center rounded-lg bg-blue-50 text-xl text-blue-600">
-                👥
-              </div>
-            </div>
+          <!-- PAGE TITLE -->
+          <div class="mb-8">
+
+            <h1 class="text-3xl font-bold tracking-tight text-slate-900">
+              Dashboard
+            </h1>
+
+            <p class="mt-2 text-sm text-slate-500">
+              Overview of users and system activity.
+            </p>
+
           </div>
 
-          <!-- ACTIVE USERS -->
-          <button
-            type="button"
-            (click)="selectMenu('active-users')"
-            title="Click to view active users"
-            class="group rounded-xl border border-slate-200 bg-white p-6 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-emerald-300 hover:shadow-md"
-          >
-            <div class="flex items-center justify-between">
-              <div>
-                <p class="text-sm font-medium text-slate-500">Active Users</p>
-                <p class="mt-2 text-3xl font-bold text-slate-900">{{ activeUsers }}</p>
-                <p class="mt-2 text-xs text-slate-400 group-hover:text-emerald-600">
-                  Click the information icon to view
-                </p>
-              </div>
-              <div class="flex h-12 w-12 items-center justify-center rounded-lg bg-emerald-50 text-lg font-bold text-emerald-600">
-                i
-              </div>
-            </div>
-          </button>
 
-          <!-- INACTIVE USERS -->
-          <button
-            type="button"
-            (click)="selectMenu('inactive-users')"
-            title="Click to view inactive users"
-            class="group rounded-xl border border-slate-200 bg-white p-6 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-red-300 hover:shadow-md"
-          >
-            <div class="flex items-center justify-between">
-              <div>
-                <p class="text-sm font-medium text-slate-500">Inactive Users</p>
-                <p class="mt-2 text-3xl font-bold text-slate-900">{{ inactiveUsers }}</p>
-                <p class="mt-2 text-xs text-slate-400 group-hover:text-red-600">
-                  Click the information icon to view
-                </p>
-              </div>
-              <div class="flex h-12 w-12 items-center justify-center rounded-lg bg-red-50 text-lg font-bold text-red-600">
-                i
-              </div>
-            </div>
-          </button>
-
-          <!-- APPROVAL LEVELS -->
-          <button
-            type="button"
-            (click)="selectMenu('hierarchy')"
-            class="rounded-xl border border-slate-200 bg-white p-6 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-purple-300 hover:shadow-md"
-          >
-            <div class="flex items-center justify-between">
-              <div>
-                <p class="text-sm font-medium text-slate-500">Approval Levels</p>
-                <p class="mt-2 text-3xl font-bold text-slate-900">{{ totalHierarchyLevels }}</p>
-              </div>
-              <div class="flex h-12 w-12 items-center justify-center rounded-lg bg-purple-50 text-xl text-purple-600">
-                ⇅
-              </div>
-            </div>
-          </button>
-        </section>
-
-        <!-- QUICK ACTIONS -->
-        
-      }
+          <!-- STATISTICS -->
+          <div class="grid grid-cols-1 gap-5 md:grid-cols-3">
 
 
-      <!-- ========================================================
-           USER MANAGEMENT
-      ========================================================= -->
-      @if (activeMenu === 'users') {
-        <section class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+            <!-- TOTAL USERS -->
+            <button
+              type="button"
+              (click)="showAllUsers()"
+              class="group rounded-2xl border border-slate-200 bg-white p-6 text-left shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-indigo-200 hover:shadow-lg"
+            >
 
-          <div class="border-b border-slate-200 px-6 py-5">
-            <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-              <div>
-                <h2 class="text-lg font-semibold text-slate-900">All Users</h2>
-                <p class="mt-1 text-sm text-slate-500">Create, update and manage system users.</p>
-              </div>
+              <div class="flex items-start justify-between">
 
-              <div class="flex flex-col gap-3 sm:flex-row">
-                <input
-                  type="text"
-                  [(ngModel)]="searchTerm"
-                  (input)="onSearch()"
-                  placeholder="Search users..."
-                  class="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 sm:w-72"
-                />
-
-                <button
-                  type="button"
-                  (click)="openCreateUser()"
-                  class="rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700"
-                >
-                  + Add User
-                </button>
-              </div>
-            </div>
-          </div>
-
-          @if (loading) {
-            <div class="flex items-center justify-center px-6 py-16">
-              <div class="h-8 w-8 animate-spin rounded-full border-4 border-slate-200 border-t-blue-600"></div>
-            </div>
-          }
-
-          @if (!loading) {
-            <div class="overflow-x-auto">
-              <table class="min-w-full divide-y divide-slate-200">
-                <thead class="bg-slate-50">
-                  <tr>
-                    <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">User</th>
-                    <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">Employee Code</th>
-                    <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">Role</th>
-                    <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">Approval Position</th>
-                    <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">Status</th>
-                    <th class="px-6 py-3 text-right text-xs font-semibold uppercase tracking-wider text-slate-500">Actions</th>
-                  </tr>
-                </thead>
-
-                <tbody class="divide-y divide-slate-200 bg-white">
-                  @for (user of paginatedUsers; track trackByUserId($index, user)) {
-                    <tr class="transition hover:bg-slate-50">
-
-                      <td class="whitespace-nowrap px-6 py-4">
-                        <div class="flex items-center gap-3">
-                          <div class="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 text-sm font-bold text-blue-700">
-                            {{ user.name.charAt(0).toUpperCase() }}
-                          </div>
-                          <div>
-                            <p class="text-sm font-semibold text-slate-900">{{ user.name }}</p>
-                            <p class="text-xs text-slate-500">{{ user.email }}</p>
-                          </div>
-                        </div>
-                      </td>
-
-                      <td class="whitespace-nowrap px-6 py-4 text-sm text-slate-600">
-                        {{ user.employee_code }}
-                      </td>
-
-                      <td class="whitespace-nowrap px-6 py-4">
-                        <span class="inline-flex rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold uppercase text-slate-700">
-                          {{ user.role }}
-                        </span>
-                      </td>
-
-                      <td class="whitespace-nowrap px-6 py-4 text-sm">
-                        @if (user.approval_position) {
-                          <span class="font-medium uppercase text-slate-700">{{ user.approval_position }}</span>
-                        } @else {
-                          <span class="text-slate-400">—</span>
-                        }
-                      </td>
-
-                      <td class="whitespace-nowrap px-6 py-4">
-                        @if (user.is_active) {
-                          <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700">
-                            <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
-                            Active
-                          </span>
-                        } @else {
-                          <span class="inline-flex items-center gap-1.5 rounded-full bg-red-50 px-2.5 py-1 text-xs font-semibold text-red-700">
-                            <span class="h-1.5 w-1.5 rounded-full bg-red-500"></span>
-                            Inactive
-                          </span>
-                        }
-                      </td>
-
-                      <td class="whitespace-nowrap px-6 py-4 text-right">
-                        <div class="flex flex-wrap justify-end gap-2">
-                          <button
-                            type="button"
-                            (click)="openEditUser(user)"
-                            class="rounded-lg border border-blue-200 bg-blue-50 px-3 py-1.5 text-xs font-semibold text-blue-700 transition hover:bg-blue-100"
-                          >
-                            Edit
-                          </button>
-
-                          @if (user.is_active) {
-                            @if (user.role.toUpperCase() !== 'ADMIN') {
-                              <button
-                                type="button"
-                                (click)="deactivateUser(user)"
-                                class="rounded-lg border border-orange-200 bg-orange-50 px-3 py-1.5 text-xs font-semibold text-orange-700 transition hover:bg-orange-100"
-                              >
-                                Deactivate
-                              </button>
-                            }
-                          } @else {
-                            <button
-                              type="button"
-                              (click)="reactivateUser(user)"
-                              class="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-700 transition hover:bg-emerald-100"
-                            >
-                              Reactivate
-                            </button>
-                          }
-
-                          @if (user.role.toUpperCase() !== 'ADMIN') {
-                            <button
-                              type="button"
-                              (click)="deleteUser(user)"
-                              class="rounded-lg border border-red-200 bg-red-50 px-3 py-1.5 text-xs font-semibold text-red-700 transition hover:bg-red-100"
-                            >
-                              Delete
-                            </button>
-                          }
-                        </div>
-                      </td>
-                    </tr>
-                  }
-
-                  @if (filteredUsers.length === 0) {
-                    <tr>
-                      <td colspan="6" class="px-6 py-16 text-center">
-                        <p class="text-sm font-medium text-slate-600">No users found</p>
-                        <p class="mt-1 text-xs text-slate-400">Try changing your search.</p>
-                      </td>
-                    </tr>
-                  }
-                </tbody>
-              </table>
-            </div>
-
-            <!-- PAGINATION -->
-            @if (filteredUsers.length > 0) {
-              <div class="flex flex-col gap-3 border-t border-slate-200 px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
-                <p class="text-sm text-slate-500">
-                  Showing <span class="font-semibold text-slate-700">{{ firstDisplayedUser }}</span>
-                  to <span class="font-semibold text-slate-700">{{ lastDisplayedUser }}</span>
-                  of <span class="font-semibold text-slate-700">{{ filteredUsers.length }}</span> users
-                </p>
-
-                <div class="flex items-center gap-1">
-                  <button
-                    type="button"
-                    (click)="previousPage()"
-                    [disabled]="currentPage === 1"
-                    class="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
-                  >
-                    ‹
-                  </button>
-
-                  @for (page of pageNumbers; track page) {
-                    <button
-                      type="button"
-                      (click)="goToPage(page)"
-                      [style.background-color]="currentPage === page ? '#37eb34' : 'white'"
-                      class="min-w-10 rounded-lg border border-slate-300 px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-green-50"
-                    >
-                      {{ page }}
-                    </button>
-                  }
-
-                  <button
-                    type="button"
-                    (click)="nextPage()"
-                    [disabled]="currentPage === totalPages"
-                    class="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
-                  >
-                    ›
-                  </button>
-                </div>
-              </div>
-            }
-          }
-        </section>
-      }
-
-
-      <!-- ========================================================
-           ACTIVE USERS
-      ========================================================= -->
-      @if (activeMenu === 'active-users') {
-        <section class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-          <div class="border-b border-slate-200 px-6 py-5">
-            <div class="flex items-center justify-between gap-4">
-              <div>
-                <h2 class="text-lg font-semibold text-slate-900">Active Users</h2>
-                <p class="mt-1 text-sm text-slate-500">{{ activeUsers }} active user(s).</p>
-              </div>
-              <button
-                type="button"
-                (click)="selectMenu('users')"
-                class="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
-              >
-                Back to Users
-              </button>
-            </div>
-          </div>
-
-          <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-slate-200">
-              <thead class="bg-slate-50">
-                <tr>
-                  <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">User</th>
-                  <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">Employee Code</th>
-                  <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">Role</th>
-                  <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">Last Login</th>
-                  <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">Status</th>
-                </tr>
-              </thead>
-
-              <tbody class="divide-y divide-slate-200 bg-white">
-                @for (user of paginatedActiveUsers; track trackByUserId($index, user)) {
-                  <tr class="hover:bg-slate-50">
-                    <td class="px-6 py-4">
-                      <p class="text-sm font-semibold text-slate-900">{{ user.name }}</p>
-                      <p class="text-xs text-slate-500">{{ user.email }}</p>
-                    </td>
-                    <td class="px-6 py-4 text-sm text-slate-600">{{ user.employee_code }}</td>
-                    <td class="px-6 py-4 text-sm font-medium uppercase text-slate-700">{{ user.role }}</td>
-                    <td class="px-6 py-4 text-sm text-slate-600">
-                      {{ formatDateTime(getLastLogin(user)) }}
-                    </td>
-                    <td class="px-6 py-4">
-                      <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700">
-                        <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
-                        Active
-                      </span>
-                    </td>
-                  </tr>
-                }
-
-                @if (activeUserList.length === 0) {
-                  <tr>
-                    <td colspan="5" class="px-6 py-16 text-center text-sm text-slate-500">
-                      No active users found.
-                    </td>
-                  </tr>
-                }
-              </tbody>
-            </table>
-          </div>
-
-          @if (activeUserList.length > 0) {
-            <div class="flex flex-col gap-3 border-t border-slate-200 px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
-              <p class="text-sm text-slate-500">
-                Showing {{ currentListFirstItem }} to {{ currentListLastItem }} of {{ currentListTotal }} users
-              </p>
-              <div class="flex items-center gap-1">
-                <button type="button" (click)="previousPage()" [disabled]="currentPage === 1" class="rounded-lg border border-slate-300 px-3 py-2 text-sm disabled:opacity-40">‹</button>
-                @for (page of currentListPageNumbers; track page) {
-                  <button
-                    type="button"
-                    (click)="goToPage(page)"
-                    [style.background-color]="currentPage === page ? '#37eb34' : 'white'"
-                    class="min-w-10 rounded-lg border border-slate-300 px-3 py-2 text-sm font-semibold hover:bg-green-50"
-                  >{{ page }}</button>
-                }
-                <button type="button" (click)="nextPage()" [disabled]="currentPage === activeUserPageCount" class="rounded-lg border border-slate-300 px-3 py-2 text-sm disabled:opacity-40">›</button>
-              </div>
-            </div>
-          }
-        </section>
-      }
-
-
-      <!-- ========================================================
-           INACTIVE USERS
-      ========================================================= -->
-      @if (activeMenu === 'inactive-users') {
-        <section class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-          <div class="border-b border-slate-200 px-6 py-5">
-            <div class="flex items-center justify-between gap-4">
-              <div>
-                <h2 class="text-lg font-semibold text-slate-900">Inactive Users</h2>
-                <p class="mt-1 text-sm text-slate-500">Users whose accounts are currently inactive.</p>
-              </div>
-              <button
-                type="button"
-                (click)="selectMenu('users')"
-                class="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
-              >
-                Back to Users
-              </button>
-            </div>
-          </div>
-
-          <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-slate-200">
-              <thead class="bg-slate-50">
-                <tr>
-                  <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">User</th>
-                  <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">Role</th>
-                  <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">Last Login</th>
-                  <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">Inactive Since</th>
-                  <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">Inactive For</th>
-                  <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">Reason</th>
-                  <th class="px-6 py-3 text-right text-xs font-semibold uppercase tracking-wider text-slate-500">Action</th>
-                </tr>
-              </thead>
-
-              <tbody class="divide-y divide-slate-200 bg-white">
-                @for (user of paginatedInactiveUsers; track trackByUserId($index, user)) {
-                  <tr class="hover:bg-slate-50">
-                    <td class="px-6 py-4">
-                      <p class="text-sm font-semibold text-slate-900">{{ user.name }}</p>
-                      <p class="text-xs text-slate-500">{{ user.email }}</p>
-                    </td>
-                    <td class="px-6 py-4 text-sm font-medium uppercase text-slate-700">{{ user.role }}</td>
-                    <td class="whitespace-nowrap px-6 py-4 text-sm text-slate-600">
-                      {{ formatDateTime(getLastLogin(user)) }}
-                    </td>
-                    <td class="whitespace-nowrap px-6 py-4 text-sm text-slate-600">
-                      {{ formatDateTime(getInactiveSince(user)) }}
-                    </td>
-                    <td class="whitespace-nowrap px-6 py-4 text-sm font-semibold text-red-600">
-                      @if (getInactiveDays(user) !== null) {
-                        {{ getInactiveDays(user) }} day(s)
-                      } @else {
-                        Not available
-                      }
-                    </td>
-                    <td class="px-6 py-4 text-sm text-slate-600">
-                      {{ getDeactivationReason(user) }}
-                    </td>
-                    <td class="whitespace-nowrap px-6 py-4 text-right">
-                      <button
-                        type="button"
-                        (click)="reactivateUser(user)"
-                        class="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-700 transition hover:bg-emerald-100"
-                      >
-                        Reactivate
-                      </button>
-                    </td>
-                  </tr>
-                }
-
-                @if (inactiveUserList.length === 0) {
-                  <tr>
-                    <td colspan="7" class="px-6 py-16 text-center text-sm text-slate-500">
-                      No inactive users found.
-                    </td>
-                  </tr>
-                }
-              </tbody>
-            </table>
-          </div>
-
-          @if (inactiveUserList.length > 0) {
-            <div class="flex flex-col gap-3 border-t border-slate-200 px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
-              <p class="text-sm text-slate-500">
-                Showing {{ currentListFirstItem }} to {{ currentListLastItem }} of {{ currentListTotal }} users
-              </p>
-              <div class="flex items-center gap-1">
-                <button type="button" (click)="previousPage()" [disabled]="currentPage === 1" class="rounded-lg border border-slate-300 px-3 py-2 text-sm disabled:opacity-40">‹</button>
-                @for (page of currentListPageNumbers; track page) {
-                  <button
-                    type="button"
-                    (click)="goToPage(page)"
-                    [style.background-color]="currentPage === page ? '#37eb34' : 'white'"
-                    class="min-w-10 rounded-lg border border-slate-300 px-3 py-2 text-sm font-semibold hover:bg-green-50"
-                  >{{ page }}</button>
-                }
-                <button type="button" (click)="nextPage()" [disabled]="currentPage === inactiveUserPageCount" class="rounded-lg border border-slate-300 px-3 py-2 text-sm disabled:opacity-40">›</button>
-              </div>
-            </div>
-          }
-        </section>
-      }
-
-
-      <!-- ========================================================
-           HIERARCHY MANAGEMENT
-      ========================================================= -->
-      @if (activeMenu === 'hierarchy') {
-        <section id="hierarchy-section" class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-
-          <div class="border-b border-slate-200 px-6 py-5">
-            <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-              <div>
-                <h2 class="text-lg font-semibold text-slate-900">Approval Workflow Hierarchy</h2>
-                <p class="mt-1 text-sm text-slate-500">Configure the order in which requests must be approved.</p>
-              </div>
-
-              <button
-                type="button"
-                (click)="openAddHierarchy()"
-                class="inline-flex items-center justify-center gap-2 rounded-lg bg-purple-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-purple-700"
-              >
-                <span class="text-lg leading-none">+</span>
-                Add Approval Level
-              </button>
-            </div>
-          </div>
-
-          @if (hierarchySuccessMessage) {
-            <div class="mx-6 mt-5 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700">
-              {{ hierarchySuccessMessage }}
-            </div>
-          }
-
-          @if (hierarchyErrorMessage) {
-            <div class="mx-6 mt-5 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
-              {{ hierarchyErrorMessage }}
-            </div>
-          }
-
-          <div class="px-6 pt-5">
-            <div class="rounded-lg border border-blue-100 bg-blue-50 px-4 py-4">
-              <div class="flex items-start gap-3">
-                <div class="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-blue-100 text-sm font-bold text-blue-700">i</div>
                 <div>
-                  <p class="text-sm font-semibold text-blue-900">How approval works</p>
-                  <p class="mt-1 text-xs leading-5 text-blue-700">
-                    Approval levels are processed from the lowest level to the highest level. Employees submit requests and do not form part of the approval hierarchy.
+
+                  <p class="text-sm font-medium text-slate-500">
+                    Total Users
                   </p>
-                </div>
-              </div>
-            </div>
-          </div>
 
-          @if (hierarchyLoading) {
-            <div class="flex items-center justify-center px-6 py-16">
-              <div class="h-8 w-8 animate-spin rounded-full border-4 border-slate-200 border-t-purple-600"></div>
-            </div>
-          }
+                  <p class="mt-3 text-4xl font-bold tracking-tight text-slate-900">
+                    {{ users.length }}
+                  </p>
 
-          @if (!hierarchyLoading) {
-            @if (hierarchy.length > 0) {
-              <div class="px-6 py-6">
-                <div class="flex flex-col items-center">
-                  @for (level of hierarchy; track trackByHierarchyId($index, level)) {
-                    <div class="w-full max-w-3xl rounded-xl border border-slate-200 bg-white p-4 shadow-sm transition hover:border-purple-200 hover:shadow-md">
-                      <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                        <div class="flex items-center gap-4">
-                          <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-purple-100 text-lg font-bold text-purple-700">
-                            {{ level.approval_level }}
-                          </div>
-                          <div>
-                            <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Approval Level {{ level.approval_level }}</p>
-                            <p class="mt-1 text-base font-bold uppercase text-slate-900">{{ level.role }}</p>
-                            <p class="mt-1 text-xs text-slate-500">This position must approve before the request proceeds to the next level.</p>
-                          </div>
-                        </div>
+                  <p class="mt-3 text-xs text-slate-400">
+                    Click to view all users
+                  </p>
 
-                        <div class="flex flex-wrap items-center gap-2 sm:justify-end">
-                          <button
-                            type="button"
-                            (click)="openEditHierarchy(level)"
-                            [disabled]="hierarchySaving"
-                            class="rounded-lg border border-blue-200 bg-blue-50 px-3 py-1.5 text-xs font-semibold text-blue-700 transition hover:bg-blue-100 disabled:cursor-not-allowed disabled:opacity-50"
-                          >
-                            Edit
-                          </button>
-                          <button
-                            type="button"
-                            (click)="deleteHierarchy(level)"
-                            [disabled]="hierarchySaving"
-                            class="rounded-lg border border-red-200 bg-red-50 px-3 py-1.5 text-xs font-semibold text-red-700 transition hover:bg-red-100 disabled:cursor-not-allowed disabled:opacity-50"
-                          >
-                            Delete
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-
-                    @if ($index < hierarchy.length - 1) {
-                      <div class="flex flex-col items-center py-2">
-                        <div class="h-6 w-px bg-purple-200"></div>
-                        <span class="text-lg font-bold text-purple-400">↓</span>
-                      </div>
-                    }
-                  }
                 </div>
 
-                <div class="mt-8">
-                  <div class="rounded-xl border border-slate-200 bg-slate-50 p-5">
-                    <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Current Approval Flow</p>
-                    <div class="mt-4 flex flex-wrap items-center gap-2">
-                      <span class="rounded-full bg-slate-200 px-3 py-1.5 text-xs font-bold text-slate-700">EMPLOYEE</span>
-                      @for (level of hierarchy; track trackByHierarchyId($index, level)) {
-                        <span class="text-slate-400">→</span>
-                        <span class="rounded-full bg-purple-100 px-3 py-1.5 text-xs font-bold uppercase text-purple-700">{{ level.role }}</span>
-                      }
-                    </div>
-                  </div>
-                </div>
-              </div>
-            } @else {
-              <div class="px-6 py-16 text-center">
-                <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-purple-50 text-2xl text-purple-600">⇅</div>
-                <p class="mt-4 text-sm font-semibold text-slate-700">No approval levels configured</p>
-                <p class="mt-1 text-xs text-slate-400">Add the first approval position to create the workflow.</p>
-                <button
-                  type="button"
-                  (click)="openAddHierarchy()"
-                  class="mt-5 rounded-lg bg-purple-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-purple-700"
+
+                <div
+                  class="flex h-11 w-11 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 transition group-hover:bg-indigo-600 group-hover:text-white"
                 >
-                  Add First Approval Level
-                </button>
+
+                  <svg
+                    class="h-5 w-5"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                  </svg>
+
+                </div>
+
               </div>
-            }
-          }
-        </section>
-      }
+
+            </button>
 
 
-      <!-- ========================================================
-           ROLE MANAGEMENT
-      ========================================================= -->
-      @if (activeMenu === 'roles') {
-        <section class="w-full max-w-full space-y-6 overflow-hidden">
+            <!-- ACTIVE USERS -->
+            <button
+              type="button"
+              (click)="showActiveUsers()"
+              class="group rounded-2xl border border-slate-200 bg-white p-6 text-left shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-emerald-200 hover:shadow-lg"
+            >
 
-    <!-- Header -->
-    <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-      <div>
-        <h2 class="text-2xl font-bold text-slate-900">
-          Role Management
-        </h2>
-        <p class="mt-1 text-sm text-slate-500">
-          Manage roles assigned to users
-        </p>
-      </div>
+              <div class="flex items-start justify-between">
 
-      <!-- Search -->
-      <div class="relative w-full sm:w-80">
-        <input
-          type="text"
-          [(ngModel)]="roleSearchTerm"
-          (input)="onRoleSearch()"
-          placeholder="Search users..."
-          class="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm
-                 text-slate-900 outline-none transition
-                 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
-        />
-      </div>
-    </div>
+                <div>
+
+                  <p class="text-sm font-medium text-slate-500">
+                    Active Users
+                  </p>
+
+                  <p class="mt-3 text-4xl font-bold tracking-tight text-emerald-600">
+                    {{ activeUsers.length }}
+                  </p>
+
+                  <p class="mt-3 text-xs text-slate-400">
+                    Click to view active users
+                  </p>
+
+                </div>
 
 
-    <!-- Role Management Card -->
-    <div class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+                <div
+                  class="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 transition group-hover:bg-emerald-600 group-hover:text-white"
+                >
 
-      <!-- Table -->
-      <div class="w-full max-w-full overflow-hidden">
-        <table class="w-full table-fixed divide-y divide-slate-200">
+                  <span class="h-3 w-3 rounded-full bg-current"></span>
 
-          <thead class="bg-slate-50">
-            <tr>
-              <th
-                class="w-[20%] px-4 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">
-                User
-              </th>
+                </div>
 
-              <th
-                class="w-[14%] px-4 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">
-                Employee Code
-              </th>
+              </div>
 
-              <th
-                class="w-[24%] px-4 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">
-                Email
-              </th>
-
-              <th
-                class="w-[14%] px-4 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">
-                Current Role
-              </th>
-
-              <th
-                class="w-[12%] px-4 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">
-                Status
-              </th>
-
-              <th
-                class="w-[16%] px-4 py-4 text-center text-xs font-semibold uppercase tracking-wider text-slate-500">
-                Action
-              </th>
-            </tr>
-          </thead>
+            </button>
 
 
-          <tbody class="divide-y divide-slate-100 bg-white">
+            <!-- INACTIVE USERS -->
+            <button
+              type="button"
+              (click)="showInactiveUsers()"
+              class="group rounded-2xl border border-slate-200 bg-white p-6 text-left shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-red-200 hover:shadow-lg"
+            >
 
-            @for (user of paginatedRoleUsers; track user.id) {
+              <div class="flex items-start justify-between">
 
-              <tr class="transition hover:bg-slate-50">
+                <div>
 
-                <!-- User -->
-                <td class="px-4 py-4">
-                  <div>
-                    <p class="font-medium text-slate-900 break-words">
-                      {{ user.name }}
-                    </p>
-                    <p class="text-xs text-slate-500">
-                      User ID: {{ user.id }}
-                    </p>
-                  </div>
-                </td>
+                  <p class="text-sm font-medium text-slate-500">
+                    Inactive Users
+                  </p>
 
+                  <p class="mt-3 text-4xl font-bold tracking-tight text-red-600">
+                    {{ inactiveUsers.length }}
+                  </p>
 
-                <!-- Employee Code -->
-                <td class="break-words px-4 py-4 text-sm text-slate-700">
-                  {{ user.employee_code }}
-                </td>
+                  <p class="mt-3 text-xs text-slate-400">
+                    Click to view inactive users
+                  </p>
 
-
-                <!-- Email -->
-                <td class="break-all whitespace-normal px-4 py-4 text-sm text-slate-700">
-                  {{ user.email }}
-                </td>
+                </div>
 
 
-                <!-- Current Role -->
-                <td class="px-4 py-4">
+                <div
+                  class="flex h-11 w-11 items-center justify-center rounded-xl bg-red-50 text-red-600 transition group-hover:bg-red-600 group-hover:text-white"
+                >
 
-                  <span
-                    class="inline-flex items-center rounded-full bg-indigo-100 px-3 py-1
-                           text-xs font-semibold text-indigo-700">
-                    {{ user.role || 'Not Assigned' }}
+                  <span class="text-lg font-bold">
+                    −
                   </span>
 
-                </td>
+                </div>
+
+              </div>
+
+            </button>
+
+          </div>
 
 
-                <!-- Status -->
-                <td class="px-4 py-4">
+          <!-- ROLE SUMMARY -->
+          <div class="mt-6 grid grid-cols-1 gap-5 md:grid-cols-3">
 
-                  @if (user.is_active) {
 
-                    <span
-                      class="inline-flex items-center rounded-full bg-green-100 px-3 py-1
-                             text-xs font-semibold text-green-700">
-                      Active
-                    </span>
+            <!-- ADMIN -->
+            <div
+              class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
+            >
 
-                  } @else {
+              <div class="flex items-start justify-between">
 
-                    <span
-                      class="inline-flex items-center rounded-full bg-red-100 px-3 py-1
-                             text-xs font-semibold text-red-700">
-                      Inactive
-                    </span>
+                <div>
+
+                  <p class="text-sm font-medium text-slate-500">
+                    Administrators
+                  </p>
+
+                  <p class="mt-3 text-3xl font-bold text-slate-900">
+                    {{ adminUsers.length }}
+                  </p>
+
+                  <p class="mt-2 text-xs text-slate-400">
+                    System administration accounts
+                  </p>
+
+                </div>
+
+
+                <div
+                  class="flex h-10 w-10 items-center justify-center rounded-lg bg-slate-100 text-sm font-bold text-slate-700"
+                >
+                  A
+                </div>
+
+              </div>
+
+            </div>
+
+
+            <!-- EMPLOYEE -->
+            <div
+              class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
+            >
+
+              <div class="flex items-start justify-between">
+
+                <div>
+
+                  <p class="text-sm font-medium text-slate-500">
+                    Employee / Field Staff
+                  </p>
+
+                  <p class="mt-3 text-3xl font-bold text-blue-600">
+                    {{ employeeUsers.length }}
+                  </p>
+
+                  <p class="mt-2 text-xs text-slate-400">
+                    Users who submit requests
+                  </p>
+
+                </div>
+
+
+                <div
+                  class="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50 text-sm font-bold text-blue-600"
+                >
+                  E
+                </div>
+
+              </div>
+
+            </div>
+
+
+            <!-- REVIEWER -->
+            <div
+              class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
+            >
+
+              <div class="flex items-start justify-between">
+
+                <div>
+
+                  <p class="text-sm font-medium text-slate-500">
+                    Reviewers
+                  </p>
+
+                  <p class="mt-3 text-3xl font-bold text-purple-600">
+                    {{ reviewerUsers.length }}
+                  </p>
+
+                  <p class="mt-2 text-xs text-slate-400">
+                    Users responsible for approval
+                  </p>
+
+                </div>
+
+
+                <div
+                  class="flex h-10 w-10 items-center justify-center rounded-lg bg-purple-50 text-sm font-bold text-purple-600"
+                >
+                  R
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </section>
+
+      }
+
+
+      <!-- ====================================================== -->
+      <!-- USER MANAGEMENT -->
+      <!-- ====================================================== -->
+
+      @if (activeMenu === 'users') {
+
+        <section
+          class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"
+        >
+
+          <!-- HEADER -->
+          <div class="border-b border-slate-200 px-7 py-6">
+
+            <div
+              class="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between"
+            >
+
+              <div>
+
+                <h1 class="text-2xl font-bold tracking-tight text-slate-900">
+                  User Management
+                </h1>
+
+                <p class="mt-1 text-sm text-slate-500">
+                  Manage Admin, Employee / Field Staff and Reviewer accounts.
+                </p>
+
+              </div>
+
+
+              <!-- ADD USER -->
+              <button
+                type="button"
+                (click)="openAddUser()"
+                class="rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white shadow-sm transition-all hover:bg-indigo-700 hover:shadow-md"
+              >
+                Add User
+              </button>
+
+            </div>
+
+
+            <!-- SEARCH -->
+            <div class="mt-6">
+
+              <div class="relative">
+
+                <svg
+                  class="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                >
+                  <circle cx="11" cy="11" r="7"></circle>
+                  <path d="m20 20-4-4"></path>
+                </svg>
+
+                <input
+                  type="text"
+                  [(ngModel)]="userSearchTerm"
+                  (input)="onUserSearch()"
+                  placeholder="Search by name, email, employee code, role or approval position..."
+                  class="w-full rounded-xl border border-slate-300 bg-slate-50 py-3 pl-11 pr-4 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-100"
+                />
+
+              </div>
+
+            </div>
+
+
+            <!-- FILTERS -->
+            <div class="mt-4 flex flex-wrap gap-2">
+
+              <!-- ALL -->
+              <button
+                type="button"
+                (click)="showAllUsers()"
+                [class.bg-indigo-600]="userStatusFilter === 'all'"
+                [class.text-white]="userStatusFilter === 'all'"
+                [class.bg-slate-100]="userStatusFilter !== 'all'"
+                [class.text-slate-700]="userStatusFilter !== 'all'"
+                class="rounded-lg px-4 py-2 text-xs font-semibold transition-all hover:bg-indigo-50"
+              >
+                All Users
+              </button>
+
+
+              <!-- ACTIVE -->
+              <button
+                type="button"
+                (click)="showActiveUsers()"
+                [class.bg-emerald-600]="userStatusFilter === 'active'"
+                [class.text-white]="userStatusFilter === 'active'"
+                [class.bg-emerald-50]="userStatusFilter !== 'active'"
+                [class.text-emerald-700]="userStatusFilter !== 'active'"
+                class="rounded-lg px-4 py-2 text-xs font-semibold transition-all hover:bg-emerald-100"
+              >
+                Active
+              </button>
+
+
+              <!-- INACTIVE -->
+              <button
+                type="button"
+                (click)="showInactiveUsers()"
+                [class.bg-red-600]="userStatusFilter === 'inactive'"
+                [class.text-white]="userStatusFilter === 'inactive'"
+                [class.bg-red-50]="userStatusFilter !== 'inactive'"
+                [class.text-red-700]="userStatusFilter !== 'inactive'"
+                class="rounded-lg px-4 py-2 text-xs font-semibold transition-all hover:bg-red-100"
+              >
+                Inactive
+              </button>
+
+            </div>
+
+          </div>
+
+
+          <!-- LOADING -->
+          @if (loadingUsers) {
+
+            <div class="px-6 py-16 text-center">
+
+              <div
+                class="mx-auto h-8 w-8 animate-spin rounded-full border-2 border-slate-200 border-t-indigo-600"
+              ></div>
+
+              <p class="mt-4 text-sm text-slate-500">
+                Loading users...
+              </p>
+
+            </div>
+
+          }
+
+
+          @else {
+
+            <!-- TABLE -->
+            <div class="overflow-x-auto">
+
+              <table class="min-w-full">
+
+                <thead class="border-b border-slate-200 bg-slate-50">
+
+                  <tr>
+
+                    <th
+                      class="px-6 py-4 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500"
+                    >
+                      User
+                    </th>
+
+                    <th
+                      class="px-6 py-4 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500"
+                    >
+                      Employee Code
+                    </th>
+
+                    <th
+                      class="px-6 py-4 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500"
+                    >
+                      Role
+                    </th>
+
+                    <th
+                      class="px-6 py-4 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500"
+                    >
+                      Approval Position
+                    </th>
+
+                    <th
+                      class="px-6 py-4 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500"
+                    >
+                      Status
+                    </th>
+
+                    <th
+                      class="px-6 py-4 text-right text-[11px] font-bold uppercase tracking-wider text-slate-500"
+                    >
+                      Actions
+                    </th>
+
+                  </tr>
+
+                </thead>
+
+
+                <tbody class="divide-y divide-slate-100">
+
+                  @for (
+                    user of paginatedUsers;
+                    track user.id
+                  ) {
+
+                    <tr class="transition-colors hover:bg-slate-50">
+
+                      <!-- USER -->
+                      <td class="px-6 py-5">
+
+                        <div>
+
+                          <p class="font-semibold text-slate-900">
+                            {{ user.name }}
+                          </p>
+
+                          <p class="mt-1 text-sm text-slate-500">
+                            {{ user.email }}
+                          </p>
+
+                        </div>
+
+                      </td>
+
+
+                      <!-- EMPLOYEE CODE -->
+                      <td class="px-6 py-5">
+
+                        <span
+                          class="rounded-md bg-slate-100 px-2.5 py-1.5 font-mono text-xs font-semibold text-slate-700"
+                        >
+                          {{ user.employee_code || '—' }}
+                        </span>
+
+                      </td>
+
+
+                      <!-- ROLE -->
+                      <td class="px-6 py-5">
+
+                        @if (user.role === 'ADMIN') {
+
+                          <span
+                            class="inline-flex rounded-full bg-indigo-50 px-3 py-1.5 text-xs font-semibold text-indigo-700"
+                          >
+                            Admin
+                          </span>
+
+                        }
+
+                        @else if (user.role === 'EMPLOYEE') {
+
+                          <span
+                            class="inline-flex rounded-full bg-blue-50 px-3 py-1.5 text-xs font-semibold text-blue-700"
+                          >
+                            Employee / Field Staff
+                          </span>
+
+                        }
+
+                        @else {
+
+                          <span
+                            class="inline-flex rounded-full bg-purple-50 px-3 py-1.5 text-xs font-semibold text-purple-700"
+                          >
+                            Reviewer
+                          </span>
+
+                        }
+
+                      </td>
+
+
+                      <!-- APPROVAL POSITION -->
+                      <td class="px-6 py-5">
+
+                        @if (user.approval_position) {
+
+                          <span
+                            class="text-sm font-medium text-slate-700"
+                          >
+                            {{ user.approval_position }}
+                          </span>
+
+                        }
+
+                        @else {
+
+                          <span class="text-sm text-slate-400">
+                            NULL
+                          </span>
+
+                        }
+
+                      </td>
+
+
+                      <!-- STATUS -->
+                      <td class="px-6 py-5">
+
+                        @if (user.is_active) {
+
+                          <span
+                            class="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-700"
+                          >
+
+                            <span
+                              class="h-1.5 w-1.5 rounded-full bg-emerald-600"
+                            ></span>
+
+                            Active
+
+                          </span>
+
+                        }
+
+                        @else {
+
+                          <span
+                            class="inline-flex items-center gap-2 rounded-full bg-red-50 px-3 py-1.5 text-xs font-semibold text-red-700"
+                          >
+
+                            <span
+                              class="h-1.5 w-1.5 rounded-full bg-red-600"
+                            ></span>
+
+                            Inactive
+
+                          </span>
+
+                        }
+
+                      </td>
+
+
+                      <!-- ACTIONS -->
+                      <td class="px-6 py-5">
+
+                        <div class="relative flex justify-end">
+
+                          <button
+                            type="button"
+                            (click)="toggleActionMenu(user.id)"
+                            class="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-lg font-bold leading-none text-slate-600 transition-all hover:border-slate-300 hover:bg-slate-100 hover:text-slate-900"
+                            title="Actions"
+                            aria-label="Actions"
+                          >
+                            ⋮
+                          </button>
+
+                          @if (openActionMenuId === user.id) {
+
+                            <div
+                              class="absolute right-0 top-11 z-50 w-44 overflow-hidden rounded-xl border border-slate-200 bg-white py-1 shadow-xl"
+                            >
+
+                              <!-- EDIT -->
+                              <button
+                                type="button"
+                                (click)="openEditUser(user); closeActionMenu()"
+                                class="flex w-full items-center gap-3 px-4 py-3 text-left text-sm font-medium text-blue-700 transition hover:bg-blue-50"
+                              >
+                                <svg
+                                  class="h-4 w-4 shrink-0"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  stroke-width="2"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path d="M12 20h9"></path>
+                                  <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path>
+                                </svg>
+                                <span>Edit</span>
+                              </button>
+
+                              @if (user.is_active) {
+
+                                <!-- DEACTIVATE -->
+                                <button
+                                  type="button"
+                                  (click)="deactivateUser(user); closeActionMenu()"
+                                  class="flex w-full items-center gap-3 px-4 py-3 text-left text-sm font-medium text-amber-700 transition hover:bg-amber-50"
+                                >
+                                  <svg
+                                    class="h-4 w-4 shrink-0"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <circle cx="12" cy="12" r="9"></circle>
+                                    <path d="M8 12h8"></path>
+                                  </svg>
+                                  <span>Deactivate</span>
+                                </button>
+
+                              }
+
+                              @else {
+
+                                <!-- ACTIVATE -->
+                                <button
+                                  type="button"
+                                  (click)="reactivateUser(user); closeActionMenu()"
+                                  class="flex w-full items-center gap-3 px-4 py-3 text-left text-sm font-medium text-emerald-700 transition hover:bg-emerald-50"
+                                >
+                                  <svg
+                                    class="h-4 w-4 shrink-0"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path d="M20 6 9 17l-5-5"></path>
+                                  </svg>
+                                  <span>Activate</span>
+                                </button>
+
+                              }
+
+                              <!-- DELETE -->
+                              <button
+                                type="button"
+                                (click)="deleteUser(user); closeActionMenu()"
+                                class="flex w-full items-center gap-3 px-4 py-3 text-left text-sm font-medium text-red-600 transition hover:bg-red-50"
+                              >
+                                <svg
+                                  class="h-4 w-4 shrink-0"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  stroke-width="2"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path d="M3 6h18"></path>
+                                  <path d="M8 6V4h8v2"></path>
+                                  <path d="M19 6l-1 14H6L5 6"></path>
+                                  <path d="M10 11v5M14 11v5"></path>
+                                </svg>
+                                <span>Delete</span>
+                              </button>
+
+                            </div>
+
+                          }
+
+                        </div>
+
+                      </td>
+
+                    </tr>
 
                   }
 
-                </td>
+
+                  @empty {
+
+                    <tr>
+
+                      <td
+                        colspan="6"
+                        class="px-6 py-16 text-center"
+                      >
+
+                        <div
+                          class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-slate-400"
+                        >
+                          —
+                        </div>
+
+                        <p class="mt-4 text-sm font-semibold text-slate-700">
+                          No users found.
+                        </p>
+
+                        <p class="mt-1 text-xs text-slate-400">
+                          Try changing your search or filter.
+                        </p>
+
+                      </td>
+
+                    </tr>
+
+                  }
+
+                </tbody>
+
+              </table>
+
+            </div>
 
 
-                <!-- Action -->
-                <td class="px-4 py-4 text-center">
+            <!-- PAGINATION -->
+            <div
+              class="flex flex-col gap-4 border-t border-slate-200 px-6 py-4 sm:flex-row sm:items-center sm:justify-between"
+            >
 
-                  <button
-                    type="button"
-                    (click)="editUserRole(user)"
-                    class="rounded-lg bg-indigo-600 px-3 py-2 text-xs font-semibold
-                           text-white transition hover:bg-indigo-700">
-                    Edit Role
-                  </button>
+              <p class="text-sm text-slate-500">
 
-                </td>
+                Showing
 
-              </tr>
+                <span class="font-semibold text-slate-900">
+                  {{ paginationStart }}
+                </span>
 
-            } @empty {
+                -
 
-              <tr>
-                <td
-                  colspan="6"
-                  class="px-6 py-12 text-center">
+                <span class="font-semibold text-slate-900">
+                  {{ paginationEnd }}
+                </span>
 
-                  <div class="flex flex-col items-center justify-center">
+                of
 
-                    <div
-                      class="mb-3 flex h-12 w-12 items-center justify-center
-                             rounded-full bg-slate-100 text-slate-400">
-                      👥
-                    </div>
+                <span class="font-semibold text-slate-900">
+                  {{ filteredUsersByStatus.length }}
+                </span>
 
-                    <p class="font-medium text-slate-700">
-                      No users found
-                    </p>
+                users
 
-                    <p class="mt-1 text-sm text-slate-500">
-                      Try changing your search.
-                    </p>
+              </p>
 
-                  </div>
 
-                </td>
-              </tr>
+              <div class="flex items-center gap-2">
 
-            }
+                <button
+                  type="button"
+                  (click)="previousPage()"
+                  [disabled]="currentPage === 1"
+                  class="rounded-lg border border-slate-300 bg-white px-4 py-2 text-xs font-semibold text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-40"
+                >
+                  Previous
+                </button>
 
-          </tbody>
 
-        </table>
+                <span
+                  class="min-w-[70px] text-center text-sm font-semibold text-slate-800"
+                >
+                  {{ currentPage }} / {{ totalPages }}
+                </span>
+
+
+                <button
+                  type="button"
+                  (click)="nextPage()"
+                  [disabled]="currentPage === totalPages"
+                  class="rounded-lg border border-slate-300 bg-white px-4 py-2 text-xs font-semibold text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-40"
+                >
+                  Next
+                </button>
+
+              </div>
+
+            </div>
+
+          }
+
+        </section>
+
+      }
+
+
+      <!-- ====================================================== -->
+      <!-- ROLE MANAGEMENT -->
+      <!-- ====================================================== -->
+
+      @if (activeMenu === 'roles') {
+
+        <section>
+
+          <!-- HEADER -->
+          <div class="mb-7">
+
+            <h1 class="text-3xl font-bold tracking-tight text-slate-900">
+              Role Management
+            </h1>
+
+            <p class="mt-2 text-sm text-slate-500">
+              Manage roles assigned to system users.
+            </p>
+
+          </div>
+
+
+          <!-- ROLE SUMMARY -->
+          <div class="mb-6 grid grid-cols-1 gap-5 md:grid-cols-3">
+
+
+            <!-- ADMIN -->
+            <div
+              class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
+            >
+
+              <div class="flex items-center justify-between">
+
+                <div>
+
+                  <p class="text-sm font-medium text-slate-500">
+                    Administrators
+                  </p>
+
+                  <p class="mt-3 text-3xl font-bold text-indigo-600">
+                    {{ adminUsers.length }}
+                  </p>
+
+                </div>
+
+                <div
+                  class="flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-50 text-sm font-bold text-indigo-600"
+                >
+                  A
+                </div>
+
+              </div>
+
+            </div>
+
+
+            <!-- EMPLOYEE -->
+            <div
+              class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
+            >
+
+              <div class="flex items-center justify-between">
+
+                <div>
+
+                  <p class="text-sm font-medium text-slate-500">
+                    Employee / Field Staff
+                  </p>
+
+                  <p class="mt-3 text-3xl font-bold text-blue-600">
+                    {{ employeeUsers.length }}
+                  </p>
+
+                </div>
+
+                <div
+                  class="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50 text-sm font-bold text-blue-600"
+                >
+                  E
+                </div>
+
+              </div>
+
+            </div>
+
+
+            <!-- REVIEWER -->
+            <div
+              class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
+            >
+
+              <div class="flex items-center justify-between">
+
+                <div>
+
+                  <p class="text-sm font-medium text-slate-500">
+                    Reviewers
+                  </p>
+
+                  <p class="mt-3 text-3xl font-bold text-purple-600">
+                    {{ reviewerUsers.length }}
+                  </p>
+
+                </div>
+
+                <div
+                  class="flex h-10 w-10 items-center justify-center rounded-lg bg-purple-50 text-sm font-bold text-purple-600"
+                >
+                  R
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <!-- ROLE TABLE -->
+          <section
+            class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"
+          >
+
+            <!-- SEARCH -->
+            <div class="border-b border-slate-200 px-6 py-5">
+
+              <div class="relative">
+
+                <svg
+                  class="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                >
+                  <circle cx="11" cy="11" r="7"></circle>
+                  <path d="m20 20-4-4"></path>
+                </svg>
+
+                <input
+                  type="text"
+                  [(ngModel)]="roleSearchTerm"
+                  (input)="applyRoleSearch()"
+                  placeholder="Search by name, email, employee code or role..."
+                  class="w-full rounded-xl border border-slate-300 bg-slate-50 py-3 pl-11 pr-4 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-100"
+                />
+
+              </div>
+
+            </div>
+
+
+            <!-- TABLE -->
+            <div class="overflow-x-auto">
+
+              <table class="min-w-full">
+
+                <thead class="border-b border-slate-200 bg-slate-50">
+
+                  <tr>
+
+                    <th
+                      class="px-6 py-4 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500"
+                    >
+                      User
+                    </th>
+
+                    <th
+                      class="px-6 py-4 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500"
+                    >
+                      Employee Code
+                    </th>
+
+                    <th
+                      class="px-6 py-4 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500"
+                    >
+                      Current Role
+                    </th>
+
+                    <th
+                      class="px-6 py-4 text-right text-[11px] font-bold uppercase tracking-wider text-slate-500"
+                    >
+                      Action
+                    </th>
+
+                  </tr>
+
+                </thead>
+
+
+                <tbody class="divide-y divide-slate-100">
+
+                  @for (
+                    user of paginatedRoleUsers;
+                    track user.id
+                  ) {
+
+                    <tr class="transition-colors hover:bg-slate-50">
+
+                      <!-- USER -->
+                      <td class="px-6 py-5">
+
+                        <p class="font-semibold text-slate-900">
+                          {{ user.name }}
+                        </p>
+
+                        <p class="mt-1 text-sm text-slate-500">
+                          {{ user.email }}
+                        </p>
+
+                      </td>
+
+
+                      <!-- EMPLOYEE CODE -->
+                      <td class="px-6 py-5">
+
+                        <span
+                          class="rounded-md bg-slate-100 px-2.5 py-1.5 font-mono text-xs font-semibold text-slate-700"
+                        >
+                          {{ user.employee_code || '—' }}
+                        </span>
+
+                      </td>
+
+
+                      <!-- ROLE -->
+                      <td class="px-6 py-5">
+
+                        @if (user.role === 'ADMIN') {
+
+                          <span
+                            class="inline-flex rounded-full bg-indigo-50 px-3 py-1.5 text-xs font-semibold text-indigo-700"
+                          >
+                            Admin
+                          </span>
+
+                        }
+
+                        @else if (user.role === 'EMPLOYEE') {
+
+                          <span
+                            class="inline-flex rounded-full bg-blue-50 px-3 py-1.5 text-xs font-semibold text-blue-700"
+                          >
+                            Employee / Field Staff
+                          </span>
+
+                        }
+
+                        @else {
+
+                          <span
+                            class="inline-flex rounded-full bg-purple-50 px-3 py-1.5 text-xs font-semibold text-purple-700"
+                          >
+                            Reviewer
+                          </span>
+
+                        }
+
+                      </td>
+
+
+                      <!-- ACTION -->
+                      <td class="px-6 py-5 text-right">
+
+                        @if (
+                          getRoleDisplayName(user.role) !== 'Admin'
+                        ) {
+
+                          <button
+                            type="button"
+                            (click)="openRoleModal(user)"
+                            class="rounded-lg border border-purple-200 bg-purple-50 px-4 py-2 text-xs font-semibold text-purple-700 transition-all hover:bg-purple-600 hover:text-white"
+                          >
+                            Change Role
+                          </button>
+
+                        }
+
+                        @else {
+
+                          <span
+                            class="inline-flex rounded-lg bg-slate-100 px-3 py-2 text-xs font-semibold text-slate-400"
+                          >
+                            Protected
+                          </span>
+
+                        }
+
+                      </td>
+
+                    </tr>
+
+                  }
+
+
+                  @empty {
+
+                    <tr>
+
+                      <td
+                        colspan="4"
+                        class="px-6 py-16 text-center"
+                      >
+
+                        <p class="text-sm font-semibold text-slate-700">
+                          No users found.
+                        </p>
+
+                        <p class="mt-1 text-xs text-slate-400">
+                          Try changing your search.
+                        </p>
+
+                      </td>
+
+                    </tr>
+
+                  }
+
+                </tbody>
+
+              </table>
+
+            </div>
+
+
+            <!-- PAGINATION -->
+            <div
+              class="flex flex-col gap-4 border-t border-slate-200 px-6 py-4 sm:flex-row sm:items-center sm:justify-between"
+            >
+
+              <p class="text-sm text-slate-500">
+
+                Showing
+
+                <span class="font-semibold text-slate-900">
+                  {{ rolePaginationStart }}
+                </span>
+
+                -
+
+                <span class="font-semibold text-slate-900">
+                  {{ rolePaginationEnd }}
+                </span>
+
+                of
+
+                <span class="font-semibold text-slate-900">
+                  {{ filteredRoleUsers.length }}
+                </span>
+
+                users
+
+              </p>
+
+
+              <div class="flex items-center gap-2">
+
+                <button
+                  type="button"
+                  (click)="previousRolePage()"
+                  [disabled]="roleCurrentPage === 1"
+                  class="rounded-lg border border-slate-300 bg-white px-4 py-2 text-xs font-semibold text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-40"
+                >
+                  Previous
+                </button>
+
+
+                <span
+                  class="min-w-[70px] text-center text-sm font-semibold text-slate-800"
+                >
+                  {{ roleCurrentPage }} / {{ roleTotalPages }}
+                </span>
+
+
+                <button
+                  type="button"
+                  (click)="nextRolePage()"
+                  [disabled]="roleCurrentPage === roleTotalPages"
+                  class="rounded-lg border border-slate-300 bg-white px-4 py-2 text-xs font-semibold text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-40"
+                >
+                  Next
+                </button>
+
+              </div>
+
+            </div>
+
+          </section>
+
+        </section>
+
+      }
+
+
+      @if (activeMenu === 'health-analysis') {
+
+  <div class="flex min-h-[70vh] items-center justify-center px-6 py-12">
+
+    <div class="w-full max-w-lg rounded-2xl border border-slate-200 bg-white p-10 text-center shadow-sm">
+
+      <div class="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-slate-100">
+        <svg
+          class="h-8 w-8 text-slate-700"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          viewBox="0 0 24 24"
+        >
+          <path d="M3 3v18h18"></path>
+          <path d="M7 16l4-5 3 3 5-7"></path>
+        </svg>
       </div>
 
+      <h2 class="text-2xl font-bold tracking-tight text-slate-900">
+        Health Analysis
+      </h2>
 
-      <!-- Pagination -->
-      @if (filteredRoleUsers.length > 0) {
-        <div class="flex flex-col gap-3 border-t border-slate-200 bg-slate-50 px-4 py-4 sm:flex-row sm:items-center sm:justify-between">
-          <p class="text-sm text-slate-500">
-            Showing
-            <span class="font-semibold text-slate-700">{{ roleFirstDisplayedUser }}</span>
-            to
-            <span class="font-semibold text-slate-700">{{ roleLastDisplayedUser }}</span>
-            of
-            <span class="font-semibold text-slate-700">{{ filteredRoleUsers.length }}</span>
-            users
-          </p>
+      <p class="mt-3 text-sm leading-6 text-slate-500">
+        This feature is still in progress.
+      </p>
 
-          <div class="flex items-center gap-1">
-            <button
-              type="button"
-              (click)="previousRolePage()"
-              [disabled]="roleCurrentPage === 1"
-              class="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
-            >
-              ‹
-            </button>
-
-            @for (page of rolePageNumbers; track page) {
-              <button
-                type="button"
-                (click)="goToRolePage(page)"
-                [style.background-color]="roleCurrentPage === page ? '#37eb34' : 'white'"
-                class="min-w-10 rounded-lg border border-slate-300 px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-green-50"
-              >
-                {{ page }}
-              </button>
-            }
-
-            <button
-              type="button"
-              (click)="nextRolePage()"
-              [disabled]="roleCurrentPage === roleTotalPages"
-              class="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
-            >
-              ›
-            </button>
-          </div>
-        </div>
-      }
+      <p class="mt-1 text-sm text-slate-500">
+        Please check back later.
+      </p>
 
     </div>
 
-  </section>
+  </div>
+
 }
 
+    </div>
 
-<!-- ============================================================
-     EDIT USER ROLE MODAL
-============================================================ -->
-@if (showRoleModal) {
+  </main>
 
-  <div
-    class="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 px-4">
+
+  <!-- ====================================================== -->
+  <!-- USER MODAL -->
+  <!-- ====================================================== -->
+
+  @if (showUserModal) {
 
     <div
-      class="w-full max-w-md rounded-xl bg-white shadow-2xl">
+      class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-sm"
+    >
 
-      <!-- Modal Header -->
       <div
-        class="flex items-center justify-between border-b border-slate-200 px-6 py-5">
+        class="w-full max-w-lg overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl"
+      >
 
-        <div>
-          <h3 class="text-lg font-bold text-slate-900">
-            Edit User Role
-          </h3>
+        <!-- HEADER -->
+        <div
+          class="flex items-center justify-between border-b border-slate-200 px-6 py-5"
+        >
 
-          <p class="mt-1 text-sm text-slate-500">
-            Change the role assigned to this user
-          </p>
-        </div>
+          <div>
 
-        <button
-          type="button"
-          (click)="closeRoleModal()"
-          class="rounded-lg p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-600">
-          ✕
-        </button>
+            <h3 class="text-lg font-bold text-slate-900">
 
-      </div>
+              @if (editingUser) {
+                Edit User
+              }
 
+              @else {
+                Add User
+              }
 
-      <!-- Modal Body -->
-      <div class="space-y-5 px-6 py-6">
+            </h3>
 
-        <!-- User Information -->
-        @if (selectedRoleUser) {
-
-          <div class="rounded-lg bg-slate-50 p-4">
-
-            <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">
-              User
-            </p>
-
-            <p class="mt-1 font-semibold text-slate-900">
-              {{ selectedRoleUser.name }}
-            </p>
-
-            <p class="mt-1 text-sm text-slate-500">
-              {{ selectedRoleUser.employee_code }}
-            </p>
-
-            <p class="mt-1 text-sm text-slate-500">
-              {{ selectedRoleUser.email }}
+            <p class="mt-1 text-xs text-slate-500">
+              Enter the user information below.
             </p>
 
           </div>
 
-        }
+
+          <button
+            type="button"
+            (click)="closeUserModal()"
+            class="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition hover:bg-slate-100 hover:text-slate-900"
+          >
+            ×
+          </button>
+
+        </div>
 
 
-        <!-- Role -->
-        <div>
+        <!-- FORM -->
+        <div class="space-y-5 px-6 py-6">
 
-          <label
-            for="userRole"
-            class="mb-2 block text-sm font-medium text-slate-700">
+          <!-- NAME -->
+          <div>
+
+            <label class="mb-2 block text-sm font-semibold text-slate-800">
+              Name
+            </label>
+
+            <input
+              type="text"
+              [(ngModel)]="userForm.name"
+              class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+            />
+
+          </div>
+
+
+          <!-- EMAIL -->
+          <div>
+
+            <label class="mb-2 block text-sm font-semibold text-slate-800">
+              Email
+            </label>
+
+            <input
+              type="email"
+              [(ngModel)]="userForm.email"
+              class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+            />
+
+          </div>
+
+
+          <!-- ROLE -->
+          <div>
+
+            <label class="mb-2 block text-sm font-semibold text-slate-800">
+              Role
+            </label>
+
+            <select
+              [(ngModel)]="userForm.role"
+              class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+            >
+
+              <option value="ADMIN">
+                Admin
+              </option>
+
+              <option value="EMPLOYEE">
+                Employee / Field Staff
+              </option>
+
+              <option value="REVIEWER">
+                Reviewer
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <!-- APPROVAL POSITION -->
+          <div
+            class="rounded-xl border border-slate-200 bg-slate-50 px-4 py-4"
+          >
+
+            <p class="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+              Approval Position
+            </p>
+
+            <p class="mt-2 text-sm font-semibold text-slate-900">
+              {{ getApprovalPosition() || 'NULL' }}
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <!-- FOOTER -->
+        <div
+          class="flex justify-end gap-3 border-t border-slate-200 px-6 py-5"
+        >
+
+          <button
+            type="button"
+            (click)="closeUserModal()"
+            class="rounded-xl border border-slate-300 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-100"
+          >
+            Cancel
+          </button>
+
+
+          <button
+            type="button"
+            (click)="saveUser()"
+            class="rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700 hover:shadow-md"
+          >
+            Save
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  }
+
+
+  <!-- ====================================================== -->
+  <!-- ROLE MODAL -->
+  <!-- ====================================================== -->
+
+  @if (showRoleModal) {
+
+    <div
+      class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-sm"
+    >
+
+      <div
+        class="w-full max-w-md overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl"
+      >
+
+        <!-- HEADER -->
+        <div
+          class="flex items-center justify-between border-b border-slate-200 px-6 py-5"
+        >
+
+          <div>
+
+            <h3 class="text-lg font-bold text-slate-900">
+              Change Role
+            </h3>
+
+            @if (selectedRoleUser) {
+
+              <p class="mt-1 text-sm text-slate-500">
+                {{ selectedRoleUser.name }}
+              </p>
+
+            }
+
+          </div>
+
+
+          <button
+            type="button"
+            (click)="closeRoleModal()"
+            class="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition hover:bg-slate-100 hover:text-slate-900"
+          >
+            ×
+          </button>
+
+        </div>
+
+
+        <!-- FORM -->
+        <div class="px-6 py-6">
+
+          <label class="mb-2 block text-sm font-semibold text-slate-800">
             Role
           </label>
 
           <select
-            id="userRole"
             [(ngModel)]="selectedRole"
-            class="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5
-                   text-sm text-slate-900 outline-none
-                   focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100">
-
-            <option value="" disabled>
-              Select Role
-            </option>
-
-            <option value="ADMIN">
-              Admin
-            </option>
-
-            <option value="MANAGER">
-              Manager
-            </option>
+            class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-purple-500 focus:ring-2 focus:ring-purple-100"
+          >
 
             <option value="EMPLOYEE">
-              Employee
+              Employee / Field Staff
+            </option>
+
+            <option value="REVIEWER">
+              Reviewer
             </option>
 
           </select>
 
         </div>
 
-      </div>
 
+        <!-- FOOTER -->
+        <div
+          class="flex justify-end gap-3 border-t border-slate-200 px-6 py-5"
+        >
 
-      <!-- Modal Footer -->
-      <div
-        class="flex justify-end gap-3 border-t border-slate-200 px-6 py-4">
-
-        <button
-          type="button"
-          (click)="closeRoleModal()"
-          class="rounded-lg border border-slate-300 bg-white px-4 py-2
-                 text-sm font-medium text-slate-700 hover:bg-slate-50">
-          Cancel
-        </button>
-
-        <button
-          type="button"
-          (click)="updateUserRole()"
-          [disabled]="!selectedRole"
-          class="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium
-                 text-white hover:bg-indigo-700
-                 disabled:cursor-not-allowed disabled:opacity-50">
-          Update Role
-        </button>
-
-      </div>
-
-    </div>
-
-  </div>
-      }
-
-
-      <!-- ========================================================
-           SETTINGS
-      ========================================================= -->
-      @if (activeMenu === 'settings') {
-        <section class="rounded-xl border border-slate-200 bg-white p-8 shadow-sm">
-          <div class="flex h-48 flex-col items-center justify-center text-center">
-            <div class="flex h-14 w-14 items-center justify-center rounded-full bg-slate-100 text-2xl">⚙</div>
-            <h2 class="mt-4 text-lg font-semibold text-slate-900">Settings</h2>
-            <p class="mt-1 max-w-lg text-sm text-slate-500">
-              Administrative and security settings will be added here. The 30-day inactive-account policy can be connected here after the backend implementation is completed.
-            </p>
-          </div>
-        </section>
-      }
-
-    </main>
-  </div>
-
-
-  <!-- ============================================================
-       CREATE / EDIT USER MODAL
-  ============================================================= -->
-  @if (showUserModal) {
-    <div class="fixed inset-0 z-[60] flex items-center justify-center bg-slate-900/50 px-4 py-6">
-      <div class="w-full max-w-lg overflow-hidden rounded-2xl bg-white shadow-2xl">
-
-        <div class="border-b border-slate-200 px-6 py-5">
-          <div class="flex items-start justify-between">
-            <div>
-              <h3 class="text-lg font-bold text-slate-900">
-                {{ editingUser ? 'Edit User' : 'Add User' }}
-              </h3>
-              <p class="mt-1 text-sm text-slate-500">
-                {{ editingUser ? 'Update user information.' : 'Create a new system user.' }}
-              </p>
-            </div>
-
-            <button
-              type="button"
-              (click)="closeUserModal()"
-              class="rounded-lg p-2 text-slate-400 transition hover:bg-slate-100 hover:text-slate-600"
-            >
-              ✕
-            </button>
-          </div>
-        </div>
-
-        <div class="space-y-5 px-6 py-6">
-          <div>
-            <label class="mb-1.5 block text-sm font-medium text-slate-700">Employee Code</label>
-            <input
-              type="text"
-              [(ngModel)]="userForm.employee_code"
-              placeholder="EMP003"
-              class="w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-            />
-          </div>
-
-          <div>
-            <label class="mb-1.5 block text-sm font-medium text-slate-700">Name</label>
-            <input
-              type="text"
-              [(ngModel)]="userForm.name"
-              placeholder="John Doe"
-              class="w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-            />
-          </div>
-
-          <div>
-            <label class="mb-1.5 block text-sm font-medium text-slate-700">Email</label>
-            <input
-              type="email"
-              [(ngModel)]="userForm.email"
-              placeholder="john@example.com"
-              class="w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-            />
-          </div>
-
-          <div>
-            <label class="mb-1.5 block text-sm font-medium text-slate-700">Role</label>
-            <input
-              type="text"
-              [(ngModel)]="userForm.role"
-              placeholder="e.g. Employee, Reviewer, HR"
-              class="w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-            />
-            <p class="mt-1.5 text-xs text-slate-400">
-              Enter the organization's approval position name. The value will be saved in uppercase.
-            </p>
-          </div>
-
-          <div class="rounded-lg border border-slate-200 bg-slate-50 px-4 py-3">
-            <div class="flex items-start gap-3">
-              <div class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-blue-100 text-xs font-bold text-blue-700">i</div>
-              <div>
-                <p class="text-sm font-medium text-slate-700">Approval Position</p>
-
-                @if (userForm.role.trim().toUpperCase() === 'EMPLOYEE') {
-                  <p class="mt-1 text-xs text-slate-500">
-                    Employees cannot approve requests, so their approval position will be <strong>NULL</strong>.
-                  </p>
-                } @else if (userForm.role.trim()) {
-                  <p class="mt-1 text-xs text-slate-500">
-                    This user's approval position will automatically be set to:
-                    <strong class="uppercase text-slate-700">{{ userForm.role.trim() }}</strong>
-                  </p>
-                } @else {
-                  <p class="mt-1 text-xs text-slate-400">
-                    Enter a role above. The approval position will automatically use the same value.
-                  </p>
-                }
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="flex justify-end gap-3 border-t border-slate-200 bg-slate-50 px-6 py-4">
           <button
             type="button"
-            (click)="closeUserModal()"
-            class="rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-100"
+            (click)="closeRoleModal()"
+            class="rounded-xl border border-slate-300 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-100"
           >
             Cancel
           </button>
 
+
           <button
             type="button"
-            (click)="saveUser()"
-            [disabled]="saving"
-            class="rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
+            (click)="updateUserRole()"
+            class="rounded-xl bg-purple-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-purple-700 hover:shadow-md"
           >
-            @if (saving) {
-              Saving...
-            } @else {
-              {{ editingUser ? 'Save Changes' : 'Create User' }}
-            }
+            Update Role
           </button>
+
         </div>
+
       </div>
+
     </div>
+
   }
 
 
-  <!-- ============================================================
-       ADD / EDIT HIERARCHY MODAL
-  ============================================================= -->
-  @if (showHierarchyModal) {
-    <div class="fixed inset-0 z-[60] flex items-center justify-center bg-slate-900/50 px-4 py-6">
-      <div class="w-full max-w-lg overflow-hidden rounded-2xl bg-white shadow-2xl">
+  <!-- SESSION POPUP -->
+  <app-session-popup></app-session-popup>
 
-        <div class="border-b border-slate-200 px-6 py-5">
-          <div class="flex items-start justify-between">
-            <div>
-              <h3 class="text-lg font-bold text-slate-900">
-                {{ editingHierarchy ? 'Edit Approval Level' : 'Add Approval Level' }}
-              </h3>
-              <p class="mt-1 text-sm text-slate-500">
-                {{ editingHierarchy ? 'Update this approval position.' : 'Add a new position to the approval workflow.' }}
-              </p>
-            </div>
-
-            <button
-              type="button"
-              (click)="closeHierarchyModal()"
-              class="rounded-lg p-2 text-slate-400 transition hover:bg-slate-100 hover:text-slate-600"
-            >
-              ✕
-            </button>
-          </div>
-        </div>
-
-        <div class="space-y-5 px-6 py-6">
-          @if (hierarchyErrorMessage) {
-            <div class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
-              {{ hierarchyErrorMessage }}
-            </div>
-          }
-
-          <div>
-            <label class="mb-1.5 block text-sm font-medium text-slate-700">Approval Level</label>
-            <input
-              type="number"
-              min="1"
-              [(ngModel)]="hierarchyForm.approval_level"
-              class="w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm outline-none transition focus:border-purple-500 focus:ring-2 focus:ring-purple-100"
-            />
-            <p class="mt-1.5 text-xs text-slate-400">Lower numbers are processed first.</p>
-          </div>
-
-          <div>
-            <label class="mb-1.5 block text-sm font-medium text-slate-700">Approval Position / Role</label>
-            <input
-              type="text"
-              [(ngModel)]="hierarchyForm.role"
-              placeholder="e.g. Reviewer, HR"
-              class="w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm uppercase outline-none transition placeholder:normal-case placeholder:text-slate-400 focus:border-purple-500 focus:ring-2 focus:ring-purple-100"
-            />
-            <p class="mt-1.5 text-xs text-slate-400">The role will automatically be saved in uppercase.</p>
-          </div>
-
-          @if (hierarchyForm.role.trim()) {
-            <div class="rounded-lg border border-purple-100 bg-purple-50 px-4 py-4">
-              <p class="text-xs font-semibold uppercase tracking-wider text-purple-500">Preview</p>
-              <div class="mt-3 flex items-center gap-3">
-                <div class="flex h-10 w-10 items-center justify-center rounded-full bg-purple-100 font-bold text-purple-700">
-                  {{ hierarchyForm.approval_level }}
-                </div>
-                <div>
-                  <p class="text-xs text-purple-500">Approval Level {{ hierarchyForm.approval_level }}</p>
-                  <p class="text-sm font-bold uppercase text-purple-900">{{ hierarchyForm.role.trim() }}</p>
-                </div>
-              </div>
-            </div>
-          }
-        </div>
-
-        <div class="flex justify-end gap-3 border-t border-slate-200 bg-slate-50 px-6 py-4">
-          <button
-            type="button"
-            (click)="closeHierarchyModal()"
-            class="rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-100"
-          >
-            Cancel
-          </button>
-
-          <button
-            type="button"
-            (click)="saveHierarchy()"
-            [disabled]="hierarchySaving"
-            class="rounded-lg bg-purple-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-purple-700 disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            @if (hierarchySaving) {
-              Saving...
-            } @else {
-              {{ editingHierarchy ? 'Save Changes' : 'Add Approval Level' }}
-            }
-          </button>
-        </div>
-      </div>
-    </div>
-  }
-
-  <!-- SESSION INVALIDATED POPUP -->
-  <app-session-popup />
 </div>

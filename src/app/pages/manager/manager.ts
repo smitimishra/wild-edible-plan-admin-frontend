@@ -234,13 +234,39 @@ export class Manager implements OnInit {
 
   loadUser(): void {
 
-    this.user =
-      this.authService.getUser();
+    // First try the user object maintained by AuthService.
+    this.user = this.authService.getUser();
 
-    console.log(
-      'Manager user:',
-      this.user
-    );
+    // In the Manager SSO flow the JWT can be valid even when no user
+    // object has been stored in localStorage. Decode the same token
+    // used for authentication so Manager pages still know the role.
+    if (!this.user) {
+
+      const token = this.authService.getToken();
+
+      if (token) {
+        try {
+          const payload = JSON.parse(
+            atob(
+              token.split('.')[1]
+                .replace(/-/g, '+')
+                .replace(/_/g, '/')
+                .padEnd(
+                  token.split('.')[1].length +
+                  (4 - token.split('.')[1].length % 4) % 4,
+                  '='
+                )
+            )
+          );
+
+          this.user = payload;
+        } catch (error) {
+          console.error('Manager - Failed to decode JWT:', error);
+        }
+      }
+    }
+
+    console.log('Manager user:', this.user);
 
   }
 
