@@ -293,7 +293,7 @@ export class RequestDetails implements OnInit {
       this.currentUserRole =
         String(
           this.currentUser.role || ''
-        ).toUpperCase();
+        ).trim().toUpperCase();
 
     }
 
@@ -348,8 +348,12 @@ export class RequestDetails implements OnInit {
           // not response.request.
           // ----------------------------------------------------
 
-          this.request =
-            response || null;
+          this.request = response
+            ? {
+                ...response,
+                status: String(response.status || '').trim().toUpperCase()
+              }
+            : null;
 
 
           // ----------------------------------------------------
@@ -2175,6 +2179,6 @@ export class RequestDetails implements OnInit {
 
   logout(): void {
 
-    this.authService.logout('http://192.168.29.51:64959/');
+    this.authService.logout('http://192.168.29.51:8200/');
   }
 }

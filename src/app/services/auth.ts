@@ -7,7 +7,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 // the user is shown a popup then redirected here.
 // ============================================================
 
-const LOGIN_PORTAL_URL = 'http://192.168.29.51:64959/welcome';
+const LOGIN_PORTAL_URL = 'http://192.168.29.51:8200/welcome';
 const POLL_INTERVAL_MS = 15_000;          // background poll — 15 s
 const MOUSE_DEBOUNCE_MS = 5_000;          // mouse check — at most every 5 s
 
