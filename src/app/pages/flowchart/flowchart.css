@@ -1,0 +1,206 @@
+/* ============================================================
+   FLOWCHART NODES
+============================================================ */
+
+.fc-node {
+  cursor: pointer;
+  transition: filter 0.15s, transform 0.15s;
+}
+
+.fc-node:hover {
+  filter: brightness(1.07);
+  transform: translateY(-1px);
+}
+
+/* Pill / capsule (start/end) */
+.fc-pill {
+  border-radius: 50px;
+  padding: 8px 24px;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+  min-width: 180px;
+  border: 2px solid transparent;
+}
+
+/* Rectangle (action) */
+.fc-rect {
+  border-radius: 10px;
+  padding: 10px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+  min-width: 200px;
+  max-width: 220px;
+  border: 2px solid transparent;
+}
+
+/* Rounded rect (process) */
+.fc-proc {
+  border-radius: 18px;
+  padding: 9px 16px;
+  font-size: 12px;
+  font-weight: 500;
+  text-align: center;
+  min-width: 200px;
+  max-width: 220px;
+  border: 2px dashed transparent;
+}
+
+/* Diamond (decision) */
+.fc-diamond-wrap {
+  position: relative;
+  width: 160px;
+  height: 80px;
+  flex-shrink: 0;
+}
+
+.fc-diamond-shape {
+  width: 160px;
+  height: 80px;
+  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: filter 0.15s, transform 0.15s;
+}
+
+.fc-diamond-shape:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+}
+
+.fc-diamond-text {
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+  line-height: 1.25;
+  padding: 0 24px;
+}
+
+/* Error box (red, dashed border) */
+.fc-error {
+  border-radius: 10px;
+  padding: 8px 14px;
+  font-size: 11px;
+  font-weight: 600;
+  text-align: center;
+  min-width: 160px;
+  border: 2px dashed #f87171;
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
+/* ============================================================
+   CONNECTORS — vertical lines
+============================================================ */
+.fc-line {
+  width: 2px;
+  background: #94a3b8;
+  margin: 0 auto;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.fc-line-h {
+  height: 2px;
+  background: #94a3b8;
+}
+
+/* Arrow tip for vertical */
+.fc-arrow-down::after {
+  content: '';
+  position: absolute;
+  bottom: -7px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 8px solid #94a3b8;
+}
+
+/* Arrow tip pointing left */
+.fc-arrow-left::after {
+  content: '';
+  position: absolute;
+  left: -7px;
+  top: 50%;
+  transform: translateY(-50%);
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-right: 7px solid #f87171;
+}
+
+/* Label on connector */
+.fc-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: #64748b;
+  text-align: center;
+}
+
+/* ============================================================
+   COLOUR TOKENS
+============================================================ */
+
+/* Blue — user/UI boxes */
+.fc-blue    { background: #dbeafe; border-color: #93c5fd; color: #1e40af; }
+/* Purple — app layer */
+.fc-purple  { background: #ede9fe; border-color: #c4b5fd; color: #5b21b6; }
+/* Green — start/end */
+.fc-green   { background: #d1fae5; border-color: #6ee7b7; color: #065f46; }
+/* Green-dark start pill */
+.fc-green-d { background: #059669; border-color: #047857; color: #fff; }
+/* Red decision / error */
+.fc-red-d   { background: #ef4444; border-color: #dc2626; color: #fff; }
+/* Amber decision */
+.fc-amber-d { background: #f59e0b; border-color: #d97706; color: #fff; }
+/* Indigo decision */
+.fc-indigo-d{ background: #6366f1; border-color: #4f46e5; color: #fff; }
+/* Violet decision */
+.fc-violet-d{ background: #7c3aed; border-color: #6d28d9; color: #fff; }
+/* Teal */
+.fc-teal    { background: #ccfbf1; border-color: #5eead4; color: #134e4a; }
+
+/* ============================================================
+   DB PANEL
+============================================================ */
+
+.db-panel {
+  max-height: calc(100vh - 56px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #e2e8f0 transparent;
+}
+
+.db-panel::-webkit-scrollbar { width: 4px; }
+.db-panel::-webkit-scrollbar-track { background: transparent; }
+.db-panel::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 2px; }
+
+.db-table-row {
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.db-table-active {
+  background: #eff6ff !important;
+  border-left: 4px solid #6366f1 !important;
+}
+
+.db-table-active .db-table-name {
+  color: #3730a3 !important;
+  font-weight: 700;
+}
+
+/* ============================================================
+   SCROLL AREA
+============================================================ */
+.fc-scroll {
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #e2e8f0 transparent;
+}
+
+.fc-scroll::-webkit-scrollbar { width: 4px; }
+.fc-scroll::-webkit-scrollbar-track { background: transparent; }
+.fc-scroll::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 2px; }
