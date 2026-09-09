@@ -15,7 +15,8 @@ import {
 
 import {
   AdminService,
-  AdminUser
+  AdminUser,
+  HierarchyLevel
 } from '../services/admin.service';
 
 import { AuthService } from '../services/auth';
@@ -197,6 +198,10 @@ export class Admin implements OnInit {
 
       this.roleCurrentPage = 1;
 
+    }
+
+    if ((menu as string) === 'settings') {
+      this.loadSettings();
     }
 
   }
@@ -1652,5 +1657,81 @@ export class Admin implements OnInit {
   this.activeMenu = 'health-analysis' as AdminMenu;
   this.clearMessages();
 }
+
+  // ============================================================
+  // SETTINGS — login lockout
+  // ============================================================
+
+  settingsLoading  = false;
+  settingsSaving   = false;
+  settingsError    = '';
+  settingsSuccess  = '';
+
+  // Form fields (strings for input binding)
+  settingMaxAttempts  = '3';
+  settingLockoutHours = '1';
+
+  loadSettings(): void {
+    this.settingsLoading = true;
+    this.settingsError   = '';
+
+    this.adminService.getSettings().subscribe({
+      next: (res) => {
+        const s = res.settings ?? {};
+        this.settingMaxAttempts  = s['login_max_attempts']?.value  ?? '3';
+        this.settingLockoutHours = s['login_lockout_hours']?.value ?? '1';
+        this.settingsLoading = false;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        this.settingsError   = err?.error?.message ?? 'Unable to load settings';
+        this.settingsLoading = false;
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  saveSettings(): void {
+    this.settingsError   = '';
+    this.settingsSuccess = '';
+
+    const maxAttempts  = Number(this.settingMaxAttempts);
+    const lockoutHours = Number(this.settingLockoutHours);
+
+    if (!Number.isInteger(maxAttempts) || maxAttempts < 1 || maxAttempts > 100) {
+      this.settingsError = 'Max attempts must be a whole number between 1 and 100';
+      return;
+    }
+
+    if (!Number.isInteger(lockoutHours) || lockoutHours < 1 || lockoutHours > 168) {
+      this.settingsError = 'Lockout hours must be a whole number between 1 and 168';
+      return;
+    }
+
+    this.settingsSaving = true;
+
+    // Save both settings sequentially
+    this.adminService.updateSetting('login_max_attempts', maxAttempts).subscribe({
+      next: () => {
+        this.adminService.updateSetting('login_lockout_hours', lockoutHours).subscribe({
+          next: () => {
+            this.settingsSaving  = false;
+            this.settingsSuccess = 'Settings saved successfully';
+            this.cdr.detectChanges();
+          },
+          error: (err) => {
+            this.settingsSaving = false;
+            this.settingsError  = err?.error?.message ?? 'Unable to save lockout hours';
+            this.cdr.detectChanges();
+          }
+        });
+      },
+      error: (err) => {
+        this.settingsSaving = false;
+        this.settingsError  = err?.error?.message ?? 'Unable to save max attempts';
+        this.cdr.detectChanges();
+      }
+    });
+  }
 
 }

@@ -241,4 +241,23 @@ export class AdminService {
       }
     );
   }
+
+  // ============================================================
+  // SYSTEM SETTINGS
+  // ============================================================
+
+  getSettings(): Observable<{ settings: Record<string, { value: string; description: string; updated_at: string }> }> {
+    return this.http.get<any>(
+      `${this.apiUrl}/settings`,
+      { headers: this.getHeaders() }
+    );
+  }
+
+  updateSetting(key: string, value: string | number): Observable<{ message: string; setting: { key: string; value: string } }> {
+    return this.http.patch<any>(
+      `${this.apiUrl}/settings/${key}`,
+      { value: String(value) },
+      { headers: this.getHeaders() }
+    );
+  }
 }
