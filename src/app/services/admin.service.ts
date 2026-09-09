@@ -11,6 +11,7 @@ export interface AdminUser {
   employee_code: string;
   name: string;
   email: string;
+  phone_number: string | null;
   role: string;
   role_id: number;
   approval_position: string | null;
@@ -115,6 +116,7 @@ export class AdminService {
   createUser(data: {
     name: string;
     email: string;
+    phone_number?: string;
     role: string;
   }): Observable<CreateUserResponse> {
     return this.http.post<CreateUserResponse>(
@@ -131,6 +133,7 @@ export class AdminService {
     data: {
       name: string;
       email: string;
+      phone_number?: string;
       role: string;
     }
   ): Observable<UpdateUserResponse> {

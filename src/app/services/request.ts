@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+
 import {
   HttpClient,
   HttpHeaders
@@ -14,9 +15,17 @@ import { AuthService } from './auth';
 })
 export class RequestService {
 
-  private apiUrl =
-    'http://192.168.29.216:3001/api/requests';
+  // ============================================================
+  // API URL
+  // ============================================================
 
+  private apiUrl =
+    'http://192.168.29.51:3001/api/requests';
+
+
+  // ============================================================
+  // CONSTRUCTOR
+  // ============================================================
 
   constructor(
     private http: HttpClient,
@@ -33,10 +42,12 @@ export class RequestService {
     const token =
       this.authService.getToken();
 
+
     console.log(
       'RequestService - JWT exists:',
       !!token
     );
+
 
     if (!token) {
 
@@ -44,12 +55,16 @@ export class RequestService {
         'RequestService - No JWT token found.'
       );
 
+
       return new HttpHeaders();
+
     }
+
 
     return new HttpHeaders({
       Authorization: `Bearer ${token}`
     });
+
   }
 
 
@@ -68,6 +83,7 @@ export class RequestService {
         headers: this.getAuthHeaders()
       }
     );
+
   }
 
 
@@ -83,6 +99,7 @@ export class RequestService {
         headers: this.getAuthHeaders()
       }
     );
+
   }
 
 
@@ -98,26 +115,40 @@ export class RequestService {
         headers: this.getAuthHeaders()
       }
     );
+
   }
 
 
   // ============================================================
-  // MANAGER - PENDING REQUESTS
+  // REVIEWER - PENDING REQUESTS
+  //
+  // GET
+  // /api/requests/pending-reviewer
+  //
+  // Role:
+  // REVIEWER
   // ============================================================
 
-  getPendingManagerRequests(): Observable<any> {
+  getPendingReviewerRequests(): Observable<any> {
 
     return this.http.get(
-      `${this.apiUrl}/pending-manager`,
+      `${this.apiUrl}/pending-reviewer`,
       {
         headers: this.getAuthHeaders()
       }
     );
+
   }
 
 
   // ============================================================
   // HR - PENDING REQUESTS
+  //
+  // GET
+  // /api/requests/pending-hr
+  //
+  // Role:
+  // HR
   // ============================================================
 
   getPendingHRRequests(): Observable<any> {
@@ -128,11 +159,34 @@ export class RequestService {
         headers: this.getAuthHeaders()
       }
     );
+
+  }
+
+
+  // ============================================================
+  // APPROVED REQUESTS
+  //
+  // GET
+  // /api/requests/approved
+  // ============================================================
+
+  getApprovedRequests(): Observable<any> {
+
+    return this.http.get(
+      `${this.apiUrl}/approved`,
+      {
+        headers: this.getAuthHeaders()
+      }
+    );
+
   }
 
 
   // ============================================================
   // GET REQUEST DETAILS
+  //
+  // GET
+  // /api/requests/:id
   // ============================================================
 
   getRequestById(
@@ -145,14 +199,26 @@ export class RequestService {
         headers: this.getAuthHeaders()
       }
     );
+
   }
 
 
   // ============================================================
-  // MANAGER - APPROVE
+  // REVIEWER - APPROVE REQUEST
+  //
+  // PUT
+  // /api/requests/:id/reviewer-approve
+  //
+  // Body:
+  //
+  // {
+  //   scientific_name: string,
+  //   description: string,
+  //   comments?: string
+  // }
   // ============================================================
 
-  managerApprove(
+  reviewerApprove(
     id: number,
     data: {
       scientific_name: string;
@@ -162,17 +228,27 @@ export class RequestService {
   ): Observable<any> {
 
     return this.http.put(
-      `${this.apiUrl}/${id}/manager-approve`,
+      `${this.apiUrl}/${id}/reviewer-approve`,
       data,
       {
         headers: this.getAuthHeaders()
       }
     );
+
   }
 
 
   // ============================================================
-  // HR - APPROVE
+  // HR - APPROVE REQUEST
+  //
+  // PUT
+  // /api/requests/:id/hr-approve
+  //
+  // Body:
+  //
+  // {
+  //   comments?: string
+  // }
   // ============================================================
 
   hrApprove(
@@ -189,11 +265,21 @@ export class RequestService {
         headers: this.getAuthHeaders()
       }
     );
+
   }
 
 
   // ============================================================
-  // REJECT
+  // REVIEWER / HR - REJECT REQUEST
+  //
+  // PUT
+  // /api/requests/:id/reject
+  //
+  // Body:
+  //
+  // {
+  //   comments: string
+  // }
   // ============================================================
 
   reject(
@@ -210,11 +296,15 @@ export class RequestService {
         headers: this.getAuthHeaders()
       }
     );
+
   }
 
 
   // ============================================================
   // DOWNLOAD ATTACHMENT
+  //
+  // GET
+  // /api/requests/attachments/:id/download
   // ============================================================
 
   downloadAttachment(
@@ -228,11 +318,18 @@ export class RequestService {
         responseType: 'blob'
       }
     );
+
   }
 
 
   // ============================================================
   // ADD ATTACHMENT
+  //
+  // POST
+  // /api/requests/:id/attachments
+  //
+  // Field:
+  // image
   // ============================================================
 
   addAttachment(
@@ -243,10 +340,12 @@ export class RequestService {
     const formData =
       new FormData();
 
+
     formData.append(
       'image',
       file
     );
+
 
     return this.http.post(
       `${this.apiUrl}/${requestId}/attachments`,
@@ -255,11 +354,15 @@ export class RequestService {
         headers: this.getAuthHeaders()
       }
     );
+
   }
 
 
   // ============================================================
   // DELETE ATTACHMENT
+  //
+  // DELETE
+  // /api/requests/attachments/:id
   // ============================================================
 
   deleteAttachment(
@@ -272,6 +375,7 @@ export class RequestService {
         headers: this.getAuthHeaders()
       }
     );
+
   }
 
 
@@ -284,14 +388,20 @@ export class RequestService {
   ): string {
 
     if (!filePath) {
+
       return '';
+
     }
+
 
     const normalizedPath =
       filePath.startsWith('/')
         ? filePath
         : `/${filePath}`;
 
-    return `http://192.168.29.216:3001${normalizedPath}`;
+
+    return `http://192.168.29.51:3001${normalizedPath}`;
+
   }
+
 }

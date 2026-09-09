@@ -2,36 +2,52 @@ import { Injectable, NgZone, OnDestroy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 
-// ============================================================
-// When a session is invalidated by another device logging in,
-// the user is shown a popup then redirected here.
-// ============================================================
-
 const LOGIN_PORTAL_URL = 'http://192.168.29.51:8200/welcome';
-const POLL_INTERVAL_MS = 15_000;          // background poll — 15 s
-const MOUSE_DEBOUNCE_MS = 5_000;          // mouse check — at most every 5 s
 
-@Injectable({ providedIn: 'root' })
+const POLL_INTERVAL_MS = 15_000;
+const MOUSE_DEBOUNCE_MS = 5_000;
+
+@Injectable({
+  providedIn: 'root'
+})
 export class AuthService implements OnDestroy {
 
-  private apiUrl = 'http://192.168.29.216:3001/api/auth';
+  // ============================================================
+  // BACKEND API
+  // ============================================================
 
-  // URL for the wildplant portal backend (port 8080)
-  // The admin/manager/reviewer JWT tokens are issued by this backend.
-  private portalApiUrl = 'http://192.168.29.216:8080/api/auth';
+  private apiUrl =
+    'http://192.168.29.51:3001/api/auth';
 
-  // ── Session-invalid signal ──────────────────────────────────
-  // Components subscribe to this and show the popup when true.
-  private _sessionInvalid$ = new BehaviorSubject<boolean>(false);
+
+  // ============================================================
+  // SESSION STATE
+  // ============================================================
+
+  private _sessionInvalid$ =
+    new BehaviorSubject<boolean>(false);
+
   readonly sessionInvalid$: Observable<boolean> =
     this._sessionInvalid$.asObservable();
 
-  private pollTimer: ReturnType<typeof setInterval> | null = null;
-  private lastMouseCheck = 0;      // epoch ms of last mouse-triggered check
+
+  // ============================================================
+  // SESSION POLLING
+  // ============================================================
+
+  private pollTimer:
+    ReturnType<typeof setInterval> | null = null;
+
+  private lastMouseCheck = 0;
+
+
+  // ============================================================
+  // CONSTRUCTOR
+  // ============================================================
 
   constructor(
     private http: HttpClient,
-    private zone: NgZone,
+    private zone: NgZone
   ) {}
 
 
@@ -39,156 +55,536 @@ export class AuthService implements OnDestroy {
   // LOGIN
   // ============================================================
 
-  login(email: string, password: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/login`, { email, password });
-  }
+  login(
+    email: string,
+    password: string
+  ): Observable<any> {
 
-  forceLogoutSession(sessionId: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/force-logout-session`, {
-      session_id: sessionId,
-    });
-  }
-
-  register(user: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/register`, user);
-  }
-
-  forgotPassword(email: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/forgot-password`, { email });
-  }
-
-  resetPassword(token: string, newPassword: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/reset-password`, { token, newPassword });
+    return this.http.post(
+      `${this.apiUrl}/login`,
+      {
+        email,
+        password
+      }
+    );
   }
 
 
   // ============================================================
-  // TOKEN / USER STORAGE
+  // FORCE LOGOUT SESSION
   // ============================================================
 
-  saveToken(token: string): void { localStorage.setItem('token', token); }
-  getToken(): string | null       { return localStorage.getItem('token'); }
+  forceLogoutSession(
+    sessionId: string
+  ): Observable<any> {
 
-  saveUser(user: any): void { localStorage.setItem('user', JSON.stringify(user)); }
+    return this.http.post(
+      `${this.apiUrl}/force-logout-session`,
+      {
+        session_id: sessionId
+      }
+    );
+  }
+
+
+  // ============================================================
+  // REGISTER
+  // ============================================================
+
+  register(
+    user: any
+  ): Observable<any> {
+
+    return this.http.post(
+      `${this.apiUrl}/register`,
+      user
+    );
+  }
+
+
+  // ============================================================
+  // FORGOT PASSWORD
+  // ============================================================
+
+  forgotPassword(
+    email: string
+  ): Observable<any> {
+
+    return this.http.post(
+      `${this.apiUrl}/forgot-password`,
+      {
+        email
+      }
+    );
+  }
+
+
+  // ============================================================
+  // RESET PASSWORD
+  // ============================================================
+
+  resetPassword(
+    token: string,
+    newPassword: string
+  ): Observable<any> {
+
+    return this.http.post(
+      `${this.apiUrl}/reset-password`,
+      {
+        token,
+        newPassword
+      }
+    );
+  }
+
+
+  // ============================================================
+  // SAVE TOKEN
+  // ============================================================
+
+  saveToken(
+    token: string
+  ): void {
+
+    localStorage.setItem(
+      'token',
+      token
+    );
+  }
+
+
+  // ============================================================
+  // GET TOKEN
+  // ============================================================
+
+  getToken(): string | null {
+
+    return localStorage.getItem(
+      'token'
+    );
+  }
+
+
+  // ============================================================
+  // SAVE USER
+  // ============================================================
+
+  saveUser(
+    user: any
+  ): void {
+
+    localStorage.setItem(
+      'user',
+      JSON.stringify(user)
+    );
+  }
+
+
+  // ============================================================
+  // GET USER
+  // ============================================================
+
   getUser(): any {
-    const u = localStorage.getItem('user');
-    return u ? JSON.parse(u) : null;
+
+    const user =
+      localStorage.getItem('user');
+
+    if (!user) {
+      return null;
+    }
+
+    try {
+
+      return JSON.parse(user);
+
+    } catch (error) {
+
+      console.error(
+        'Failed to parse stored user:',
+        error
+      );
+
+      return null;
+    }
   }
 
-  getTokenRole(token: string | null = this.getToken()): string | null {
-    if (!token) return null;
+
+  // ============================================================
+  // GET ROLE FROM JWT
+  // ============================================================
+
+  getTokenRole(
+    token: string | null = this.getToken()
+  ): string | null {
+
+    if (!token) {
+      return null;
+    }
+
     try {
-      const payload = JSON.parse(
-        atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/'))
-      );
+
+      const parts =
+        token.split('.');
+
+      if (parts.length !== 3) {
+        return null;
+      }
+
+      let base64Payload =
+        parts[1]
+          .replace(/-/g, '+')
+          .replace(/_/g, '/');
+
+      base64Payload +=
+        '='.repeat(
+          (4 - (base64Payload.length % 4)) % 4
+        );
+
+      const payload =
+        JSON.parse(
+          atob(base64Payload)
+        );
+
       return typeof payload.role === 'string'
-        ? payload.role.trim().toUpperCase() : null;
-    } catch { return null; }
-  }
+        ? payload.role
+            .trim()
+            .toUpperCase()
+        : null;
 
-  isTokenExpired(token: string | null = this.getToken()): boolean {
-    if (!token) return true;
-    try {
-      const payload = JSON.parse(
-        atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/'))
+    } catch (error) {
+
+      console.error(
+        'Failed to decode JWT role:',
+        error
       );
-      return typeof payload.exp !== 'number' ||
-        payload.exp * 1000 <= Date.now();
-    } catch { return true; }
+
+      return null;
+    }
   }
 
-  isLoggedIn(): boolean { return !!this.getToken(); }
+
+  // ============================================================
+  // CHECK TOKEN EXPIRATION
+  // ============================================================
+
+  isTokenExpired(
+    token: string | null = this.getToken()
+  ): boolean {
+
+    if (!token) {
+      return true;
+    }
+
+    try {
+
+      const parts =
+        token.split('.');
+
+      if (parts.length !== 3) {
+        return true;
+      }
+
+      let base64Payload =
+        parts[1]
+          .replace(/-/g, '+')
+          .replace(/_/g, '/');
+
+      base64Payload +=
+        '='.repeat(
+          (4 - (base64Payload.length % 4)) % 4
+        );
+
+      const payload =
+        JSON.parse(
+          atob(base64Payload)
+        );
+
+      return (
+        typeof payload.exp !== 'number' ||
+        payload.exp * 1000 <= Date.now()
+      );
+
+    } catch (error) {
+
+      console.error(
+        'Failed to check JWT expiration:',
+        error
+      );
+
+      return true;
+    }
+  }
+
+
+  // ============================================================
+  // LOGIN STATE
+  // ============================================================
+
+  isLoggedIn(): boolean {
+
+    const token =
+      this.getToken();
+
+    return !!token &&
+      !this.isTokenExpired(token);
+  }
 
 
   // ============================================================
   // LOGOUT
   // ============================================================
 
-  logout(redirectUrl?: string): void {
+  logout(
+    redirectUrl?: string
+  ): void {
+
     this.stopSessionPolling();
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    if (redirectUrl && typeof window !== 'undefined') {
-      window.location.href = redirectUrl;
+
+    localStorage.removeItem(
+      'token'
+    );
+
+    localStorage.removeItem(
+      'user'
+    );
+
+    if (
+      redirectUrl &&
+      typeof window !== 'undefined'
+    ) {
+
+      window.location.href =
+        redirectUrl;
     }
   }
 
 
   // ============================================================
-  // SESSION POLLING  (background — every 15 s)
+  // START SESSION POLLING
   // ============================================================
 
   startSessionPolling(): void {
+
     this.stopSessionPolling();
-    // Reset any stale invalid flag when a fresh session starts
-    this._sessionInvalid$.next(false);
+
+    this._sessionInvalid$.next(
+      false
+    );
 
     this.zone.runOutsideAngular(() => {
-      this.pollTimer = setInterval(() => this.checkSession(), POLL_INTERVAL_MS);
+
+      this.pollTimer =
+        setInterval(
+          () => this.checkSession(),
+          POLL_INTERVAL_MS
+        );
+
     });
   }
 
+
+  // ============================================================
+  // STOP SESSION POLLING
+  // ============================================================
+
   stopSessionPolling(): void {
-    if (this.pollTimer !== null) {
-      clearInterval(this.pollTimer);
+
+    if (
+      this.pollTimer !== null
+    ) {
+
+      clearInterval(
+        this.pollTimer
+      );
+
       this.pollTimer = null;
     }
   }
 
 
   // ============================================================
-  // MOUSE-MOVEMENT SESSION CHECK
-  // Call this from (mousemove) / (click) on dashboard pages.
-  // Debounced to at most once every 5 s so it is never spammy.
+  // CHECK SESSION ON USER ACTIVITY
   // ============================================================
 
   checkSessionOnActivity(): void {
-    const now = Date.now();
-    if (now - this.lastMouseCheck < MOUSE_DEBOUNCE_MS) return;
-    this.lastMouseCheck = now;
+
+    const now =
+      Date.now();
+
+    if (
+      now - this.lastMouseCheck <
+      MOUSE_DEBOUNCE_MS
+    ) {
+
+      return;
+    }
+
+    this.lastMouseCheck =
+      now;
+
     this.checkSession();
   }
 
 
   // ============================================================
-  // CORE SESSION CHECK  (used by both polling + mouse)
+  // VALIDATE CURRENT SESSION
+  //
+  // IMPORTANT:
+  // This uses PORT 3001 because your /validate-session
+  // endpoint is implemented in the same authentication
+  // backend as /login.
   // ============================================================
 
   private checkSession(): void {
-    const token = this.getToken();
-    if (!token) { this.stopSessionPolling(); return; }
 
-    // Use the wildplant backend (port 8080) because the JWT token
-    // stored in localStorage on this portal was issued by that backend.
-    // native fetch bypasses Angular HttpClient interceptor.
-    fetch(`${this.portalApiUrl}/validate-session`, {
-      method:  'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify({ token }),
-    })
-      .then(res => {
-        if (res.status === 401) this.markSessionInvalid();
-      })
-      .catch(() => { /* network blip — do not force logout */ });
+    const token =
+      this.getToken();
+
+    if (!token) {
+
+      this.stopSessionPolling();
+
+      return;
+    }
+
+
+    // Optional local expiration check first
+
+    if (
+      this.isTokenExpired(token)
+    ) {
+
+      this.markSessionInvalid();
+
+      return;
+    }
+
+
+    // IMPORTANT:
+    // Do NOT use port 8080 here.
+    //
+    // Backend auth routes are running on:
+    //
+    // http://192.168.29.51:3001/api/auth
+    //
+    // Therefore validation is:
+    //
+    // /api/auth/validate-session
+
+    fetch(
+      `${this.apiUrl}/validate-session`,
+      {
+        method: 'POST',
+
+        headers: {
+          'Content-Type':
+            'application/json'
+        },
+
+        body: JSON.stringify({
+          token
+        })
+      }
+    )
+
+      .then(
+        response => {
+
+          if (
+            response.status === 401
+          ) {
+
+            this.markSessionInvalid();
+
+            return;
+          }
+
+
+          if (!response.ok) {
+
+            console.warn(
+              'Session validation returned HTTP status:',
+              response.status
+            );
+
+            return;
+          }
+
+
+          return response.json();
+
+        }
+      )
+
+      .catch(
+        error => {
+
+          // Network failure should not
+          // immediately log the user out.
+
+          console.warn(
+            'Session validation request failed:',
+            error
+          );
+        }
+      );
   }
 
-  // ── Called when validate-session returns 401 ──────────────
+
+  // ============================================================
+  // MARK SESSION INVALID
+  // ============================================================
+
   private markSessionInvalid(): void {
+
     this.zone.run(() => {
+
       this.stopSessionPolling();
-      // Signal all subscribed components to show the popup
-      this._sessionInvalid$.next(true);
+
+      this._sessionInvalid$.next(
+        true
+      );
+
     });
   }
 
-  // ── Called by the popup's OK button ───────────────────────
+
+  // ============================================================
+  // ACKNOWLEDGE INVALID SESSION
+  // ============================================================
+
   acknowledgeSessionInvalid(): void {
-    this._sessionInvalid$.next(false);
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    window.location.href = LOGIN_PORTAL_URL;
+
+    this._sessionInvalid$.next(
+      false
+    );
+
+    localStorage.removeItem(
+      'token'
+    );
+
+    localStorage.removeItem(
+      'user'
+    );
+
+
+    if (
+      typeof window !== 'undefined'
+    ) {
+
+      window.location.href =
+        LOGIN_PORTAL_URL;
+    }
   }
 
 
-  ngOnDestroy(): void { this.stopSessionPolling(); }
+  // ============================================================
+  // DESTROY
+  // ============================================================
+
+  ngOnDestroy(): void {
+
+    this.stopSessionPolling();
+  }
+
 }

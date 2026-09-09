@@ -1,0 +1,46 @@
+﻿{
+    "timestamp":  "2026-09-08 16:23:54",
+    "computer":  "DESKTOP-38G9ORF",
+    "overallStatus":  "CRITICAL",
+    "system":  {
+                   "cpu":  {
+                               "usage":  13.71,
+                               "status":  "NORMAL"
+                           },
+                   "memory":  {
+                                  "usage":  47.67,
+                                  "status":  "NORMAL"
+                              },
+                   "disk":  {
+                                "drive":  "C:",
+                                "usage":  90.63,
+                                "status":  "CRITICAL"
+                            }
+               },
+    "services":  {
+                     "angular":  {
+                                     "status":  "DOWN",
+                                     "httpStatus":  0,
+                                     "responseTime":  21070.45,
+                                     "url":  "http://192.168.29.216:8200/welcome",
+                                     "error":  "Unable to connect to the remote server"
+                                 },
+                     "backend":  {
+                                     "status":  "DOWN",
+                                     "port":  8080,
+                                     "responseTime":  21118.13,
+                                     "host":  "192.168.29.216",
+                                     "error":  "TCP connection to port 8080 failed"
+                                 }
+                 },
+    "alerts":  {
+                   "warnings":  [
+
+                                ],
+                   "critical":  [
+                                    "Disk usage is 90.63%",
+                                    "Angular application is DOWN",
+                                    "Backend port 8080 is DOWN"
+                                ]
+               }
+}
