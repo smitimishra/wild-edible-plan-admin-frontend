@@ -2,6 +2,7 @@ import {
   Component,
   HostListener,
   OnInit,
+  OnDestroy,
   ChangeDetectorRef
 } from '@angular/core';
 
@@ -14,7 +15,9 @@ import {
   Router
 } from '@angular/router';
 
-import { FormsModule } from '@angular/forms';
+import {
+  FormsModule
+} from '@angular/forms';
 
 import {
   DatePipe,
@@ -29,7 +32,9 @@ import {
   RequestService
 } from '../../services/request';
 
-import { SessionPopupComponent } from '../../components/session-popup/session-popup';
+import {
+  SessionPopupComponent
+} from '../../components/session-popup/session-popup';
 
 
 @Component({
@@ -44,7 +49,7 @@ import { SessionPopupComponent } from '../../components/session-popup/session-po
 
   templateUrl: './manager.html'
 })
-export class Manager implements OnInit {
+export class Manager implements OnInit, OnDestroy {
 
   // ============================================================
   // USER
@@ -54,14 +59,55 @@ export class Manager implements OnInit {
 
 
   // ============================================================
+  // SIDEBAR
+  // ============================================================
+
+  activeMenu = 'dashboard';
+
+  settingsExpanded = false;
+
+  themesExpanded = false;
+
+
+  // ============================================================
+  // THEME
+  // ============================================================
+
+  selectedTheme = 'default';
+
+  private systemThemeMediaQuery: MediaQueryList | null = null;
+
+  private readonly systemThemeListener =
+    (event: MediaQueryListEvent): void => {
+
+      if (this.selectedTheme === 'default') {
+
+        this.applySystemTheme(
+          event.matches
+        );
+
+      }
+
+    };
+
+
+  // ============================================================
   // REQUEST DATA
   // ============================================================
 
   requests: any[] = [];
 
+  pendingRequests: any[] = [];
+
+  approvedRequests: any[] = [];
+
   pendingCount = 0;
 
+  approvedCount = 0;
+
   loading = false;
+
+  loadingApproved = false;
 
   message = '';
 
@@ -112,7 +158,9 @@ export class Manager implements OnInit {
   @HostListener('document:mousemove')
   @HostListener('document:click')
   onUserActivity(): void {
+
     this.authService.checkSessionOnActivity();
+
   }
 
 
@@ -122,108 +170,383 @@ export class Manager implements OnInit {
 
   ngOnInit(): void {
 
-    /*
-     * ==========================================================
-     * JWT FROM URL
-     * ==========================================================
-     *
-     * Expected URL:
-     *
-     * /manager?token=YOUR_JWT_TOKEN
-     *
-     * This follows the same authentication pattern already used
-     * by admin.ts.
-     *
-     * The token from the URL is first saved into localStorage.
-     * Only after that do we load Manager data.
-     */
+    // ----------------------------------------------------------
+    // LOAD SAVED THEME
+    // ----------------------------------------------------------
 
-    this.route.queryParamMap.subscribe(params => {
+    const savedTheme =
+      localStorage.getItem('reviewer-theme');
 
-      const urlToken =
-        params.get('token')?.trim() || null;
+    if (
+      savedTheme === 'light' ||
+      savedTheme === 'dark' ||
+      savedTheme === 'default'
+    ) {
 
-      const managerRoles = [
-        'MANAGER',
-        'GENERAL MANAGER',
-        'ASSISTANT MANAGER'
-      ];
+      this.selectedTheme =
+        savedTheme;
+
+    }
 
 
-      // --------------------------------------------------------
-      // TOKEN FOUND IN URL
-      // --------------------------------------------------------
+    // ----------------------------------------------------------
+    // SYSTEM THEME LISTENER
+    // ----------------------------------------------------------
 
-      if (urlToken) {
-
-        console.log(
-          'JWT token received from Manager URL'
-        );
-
-        this.authService.saveToken(
-          urlToken
-        );
-
-      }
-
-      const token =
-        this.authService.getToken();
-
-      const tokenRole =
-        this.authService.getTokenRole(token);
-
-
-      // --------------------------------------------------------
-      // CHECK TOKEN
-      // --------------------------------------------------------
-
-      if (
-        !token ||
-        this.authService.isTokenExpired(token) ||
-        !managerRoles.includes(tokenRole || '')
-      ) {
-
-        console.error(
-          'Manager - A valid manager token is required.'
-        );
-
-        this.authService.logout();
-
-        this.router.navigate([
-          '/login'
-        ]);
-
-        return;
-      }
-
-
-      console.log(
-        'Manager authentication token is available'
+    this.systemThemeMediaQuery =
+      window.matchMedia(
+        '(prefers-color-scheme: dark)'
       );
 
-
-      // --------------------------------------------------------
-      // START SESSION POLLING
-      // Redirects to login portal if session is invalidated
-      // --------------------------------------------------------
-
-      this.authService.startSessionPolling();
+    this.systemThemeMediaQuery.addEventListener(
+      'change',
+      this.systemThemeListener
+    );
 
 
-      // --------------------------------------------------------
-      // LOAD USER
-      // --------------------------------------------------------
+    // ----------------------------------------------------------
+    // APPLY INITIAL THEME
+    // ----------------------------------------------------------
 
-      this.loadUser();
+    if (this.selectedTheme === 'dark') {
+
+      document.documentElement.classList.add(
+        'dark'
+      );
+
+    } else if (
+      this.selectedTheme === 'light'
+    ) {
+
+      document.documentElement.classList.remove(
+        'dark'
+      );
+
+    } else {
+
+      this.applySystemTheme(
+        this.systemThemeMediaQuery.matches
+      );
+
+    }
 
 
-      // --------------------------------------------------------
-      // LOAD MANAGER REQUESTS
-      // --------------------------------------------------------
+    // ----------------------------------------------------------
+    // JWT FROM URL
+    // ----------------------------------------------------------
+
+    this.route.queryParamMap.subscribe(
+      params => {
+
+        const urlToken =
+          params.get('token')?.trim() ||
+          null;
+
+
+        // ------------------------------------------------------
+        // REVIEWER ROLE
+        // ------------------------------------------------------
+
+        const reviewerRoles = [
+          'REVIEWER'
+        ];
+
+
+        // ------------------------------------------------------
+        // TOKEN FOUND IN URL
+        // ------------------------------------------------------
+
+        if (urlToken) {
+
+          console.log(
+            'JWT token received from Reviewer URL'
+          );
+
+          this.authService.saveToken(
+            urlToken
+          );
+
+        }
+
+
+        
+
+
+    
+        
+
+
+        // ------------------------------------------------------
+        // AUTHENTICATED
+        // ------------------------------------------------------
+
+        console.log(
+          'Reviewer authentication token is available'
+        );
+
+
+        // ------------------------------------------------------
+        // START SESSION POLLING
+        // ------------------------------------------------------
+
+        this.authService.startSessionPolling();
+
+
+        // ------------------------------------------------------
+        // LOAD USER
+        // ------------------------------------------------------
+
+        this.loadUser();
+
+
+        // ------------------------------------------------------
+        // LOAD REVIEWER REQUESTS
+        // ------------------------------------------------------
+
+        this.loadPendingRequests();
+
+        this.loadApprovedRequests();
+
+      }
+    );
+
+  }
+
+
+  // ============================================================
+  // DESTROY
+  // ============================================================
+
+  ngOnDestroy(): void {
+
+    if (this.systemThemeMediaQuery) {
+
+      this.systemThemeMediaQuery.removeEventListener(
+        'change',
+        this.systemThemeListener
+      );
+
+    }
+
+  }
+
+
+  // ============================================================
+  // SIDEBAR MENU
+  // ============================================================
+
+  selectMenu(menu: string): void {
+
+    this.activeMenu =
+      menu;
+
+
+    // ----------------------------------------------------------
+    // DASHBOARD
+    // ----------------------------------------------------------
+
+    if (menu === 'dashboard') {
 
       this.loadPendingRequests();
 
-    });
+      this.loadApprovedRequests();
+
+      return;
+
+    }
+
+
+    // ----------------------------------------------------------
+    // PENDING APPROVALS
+    // ----------------------------------------------------------
+
+    if (
+      menu === 'pending-approvals'
+    ) {
+
+      this.loadPendingRequests();
+
+      return;
+
+    }
+
+
+    // ----------------------------------------------------------
+    // APPROVED REQUESTS
+    // ----------------------------------------------------------
+
+    if (
+      menu === 'approved-requests'
+    ) {
+
+      this.loadApprovedRequests();
+
+      return;
+
+    }
+
+  }
+
+
+  // ============================================================
+  // REFRESH DASHBOARD
+  // ============================================================
+
+  refreshDashboard(): void {
+
+    this.message = '';
+
+    this.loadPendingRequests();
+
+    this.loadApprovedRequests();
+
+  }
+
+
+  // ============================================================
+  // TOGGLE SETTINGS
+  // ============================================================
+
+  toggleSettings(): void {
+
+    this.settingsExpanded =
+      !this.settingsExpanded;
+
+  }
+
+
+  // ============================================================
+  // TOGGLE THEMES
+  // ============================================================
+
+  toggleThemes(): void {
+
+    
+
+    this.themesExpanded =
+      !this.themesExpanded;
+
+  }
+
+
+  // ============================================================
+  // SELECT THEME
+  // ============================================================
+
+  selectTheme(theme: string): void {
+
+    if (
+      theme !== 'light' &&
+      theme !== 'dark' &&
+      theme !== 'default'
+    ) {
+
+      return;
+
+    }
+
+
+    this.selectedTheme =
+      theme;
+
+
+    localStorage.setItem(
+      'reviewer-theme',
+      theme
+    );
+
+
+    // ----------------------------------------------------------
+    // LIGHT
+    // ----------------------------------------------------------
+
+    if (theme === 'light') {
+
+      document.documentElement.classList.remove(
+        'dark'
+      );
+
+      return;
+
+    }
+
+
+    // ----------------------------------------------------------
+    // DARK
+    // ----------------------------------------------------------
+
+    if (theme === 'dark') {
+
+      document.documentElement.classList.add(
+        'dark'
+      );
+
+      return;
+
+    }
+
+
+    // ----------------------------------------------------------
+    // DEFAULT / SYSTEM
+    // ----------------------------------------------------------
+
+    const prefersDark =
+      window.matchMedia(
+        '(prefers-color-scheme: dark)'
+      ).matches;
+
+    this.applySystemTheme(
+      prefersDark
+    );
+
+  }
+
+
+  // ============================================================
+  // APPLY SYSTEM THEME
+  // ============================================================
+
+  private applySystemTheme(
+    prefersDark: boolean
+  ): void {
+
+    if (
+      this.selectedTheme !== 'default'
+    ) {
+
+      return;
+
+    }
+
+
+    if (prefersDark) {
+
+      document.documentElement.classList.add(
+        'dark'
+      );
+
+    } else {
+
+      document.documentElement.classList.remove(
+        'dark'
+      );
+
+    }
+
+  }
+
+
+  // ============================================================
+  // CHECK SELECTED THEME
+  // ============================================================
+
+  isThemeSelected(
+    theme: string
+  ): boolean {
+
+    return (
+      this.selectedTheme === theme
+    );
 
   }
 
@@ -234,45 +557,91 @@ export class Manager implements OnInit {
 
   loadUser(): void {
 
-    // First try the user object maintained by AuthService.
-    this.user = this.authService.getUser();
+    // ----------------------------------------------------------
+    // FIRST TRY AUTH SERVICE
+    // ----------------------------------------------------------
 
-    // In the Manager SSO flow the JWT can be valid even when no user
-    // object has been stored in localStorage. Decode the same token
-    // used for authentication so Manager pages still know the role.
+    this.user =
+      this.authService.getUser();
+
+
+    // ----------------------------------------------------------
+    // FALLBACK → JWT PAYLOAD
+    // ----------------------------------------------------------
+
     if (!this.user) {
 
-      const token = this.authService.getToken();
+      const token =
+        this.authService.getToken();
+
 
       if (token) {
+
         try {
-          const payload = JSON.parse(
-            atob(
-              token.split('.')[1]
+
+          const tokenParts =
+            token.split('.');
+
+
+          if (
+            tokenParts.length >= 2
+          ) {
+
+            const payloadPart =
+              tokenParts[1];
+
+
+            const normalizedPayload =
+              payloadPart
                 .replace(/-/g, '+')
                 .replace(/_/g, '/')
                 .padEnd(
-                  token.split('.')[1].length +
-                  (4 - token.split('.')[1].length % 4) % 4,
+                  payloadPart.length +
+                  (
+                    4 -
+                    payloadPart.length % 4
+                  ) % 4,
                   '='
+                );
+
+
+            const payload =
+              JSON.parse(
+                atob(
+                  normalizedPayload
                 )
-            )
+              );
+
+
+            this.user =
+              payload;
+
+          }
+
+        } catch (error) {
+
+          console.error(
+            'Reviewer - Failed to decode JWT:',
+            error
           );
 
-          this.user = payload;
-        } catch (error) {
-          console.error('Manager - Failed to decode JWT:', error);
         }
+
       }
+
     }
 
-    console.log('Manager user:', this.user);
+
+    console.log(
+      'Reviewer user:',
+      this.user
+    );
 
   }
 
 
   // ============================================================
-  // LOAD PENDING MANAGER REQUESTS
+  // LOAD PENDING REVIEWER REQUESTS
   // ============================================================
 
   loadPendingRequests(): void {
@@ -288,7 +657,7 @@ export class Manager implements OnInit {
     if (!token) {
 
       console.error(
-        'Manager - Cannot load requests because JWT is missing.'
+        'Reviewer - Cannot load requests because JWT is missing.'
       );
 
       this.router.navigate([
@@ -296,16 +665,23 @@ export class Manager implements OnInit {
       ]);
 
       return;
+
     }
 
 
-    this.loading = true;
+    this.loading =
+      true;
 
-    this.message = '';
+    this.message =
+      '';
 
+
+    // ----------------------------------------------------------
+    // CALL REVIEWER API
+    // ----------------------------------------------------------
 
     this.requestService
-      .getPendingManagerRequests()
+      .getPendingReviewerRequests()
       .subscribe({
 
         // ======================================================
@@ -315,26 +691,14 @@ export class Manager implements OnInit {
         next: (response: any) => {
 
           console.log(
-            'Pending manager requests:',
+            'Pending reviewer requests:',
             response
           );
 
 
-          /*
-           * Backend may return:
-           *
-           * [
-           *   ...
-           * ]
-           *
-           * OR:
-           *
-           * {
-           *   requests: [...]
-           * }
-           */
-
-          if (Array.isArray(response)) {
+          if (
+            Array.isArray(response)
+          ) {
 
             this.requests =
               response;
@@ -342,16 +706,26 @@ export class Manager implements OnInit {
           } else {
 
             this.requests =
-              response?.requests || [];
+              response?.requests ||
+              response?.pendingRequests ||
+              [];
 
           }
+
+
+          // Keep a separate reference for the template.
+
+          this.pendingRequests = [
+            ...this.requests
+          ];
 
 
           this.pendingCount =
             this.requests.length;
 
 
-          this.loading = false;
+          this.loading =
+            false;
 
 
           this.cdr.detectChanges();
@@ -382,10 +756,12 @@ export class Manager implements OnInit {
         // ERROR
         // ======================================================
 
-        error: (error: HttpErrorResponse) => {
+        error: (
+          error: HttpErrorResponse
+        ) => {
 
           console.error(
-            'Failed to load manager requests:',
+            'Failed to load reviewer requests:',
             error
           );
 
@@ -395,25 +771,34 @@ export class Manager implements OnInit {
           );
 
 
-          this.loading = false;
+          this.loading =
+            false;
+
+          this.requests =
+            [];
+
+          this.pendingRequests =
+            [];
+
+          this.pendingCount =
+            0;
 
 
           this.message =
             error.error?.message ||
-            'Failed to load pending requests.';
+            'Failed to load pending reviewer requests.';
 
 
-          /*
-           * If the backend says the token is invalid/expired,
-           * send the Manager back to login.
-           */
+          // ----------------------------------------------------
+          // UNAUTHORIZED
+          // ----------------------------------------------------
 
           if (
             error.status === 401
           ) {
 
             console.error(
-              'Manager authentication failed.'
+              'Reviewer authentication failed.'
             );
 
             this.authService.logout();
@@ -423,6 +808,120 @@ export class Manager implements OnInit {
             ]);
 
             return;
+
+          }
+
+
+          this.cdr.detectChanges();
+
+        }
+
+      });
+
+  }
+
+
+  // ============================================================
+  // LOAD APPROVED REQUESTS
+  // ============================================================
+
+  loadApprovedRequests(): void {
+
+    this.loadingApproved =
+      true;
+
+
+    this.requestService
+      .getApprovedRequests()
+      .subscribe({
+
+        // ======================================================
+        // SUCCESS
+        // ======================================================
+
+        next: (response: any) => {
+
+          console.log(
+            'Approved requests:',
+            response
+          );
+
+
+          if (
+            Array.isArray(response)
+          ) {
+
+            this.approvedRequests =
+              response;
+
+          } else {
+
+            this.approvedRequests =
+              response?.requests ||
+              response?.approvedRequests ||
+              [];
+
+          }
+
+
+          this.approvedCount =
+            this.approvedRequests.length;
+
+
+          this.loadingApproved =
+            false;
+
+
+          this.cdr.detectChanges();
+
+        },
+
+
+        // ======================================================
+        // ERROR
+        // ======================================================
+
+        error: (
+          error: HttpErrorResponse
+        ) => {
+
+          console.error(
+            'Failed to load approved requests:',
+            error
+          );
+
+          console.error(
+            'Backend response:',
+            error.error
+          );
+
+
+          this.approvedRequests =
+            [];
+
+          this.approvedCount =
+            0;
+
+          this.loadingApproved =
+            false;
+
+
+          // ----------------------------------------------------
+          // UNAUTHORIZED
+          // ----------------------------------------------------
+
+          if (
+            error.status === 401
+          ) {
+
+            this.authService.logout();
+
+            this.router.navigate([
+              '/login'
+            ]);
+
+            return;
+
           }
 
 
@@ -451,6 +950,7 @@ export class Manager implements OnInit {
       );
 
       return;
+
     }
 
 
@@ -465,61 +965,163 @@ export class Manager implements OnInit {
         next: (response: any) => {
 
           console.log(
-            'Request details:',
+            'Reviewer request details:',
             response
           );
 
 
-          const index =
+          // ----------------------------------------------------
+          // UPDATE PENDING REQUEST
+          // ----------------------------------------------------
+
+          const pendingIndex =
             this.requests.findIndex(
               (request: any) =>
                 request.id === requestId
             );
 
 
-          if (index === -1) {
+          if (
+            pendingIndex !== -1
+          ) {
 
-            console.warn(
-              'Request not found in current list:',
-              requestId
-            );
+            const detailedRequest =
+              response?.request ||
+              response;
 
-            return;
+
+            this.requests[
+              pendingIndex
+            ] = {
+
+              ...this.requests[
+                pendingIndex
+              ],
+
+              ...detailedRequest,
+
+              attachments:
+                response?.attachments ||
+                detailedRequest?.attachments ||
+                [],
+
+              approval_history:
+                response?.approval_history ||
+                detailedRequest?.approval_history ||
+                [],
+
+              plant_details:
+                response?.plant_details ||
+                detailedRequest?.plant_details ||
+                null
+
+            };
+
+
+            this.pendingRequests = [
+              ...this.requests
+            ];
+
           }
 
 
-          const detailedRequest =
-            response?.request ||
-            response;
+          // ----------------------------------------------------
+          // UPDATE APPROVED REQUEST
+          // ----------------------------------------------------
+
+          const approvedIndex =
+            this.approvedRequests.findIndex(
+              (request: any) =>
+                request.id === requestId
+            );
 
 
-          this.requests[index] = {
+          if (
+            approvedIndex !== -1
+          ) {
 
-            ...this.requests[index],
+            const detailedRequest =
+              response?.request ||
+              response;
 
-            ...detailedRequest,
 
-            attachments:
-              response?.attachments ||
-              detailedRequest?.attachments ||
-              [],
+            this.approvedRequests[
+              approvedIndex
+            ] = {
 
-            approval_history:
-              response?.approval_history ||
-              detailedRequest?.approval_history ||
-              [],
+              ...this.approvedRequests[
+                approvedIndex
+              ],
 
-            plant_details:
-              response?.plant_details ||
-              detailedRequest?.plant_details ||
-              null
+              ...detailedRequest,
 
-          };
+              attachments:
+                response?.attachments ||
+                detailedRequest?.attachments ||
+                [],
+
+              approval_history:
+                response?.approval_history ||
+                detailedRequest?.approval_history ||
+                [],
+
+              plant_details:
+                response?.plant_details ||
+                detailedRequest?.plant_details ||
+                null
+
+            };
+
+          }
 
 
           this.requests = [
             ...this.requests
           ];
+
+          this.approvedRequests = [
+            ...this.approvedRequests
+          ];
+
+
+          // ----------------------------------------------------
+          // UPDATE SELECTED REQUEST
+          // ----------------------------------------------------
+
+          if (
+            this.selectedRequest?.id ===
+            requestId
+          ) {
+
+            const updatedRequest =
+              response?.request ||
+              response;
+
+
+            this.selectedRequest = {
+
+              ...this.selectedRequest,
+
+              ...updatedRequest,
+
+              attachments:
+                response?.attachments ||
+                updatedRequest?.attachments ||
+                [],
+
+              approval_history:
+                response?.approval_history ||
+                updatedRequest?.approval_history ||
+                [],
+
+              plant_details:
+                response?.plant_details ||
+                updatedRequest?.plant_details ||
+                null
+
+            };
+
+          }
 
 
           this.cdr.detectChanges();
@@ -527,8 +1129,7 @@ export class Manager implements OnInit {
 
           console.log(
             'Attachments loaded for request',
-            requestId,
-            this.requests[index].attachments
+            requestId
           );
 
         },
@@ -538,7 +1139,9 @@ export class Manager implements OnInit {
         // ERROR
         // ======================================================
 
-        error: (error: HttpErrorResponse) => {
+        error: (
+          error: HttpErrorResponse
+        ) => {
 
           console.error(
             `Failed to load request ${requestId}:`,
@@ -580,17 +1183,17 @@ export class Manager implements OnInit {
       ]);
 
       return;
+
     }
 
 
     /*
-     * IMPORTANT:
+     * Keep the existing route for compatibility.
      *
-     * We also pass the JWT through the URL when opening
-     * Manager request details.
+     * If your routing has already been changed to:
+     * /reviewer/request/:id
      *
-     * This keeps the authentication flow consistent across
-     * Manager pages.
+     * then change the route below accordingly.
      */
 
     this.router.navigate(
@@ -621,14 +1224,19 @@ export class Manager implements OnInit {
 
 
     this.scientificName =
-      request?.scientific_name || '';
+      request?.scientific_name ||
+      request?.request_data?.scientific_name ||
+      '';
 
 
     this.description =
-      request?.description || '';
+      request?.description ||
+      request?.request_data?.description ||
+      '';
 
 
-    this.comments = '';
+    this.comments =
+      '';
 
 
     if (
@@ -653,26 +1261,35 @@ export class Manager implements OnInit {
 
   clearSelectedRequest(): void {
 
-    this.selectedRequest = null;
+    this.selectedRequest =
+      null;
 
-    this.scientificName = '';
+    this.scientificName =
+      '';
 
-    this.description = '';
+    this.description =
+      '';
 
-    this.comments = '';
+    this.comments =
+      '';
 
-    this.selectedImageFile = null;
+    this.selectedImageFile =
+      null;
 
   }
 
 
   // ============================================================
-  // MANAGER APPROVE REQUEST
+  // REVIEWER APPROVE REQUEST
   // ============================================================
 
   approveRequest(
     id: number
   ): void {
+
+    // ----------------------------------------------------------
+    // VALIDATE SCIENTIFIC NAME
+    // ----------------------------------------------------------
 
     if (
       !this.scientificName.trim()
@@ -682,8 +1299,13 @@ export class Manager implements OnInit {
         'Scientific name is required.';
 
       return;
+
     }
 
+
+    // ----------------------------------------------------------
+    // VALIDATE DESCRIPTION
+    // ----------------------------------------------------------
 
     if (
       !this.description.trim()
@@ -693,10 +1315,12 @@ export class Manager implements OnInit {
         'Description is required.';
 
       return;
+
     }
 
 
-    this.message = '';
+    this.message =
+      '';
 
 
     const data = {
@@ -713,8 +1337,12 @@ export class Manager implements OnInit {
     };
 
 
+    // ----------------------------------------------------------
+    // REVIEWER APPROVAL API
+    // ----------------------------------------------------------
+
     this.requestService
-      .managerApprove(
+      .reviewerApprove(
         id,
         data
       )
@@ -724,16 +1352,18 @@ export class Manager implements OnInit {
         // SUCCESS
         // ======================================================
 
-        next: (response: any) => {
+        next: (
+          response: any
+        ) => {
 
           console.log(
-            'Manager approval successful:',
+            'Reviewer approval successful:',
             response
           );
 
 
           this.message =
-            'Request approved successfully.';
+            'Request approved successfully and sent to HR.';
 
 
           this.clearSelectedRequest();
@@ -748,10 +1378,12 @@ export class Manager implements OnInit {
         // ERROR
         // ======================================================
 
-        error: (error: HttpErrorResponse) => {
+        error: (
+          error: HttpErrorResponse
+        ) => {
 
           console.error(
-            'Manager approval failed:',
+            'Reviewer approval failed:',
             error
           );
 
@@ -777,6 +1409,7 @@ export class Manager implements OnInit {
             ]);
 
             return;
+
           }
 
 
@@ -801,16 +1434,22 @@ export class Manager implements OnInit {
       this.comments.trim();
 
 
+    // ----------------------------------------------------------
+    // COMMENTS REQUIRED
+    // ----------------------------------------------------------
+
     if (!trimmedComments) {
 
       this.message =
         'Please enter rejection comments.';
 
       return;
+
     }
 
 
-    this.message = '';
+    this.message =
+      '';
 
 
     const data = {
@@ -820,6 +1459,10 @@ export class Manager implements OnInit {
 
     };
 
+
+    // ----------------------------------------------------------
+    // REJECTION API
+    // ----------------------------------------------------------
 
     this.requestService
       .reject(
@@ -832,10 +1475,12 @@ export class Manager implements OnInit {
         // SUCCESS
         // ======================================================
 
-        next: (response: any) => {
+        next: (
+          response: any
+        ) => {
 
           console.log(
-            'Request rejected:',
+            'Reviewer request rejected:',
             response
           );
 
@@ -856,7 +1501,9 @@ export class Manager implements OnInit {
         // ERROR
         // ======================================================
 
-        error: (error: HttpErrorResponse) => {
+        error: (
+          error: HttpErrorResponse
+        ) => {
 
           console.error(
             'Request rejection failed:',
@@ -885,6 +1532,7 @@ export class Manager implements OnInit {
             ]);
 
             return;
+
           }
 
 
@@ -918,6 +1566,7 @@ export class Manager implements OnInit {
         null;
 
       return;
+
     }
 
 
@@ -931,18 +1580,22 @@ export class Manager implements OnInit {
 
     if (
       !file.type ||
-      !file.type.startsWith('image/')
+      !file.type.startsWith(
+        'image/'
+      )
     ) {
 
       this.message =
         'Please select a valid image file.';
 
-      input.value = '';
+      input.value =
+        '';
 
       this.selectedImageFile =
         null;
 
       return;
+
     }
 
 
@@ -961,16 +1614,19 @@ export class Manager implements OnInit {
       this.message =
         'Image size must not exceed 5 MB.';
 
-      input.value = '';
+      input.value =
+        '';
 
       this.selectedImageFile =
         null;
 
       return;
+
     }
 
 
-    this.message = '';
+    this.message =
+      '';
 
     this.selectedImageFile =
       file;
@@ -992,12 +1648,15 @@ export class Manager implements OnInit {
     requestId: number
   ): void {
 
-    if (!this.selectedImageFile) {
+    if (
+      !this.selectedImageFile
+    ) {
 
       this.message =
         'Please select an image first.';
 
       return;
+
     }
 
 
@@ -1007,13 +1666,15 @@ export class Manager implements OnInit {
         'Invalid request ID.';
 
       return;
+
     }
 
 
     this.uploadingAttachment =
       true;
 
-    this.message = '';
+    this.message =
+      '';
 
 
     this.requestService
@@ -1027,7 +1688,9 @@ export class Manager implements OnInit {
         // SUCCESS
         // ======================================================
 
-        next: (response: any) => {
+        next: (
+          response: any
+        ) => {
 
           console.log(
             'Image uploaded successfully:',
@@ -1047,6 +1710,15 @@ export class Manager implements OnInit {
             false;
 
 
+          // ----------------------------------------------------
+          // RELOAD REQUEST
+          // ----------------------------------------------------
+
+          this.loadRequestDetails(
+            requestId
+          );
+
+
           this.loadPendingRequests();
 
         },
@@ -1056,7 +1728,9 @@ export class Manager implements OnInit {
         // ERROR
         // ======================================================
 
-        error: (error: HttpErrorResponse) => {
+        error: (
+          error: HttpErrorResponse
+        ) => {
 
           console.error(
             'Image upload failed:',
@@ -1089,6 +1763,7 @@ export class Manager implements OnInit {
             ]);
 
             return;
+
           }
 
 
@@ -1116,13 +1791,15 @@ export class Manager implements OnInit {
         'Invalid attachment ID.';
 
       return;
+
     }
 
 
     this.deletingAttachment =
       true;
 
-    this.message = '';
+    this.message =
+      '';
 
 
     this.requestService
@@ -1135,7 +1812,9 @@ export class Manager implements OnInit {
         // SUCCESS
         // ======================================================
 
-        next: (response: any) => {
+        next: (
+          response: any
+        ) => {
 
           console.log(
             'Image deleted successfully:',
@@ -1151,6 +1830,17 @@ export class Manager implements OnInit {
             false;
 
 
+          if (
+            requestId
+          ) {
+
+            this.loadRequestDetails(
+              requestId
+            );
+
+          }
+
+
           this.loadPendingRequests();
 
         },
@@ -1160,7 +1850,9 @@ export class Manager implements OnInit {
         // ERROR
         // ======================================================
 
-        error: (error: HttpErrorResponse) => {
+        error: (
+          error: HttpErrorResponse
+        ) => {
 
           console.error(
             'Image deletion failed:',
@@ -1193,6 +1885,7 @@ export class Manager implements OnInit {
             ]);
 
             return;
+
           }
 
 
@@ -1223,6 +1916,7 @@ export class Manager implements OnInit {
     if (!confirmed) {
 
       return;
+
     }
 
 
@@ -1249,13 +1943,15 @@ export class Manager implements OnInit {
         'Invalid attachment ID.';
 
       return;
+
     }
 
 
     this.downloadingAttachment =
       true;
 
-    this.message = '';
+    this.message =
+      '';
 
 
     this.requestService
@@ -1268,7 +1964,9 @@ export class Manager implements OnInit {
         // SUCCESS
         // ======================================================
 
-        next: (blob: Blob) => {
+        next: (
+          blob: Blob
+        ) => {
 
           console.log(
             'Image downloaded successfully.'
@@ -1282,7 +1980,9 @@ export class Manager implements OnInit {
 
 
           const link =
-            document.createElement('a');
+            document.createElement(
+              'a'
+            );
 
 
           link.href =
@@ -1294,7 +1994,17 @@ export class Manager implements OnInit {
             `plant-image-${attachmentId}`;
 
 
+          document.body.appendChild(
+            link
+          );
+
+
           link.click();
+
+
+          document.body.removeChild(
+            link
+          );
 
 
           window.URL.revokeObjectURL(
@@ -1315,7 +2025,9 @@ export class Manager implements OnInit {
         // ERROR
         // ======================================================
 
-        error: (error: HttpErrorResponse) => {
+        error: (
+          error: HttpErrorResponse
+        ) => {
 
           console.error(
             'Image download failed:',
@@ -1328,6 +2040,7 @@ export class Manager implements OnInit {
 
 
           this.message =
+            error.error?.message ||
             'Failed to download image.';
 
 
@@ -1342,6 +2055,7 @@ export class Manager implements OnInit {
             ]);
 
             return;
+
           }
 
 
@@ -1411,13 +2125,160 @@ export class Manager implements OnInit {
 
 
   // ============================================================
+  // GET REQUEST DATA
+  // ============================================================
+
+  getRequestData(
+    request: any
+  ): any {
+
+    if (
+      !request
+    ) {
+
+      return {};
+
+    }
+
+
+    if (
+      request.request_data &&
+      typeof request.request_data === 'object'
+    ) {
+
+      return request.request_data;
+
+    }
+
+
+    return {};
+
+  }
+
+
+  // ============================================================
+  // GET PLANT NAME
+  // ============================================================
+
+  getPlantName(
+    request: any
+  ): string {
+
+    const data =
+      this.getRequestData(
+        request
+      );
+
+
+    return (
+      request?.plant_name ||
+      request?.plantName ||
+      data?.plant_name ||
+      data?.plantName ||
+      request?.scientific_name ||
+      data?.scientific_name ||
+      'Unnamed Plant'
+    );
+
+  }
+
+
+  // ============================================================
+  // GET COMMON NAME
+  // ============================================================
+
+  getCommonName(
+    request: any
+  ): string {
+
+    const data =
+      this.getRequestData(
+        request
+      );
+
+
+    return (
+      request?.common_name ||
+      request?.commonName ||
+      data?.common_name ||
+      data?.commonName ||
+      '-'
+    );
+
+  }
+
+
+  // ============================================================
+  // GET EMPLOYEE NAME
+  // ============================================================
+
+  getEmployeeName(
+    request: any
+  ): string {
+
+    const data =
+      this.getRequestData(
+        request
+      );
+
+
+    return (
+      request?.employee_name ||
+      request?.employeeName ||
+      data?.employee_name ||
+      data?.employeeName ||
+      data?.user_name ||
+      data?.userName ||
+      'Unknown'
+    );
+
+  }
+
+
+  // ============================================================
+  // GET REQUEST NUMBER
+  // ============================================================
+
+  getRequestNumber(
+    request: any
+  ): string {
+
+    return (
+      request?.request_number ||
+      request?.requestNumber ||
+      `REQ-${request?.id || ''}`
+    );
+
+  }
+
+
+  // ============================================================
+  // GET REQUEST DATE
+  // ============================================================
+
+  getRequestDate(
+    request: any
+  ): any {
+
+    return (
+      request?.created_at ||
+      request?.submitted_at ||
+      request?.created_date ||
+      request?.request_data?.created_at ||
+      null
+    );
+
+  }
+
+
+  // ============================================================
   // LOGOUT
   // ============================================================
 
   logout(): void {
 
     const confirmed =
-      confirm(
+      window.confirm(
         'Are you sure you want to logout?'
       );
 
@@ -1425,11 +2286,12 @@ export class Manager implements OnInit {
     if (!confirmed) {
 
       return;
+
     }
 
 
     this.authService.logout(
-      'http://192.168.29.216:8200/'
+      'http://192.168.29.51:8200/'
     );
 
   }

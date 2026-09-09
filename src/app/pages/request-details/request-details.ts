@@ -1,4 +1,8 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  OnInit
+} from '@angular/core';
 
 import {
   CommonModule,
@@ -24,8 +28,6 @@ import { RequestService } from '../../services/request';
 // ATTACHMENT
 // ============================================================
 
-
-
 interface RequestAttachment {
 
   id: number;
@@ -41,6 +43,9 @@ interface RequestAttachment {
   file_size: number | string;
 
   created_at: string;
+
+  image_type?: string;
+
 }
 
 
@@ -51,6 +56,8 @@ interface RequestAttachment {
 interface ApprovalHistory {
 
   id: number;
+
+  request_id?: number;
 
   approval_level: number;
 
@@ -65,11 +72,61 @@ interface ApprovalHistory {
   approver_name: string;
 
   approver_role: string;
+
+}
+
+
+// ============================================================
+// REQUEST DATA
+// ============================================================
+
+interface RequestData {
+
+  plant_name?: string;
+
+  common_name?: string;
+
+  scientific_name?: string;
+
+  description?: string;
+
+  family?: string;
+
+  habitat?: string;
+
+  distribution?: string;
+
+  edible_parts?: string;
+
+  nutritional_value?: string;
+
+  flowering_season?: string;
+
+  conservation_status?: string;
+
+  latitude?: number | string;
+
+  longitude?: number | string;
+
+  [key: string]: any;
+
 }
 
 
 // ============================================================
 // REQUEST MODEL
+// ============================================================
+//
+// Current approval_requests table:
+//
+// id
+// request_number
+// status
+// current_approval_level
+// request_data
+//
+// Extra fields are optional because the backend may return
+// employee information by joining user_table.
 // ============================================================
 
 interface RequestDetailsModel {
@@ -78,27 +135,34 @@ interface RequestDetailsModel {
 
   request_number: string;
 
-  employee_id: number;
-
-  employee_name: string;
-
-  employee_email: string;
-
-  request_type: string;
-
-  request_data: any;
-
   status: string;
 
   current_approval_level: number;
 
-  submitted_at: string;
+  request_data: RequestData;
 
-  completed_at: string | null;
+  attachments?: RequestAttachment[];
 
-  created_at: string;
+  approval_history?: ApprovalHistory[];
 
-  updated_at: string;
+  employee_id?: number;
+
+  employee_name?: string;
+
+  employee_email?: string;
+
+  employee_code?: string;
+
+  created_at?: string;
+
+  submitted_at?: string;
+
+  updated_at?: string;
+
+  completed_at?: string | null;
+
+  [key: string]: any;
+
 }
 
 
@@ -123,8 +187,6 @@ interface RequestDetailsModel {
 
 })
 export class RequestDetails implements OnInit {
-
-  
 
 
   // ============================================================
@@ -222,7 +284,7 @@ export class RequestDetails implements OnInit {
 
 
   // ============================================================
-  // SELECTED IMAGE FOR UPLOAD
+  // SELECTED IMAGE
   // ============================================================
 
   selectedImageFile: File | null = null;
@@ -255,7 +317,7 @@ export class RequestDetails implements OnInit {
   // ============================================================
 
   private readonly backendUrl =
-    'http://192.168.29.216:3001';
+    'http://192.168.29.51:3001';
 
 
   // ============================================================
@@ -282,27 +344,74 @@ export class RequestDetails implements OnInit {
   // ============================================================
 
   ngOnInit(): void {
-     
-     console.log('paramMap id:', this.route.snapshot.paramMap.get('id'));
-  console.log('full URL:', this.router.url);
+
+    console.log(
+      'Request Details URL:',
+      this.router.url
+    );
+
+    console.log(
+      'Request Details route params:',
+      this.route.snapshot.params
+    );
+
+    console.log(
+      'Request Details ID:',
+      this.route.snapshot.paramMap.get('id')
+    );
+
+
+    // ==========================================================
+    // CURRENT USER
+    // ==========================================================
+
     this.currentUser =
       this.authService.getUser();
+
 
     if (this.currentUser) {
 
       this.currentUserRole =
         String(
           this.currentUser.role || ''
-        ).trim().toUpperCase();
+        )
+          .trim()
+          .toUpperCase();
 
     }
 
-    const id =
-      Number(
-        this.route.snapshot.paramMap.get('id')
-      );
 
-    if (!id || id <= 0) {
+    // ==========================================================
+    // FALLBACK: LOAD USER ROLE FROM JWT
+    // ==========================================================
+    // The request-details page can still have a valid JWT even
+    // when the user object is missing from localStorage.
+    // The application now uses REVIEWER instead of MANAGER.
+    if (!this.currentUserRole) {
+      this.loadCurrentUserFromToken();
+    }
+
+
+    console.log(
+      'Current User:',
+      this.currentUser
+    );
+
+    console.log(
+      'Current User Role:',
+      this.currentUserRole
+    );
+
+
+    // ==========================================================
+    // REQUEST ID
+    // ==========================================================
+
+    const rawId =
+      this.route.snapshot.paramMap.get('id');
+
+
+    if (!rawId) {
 
       this.errorMessage =
         'Invalid request ID.';
@@ -311,103 +420,295 @@ export class RequestDetails implements OnInit {
 
     }
 
+
+    const id =
+      Number(rawId);
+
+
+    if (
+      !Number.isInteger(id) ||
+      id <= 0
+    ) {
+
+      console.error(
+        'Invalid request ID:',
+        rawId
+      );
+
+      this.errorMessage =
+        'Invalid request ID.';
+
+      return;
+
+    }
+
+
     this.loadRequest(id);
 
   }
 
 
   // ============================================================
+  // LOAD CURRENT USER FROM JWT
+  // ============================================================
+  // UI fallback only. Backend authorization remains authoritative.
+  // ============================================================
+
+  private loadCurrentUserFromToken(): void {
+    const token = this.authService.getToken();
+
+    if (!token) {
+      console.warn('No JWT token found.');
+      return;
+    }
+
+    try {
+      const parts = token.split('.');
+
+      if (parts.length !== 3) {
+        console.warn('Invalid JWT format.');
+        return;
+      }
+
+      const base64Payload = parts[1]
+        .replace(/-/g, '+')
+        .replace(/_/g, '/');
+
+      const paddedPayload =
+        base64Payload +
+        '='.repeat(
+          (4 - (base64Payload.length % 4)) % 4
+        );
+
+      const payload = JSON.parse(
+        atob(paddedPayload)
+      );
+
+      this.currentUser = payload;
+
+      this.currentUserRole =
+        String(
+          payload.role || ''
+        )
+          .trim()
+          .toUpperCase();
+
+      console.log(
+        'User loaded from JWT:',
+        this.currentUser
+      );
+
+      console.log(
+        'User role from JWT:',
+        this.currentUserRole
+      );
+
+    } catch (error) {
+      console.error(
+        'Failed to decode JWT:',
+        error
+      );
+    }
+  }
+
+
+  // ============================================================
   // LOAD REQUEST
-  //
-  // NOTE:
-  // The backend's GET /api/requests/:id endpoint returns a FLAT
-  // object - the request fields, "attachments", and
-  // "approval_history" are all top-level properties on the same
-  // JSON object (see getRequestById in requestcontroller.js).
-  //
-  // It does NOT return a nested { request: {...} } wrapper.
-  // The mapping below matches that flat shape.
   // ============================================================
 
   loadRequest(id: number): void {
+
+    if (
+      !Number.isInteger(id) ||
+      id <= 0
+    ) {
+
+      this.errorMessage =
+        'Invalid request ID.';
+
+      return;
+
+    }
+
 
     this.loading = true;
 
     this.errorMessage = '';
 
+    this.message = '';
+
+
+    console.log(
+      'Loading request ID:',
+      id
+    );
+
+
     this.requestService
       .getRequestById(id)
       .subscribe({
 
+        // ======================================================
+        // SUCCESS
+        // ======================================================
+
         next: (response: any) => {
 
-          // ----------------------------------------------------
-          // REQUEST
-          //
-          // The backend response IS the request object itself,
-          // not response.request.
-          // ----------------------------------------------------
-
-          this.request = response
-            ? {
-                ...response,
-                status: String(response.status || '').trim().toUpperCase()
-              }
-            : null;
+          console.log(
+            'Request details response:',
+            response
+          );
 
 
-          // ----------------------------------------------------
+          if (!response) {
+
+            this.request = null;
+
+            this.attachments = [];
+
+            this.approvalHistory = [];
+
+            this.loading = false;
+
+            this.errorMessage =
+              'Request not found.';
+
+            this.cdr.detectChanges();
+
+            return;
+
+          }
+
+
+          // ====================================================
+          // NORMALIZE REQUEST
+          // ====================================================
+
+          const loadedRequest:
+            RequestDetailsModel = {
+
+              ...response,
+
+              id:
+                Number(response.id),
+
+              request_number:
+                String(
+                  response.request_number || ''
+                ),
+
+              status:
+                String(
+                  response.status || ''
+                )
+                  .trim()
+                  .toUpperCase(),
+
+              current_approval_level:
+                Number(
+                  response.current_approval_level || 0
+                ),
+
+              request_data:
+                this.normalizeRequestData(
+                  response.request_data
+                )
+
+            };
+
+
+          // IMPORTANT:
+          // Store the local non-null object first.
+          // This prevents "Object is possibly null".
+
+          this.request =
+            loadedRequest;
+
+
+          // ====================================================
           // ATTACHMENTS
-          // ----------------------------------------------------
+          // ====================================================
+
+          const responseAttachments =
+            response.attachments;
+
 
           this.attachments =
             Array.isArray(
-              response?.attachments
+              responseAttachments
             )
-              ? response.attachments
+              ? responseAttachments
               : [];
 
+          console.log(
+            'Attachments loaded for request',
+            id,
+            this.attachments
+          );
 
-          // ----------------------------------------------------
+          if (this.attachments.length > 0) {
+            console.log(
+              'First attachment image URL:',
+              this.getImageUrl(
+                this.attachments[0].file_path
+              )
+            );
+          }
+
+
+          // ====================================================
           // APPROVAL HISTORY
-          // ----------------------------------------------------
+          // ====================================================
+
+          const responseHistory =
+            response.approval_history;
+
 
           this.approvalHistory =
             Array.isArray(
-              response?.approval_history
+              responseHistory
             )
-              ? response.approval_history
+              ? responseHistory
               : [];
 
 
-          // ----------------------------------------------------
+          // ====================================================
+          // REQUEST DATA
+          // ====================================================
+
+          const requestData:
+            RequestData =
+              loadedRequest.request_data || {};
+
+
+          this.scientificName =
+            String(
+              requestData.scientific_name ||
+              response.scientific_name ||
+              ''
+            );
+
+
+          this.description =
+            String(
+              requestData.description ||
+              response.description ||
+              ''
+            );
+
+
+          // ====================================================
           // RESET IMAGE VIEWER
-          // ----------------------------------------------------
+          // ====================================================
 
           this.currentImageIndex = 0;
 
           this.resetZoom();
 
 
-          // ----------------------------------------------------
-          // REQUEST DATA
-          // ----------------------------------------------------
-
-          const requestData =
-            this.request?.request_data || {};
-
-
-          this.scientificName =
-            requestData.scientific_name || '';
-
-
-          this.description =
-            requestData.description || '';
-
-
-          // ----------------------------------------------------
+          // ====================================================
           // FINISH
-          // ----------------------------------------------------
+          // ====================================================
 
           this.loading = false;
 
@@ -415,6 +716,10 @@ export class RequestDetails implements OnInit {
 
         },
 
+
+        // ======================================================
+        // ERROR
+        // ======================================================
 
         error: (
           error: HttpErrorResponse
@@ -425,6 +730,13 @@ export class RequestDetails implements OnInit {
             error
           );
 
+
+          console.error(
+            'Backend response:',
+            error.error
+          );
+
+
           this.loading = false;
 
           this.request = null;
@@ -433,15 +745,80 @@ export class RequestDetails implements OnInit {
 
           this.approvalHistory = [];
 
+
           this.errorMessage =
             error.error?.message ||
             'Failed to load request details.';
+
 
           this.cdr.detectChanges();
 
         }
 
       });
+
+  }
+
+
+  // ============================================================
+  // NORMALIZE REQUEST DATA
+  // ============================================================
+
+  private normalizeRequestData(
+    data: any
+  ): RequestData {
+
+    if (!data) {
+
+      return {};
+
+    }
+
+
+    if (
+      typeof data === 'string'
+    ) {
+
+      try {
+
+        const parsed =
+          JSON.parse(data);
+
+        if (
+          parsed &&
+          typeof parsed === 'object'
+        ) {
+
+          return parsed;
+
+        }
+
+        return {};
+
+      } catch (error) {
+
+        console.error(
+          'Unable to parse request_data:',
+          error
+        );
+
+        return {};
+
+      }
+
+    }
+
+
+    if (
+      typeof data === 'object'
+    ) {
+
+      return data as RequestData;
+
+    }
+
+
+    return {};
 
   }
 
@@ -458,6 +835,15 @@ export class RequestDetails implements OnInit {
     ) {
 
       return null;
+
+    }
+
+
+    if (
+      this.currentImageIndex < 0
+    ) {
+
+      this.currentImageIndex = 0;
 
     }
 
@@ -495,12 +881,8 @@ export class RequestDetails implements OnInit {
 
 
     if (
-      filePath.startsWith(
-        'http://'
-      ) ||
-      filePath.startsWith(
-        'https://'
-      )
+      filePath.startsWith('http://') ||
+      filePath.startsWith('https://')
     ) {
 
       return filePath;
@@ -512,15 +894,19 @@ export class RequestDetails implements OnInit {
       filePath.startsWith('/')
     ) {
 
-      return this.backendUrl +
-        filePath;
+      return (
+        this.backendUrl +
+        filePath
+      );
 
     }
 
 
-    return this.backendUrl +
+    return (
+      this.backendUrl +
       '/' +
-      filePath;
+      filePath
+    );
 
   }
 
@@ -606,6 +992,7 @@ export class RequestDetails implements OnInit {
     this.currentImageIndex =
       index;
 
+
     this.resetZoom();
 
     this.cdr.detectChanges();
@@ -621,7 +1008,13 @@ export class RequestDetails implements OnInit {
     attachment: RequestAttachment
   ): void {
 
-    if (!attachment?.id) {
+    if (
+      !attachment ||
+      !attachment.id
+    ) {
+
+      this.errorMessage =
+        'Invalid attachment.';
 
       return;
 
@@ -647,9 +1040,7 @@ export class RequestDetails implements OnInit {
 
 
           const link =
-            document.createElement(
-              'a'
-            );
+            document.createElement('a');
 
 
           link.href = url;
@@ -717,12 +1108,6 @@ export class RequestDetails implements OnInit {
 
   // ============================================================
   // IMAGE SELECTED
-  //
-  // Called by:
-  //
-  // (change)="onImageSelected($event)"
-  //
-  // in request-details.html
   // ============================================================
 
   onImageSelected(
@@ -732,10 +1117,6 @@ export class RequestDetails implements OnInit {
     const input =
       event.target as HTMLInputElement;
 
-
-    // ----------------------------------------------------------
-    // No file selected
-    // ----------------------------------------------------------
 
     if (
       !input.files ||
@@ -754,9 +1135,9 @@ export class RequestDetails implements OnInit {
       input.files[0];
 
 
-    // ----------------------------------------------------------
-    // Validate image type
-    // ----------------------------------------------------------
+    // ==========================================================
+    // IMAGE TYPE
+    // ==========================================================
 
     if (
       !file.type ||
@@ -778,11 +1159,9 @@ export class RequestDetails implements OnInit {
     }
 
 
-    // ----------------------------------------------------------
-    // Validate file size
-    //
-    // Backend limit = 5 MB
-    // ----------------------------------------------------------
+    // ==========================================================
+    // IMAGE SIZE
+    // ==========================================================
 
     const maxSize =
       5 * 1024 * 1024;
@@ -807,13 +1186,12 @@ export class RequestDetails implements OnInit {
     }
 
 
-    // ----------------------------------------------------------
-    // Store selected image
-    // ----------------------------------------------------------
+    // ==========================================================
+    // STORE FILE
+    // ==========================================================
 
     this.selectedImageFile =
       file;
-
 
     this.errorMessage = '';
 
@@ -827,18 +1205,23 @@ export class RequestDetails implements OnInit {
   // ============================================================
   // ADD IMAGE
   //
-  // Manager / HR only
+  // REVIEWER / HR ONLY
   // ============================================================
 
   addImage(
     requestId: number
   ): void {
 
-    // ----------------------------------------------------------
-    // Validate request
-    // ----------------------------------------------------------
+    const numericRequestId =
+      Number(requestId);
 
-    if (!requestId) {
+
+    if (
+      !Number.isInteger(
+        numericRequestId
+      ) ||
+      numericRequestId <= 0
+    ) {
 
       this.errorMessage =
         'Invalid request ID.';
@@ -848,12 +1231,8 @@ export class RequestDetails implements OnInit {
     }
 
 
-    // ----------------------------------------------------------
-    // Check role
-    // ----------------------------------------------------------
-
     if (
-      !this.isManager() &&
+      !this.isReviewer() &&
       !this.isHR()
     ) {
 
@@ -867,10 +1246,6 @@ export class RequestDetails implements OnInit {
     }
 
 
-    // ----------------------------------------------------------
-    // Check selected image
-    // ----------------------------------------------------------
-
     if (!this.selectedImageFile) {
 
       this.errorMessage =
@@ -883,10 +1258,6 @@ export class RequestDetails implements OnInit {
     }
 
 
-    // ----------------------------------------------------------
-    // Prevent duplicate upload
-    // ----------------------------------------------------------
-
     if (
       this.uploadingAttachment
     ) {
@@ -895,10 +1266,6 @@ export class RequestDetails implements OnInit {
 
     }
 
-
-    // ----------------------------------------------------------
-    // Start upload
-    // ----------------------------------------------------------
 
     this.uploadingAttachment =
       true;
@@ -910,13 +1277,9 @@ export class RequestDetails implements OnInit {
     this.cdr.detectChanges();
 
 
-    // ----------------------------------------------------------
-    // Upload
-    // ----------------------------------------------------------
-
     this.requestService
       .addAttachment(
-        requestId,
+        numericRequestId,
         this.selectedImageFile
       )
       .subscribe({
@@ -938,20 +1301,12 @@ export class RequestDetails implements OnInit {
             'Image added successfully.';
 
 
-          // ----------------------------------------------------
-          // Clear selected file
-          // ----------------------------------------------------
-
           this.selectedImageFile =
             null;
 
 
-          // ----------------------------------------------------
-          // Refresh request and image list
-          // ----------------------------------------------------
-
           this.loadRequest(
-            requestId
+            numericRequestId
           );
 
         },
@@ -994,18 +1349,19 @@ export class RequestDetails implements OnInit {
   // ============================================================
   // DELETE IMAGE
   //
-  // Manager / HR only
+  // REVIEWER / HR ONLY
   // ============================================================
 
   deleteImage(
     attachmentId: number
   ): void {
 
-    // ----------------------------------------------------------
-    // Validate attachment
-    // ----------------------------------------------------------
-
-    if (!attachmentId) {
+    if (
+      !Number.isInteger(
+        Number(attachmentId)
+      ) ||
+      Number(attachmentId) <= 0
+    ) {
 
       this.errorMessage =
         'Invalid attachment ID.';
@@ -1015,12 +1371,8 @@ export class RequestDetails implements OnInit {
     }
 
 
-    // ----------------------------------------------------------
-    // Check role
-    // ----------------------------------------------------------
-
     if (
-      !this.isManager() &&
+      !this.isReviewer() &&
       !this.isHR()
     ) {
 
@@ -1034,10 +1386,6 @@ export class RequestDetails implements OnInit {
     }
 
 
-    // ----------------------------------------------------------
-    // Prevent duplicate deletion
-    // ----------------------------------------------------------
-
     if (
       this.deletingAttachmentId !== null
     ) {
@@ -1046,10 +1394,6 @@ export class RequestDetails implements OnInit {
 
     }
 
-
-    // ----------------------------------------------------------
-    // Confirmation
-    // ----------------------------------------------------------
 
     const confirmed =
       window.confirm(
@@ -1064,12 +1408,8 @@ export class RequestDetails implements OnInit {
     }
 
 
-    // ----------------------------------------------------------
-    // Start deletion
-    // ----------------------------------------------------------
-
     this.deletingAttachmentId =
-      attachmentId;
+      Number(attachmentId);
 
     this.errorMessage = '';
 
@@ -1078,13 +1418,9 @@ export class RequestDetails implements OnInit {
     this.cdr.detectChanges();
 
 
-    // ----------------------------------------------------------
-    // Delete
-    // ----------------------------------------------------------
-
     this.requestService
       .deleteAttachment(
-        attachmentId
+        Number(attachmentId)
       )
       .subscribe({
 
@@ -1105,14 +1441,19 @@ export class RequestDetails implements OnInit {
             'Image deleted successfully.';
 
 
-          // --------------------------------------------------
-          // Refresh request and image list
-          // --------------------------------------------------
+          const loadedRequest =
+            this.request;
 
-          if (this.request?.id) {
+
+          if (
+            loadedRequest &&
+            Number.isInteger(
+              Number(loadedRequest.id)
+            )
+          ) {
 
             this.loadRequest(
-              this.request.id
+              Number(loadedRequest.id)
             );
 
           } else {
@@ -1164,7 +1505,11 @@ export class RequestDetails implements OnInit {
 
   openImageZoom(): void {
 
-    if (!this.currentAttachment) {
+    const attachment =
+      this.currentAttachment;
+
+
+    if (!attachment) {
 
       return;
 
@@ -1174,15 +1519,12 @@ export class RequestDetails implements OnInit {
     this.isImageZoomed =
       true;
 
-
     this.zoomScale =
       this.minZoom;
-
 
     this.panX = 0;
 
     this.panY = 0;
-
 
     this.cdr.detectChanges();
 
@@ -1289,19 +1631,15 @@ export class RequestDetails implements OnInit {
     this.zoomScale =
       this.minZoom;
 
-
     this.isImageZoomed =
       false;
-
 
     this.panX = 0;
 
     this.panY = 0;
 
-
     this.isDragging =
       false;
-
 
     this.isTouching =
       false;
@@ -1329,22 +1667,17 @@ export class RequestDetails implements OnInit {
 
     event.preventDefault();
 
-
     this.isDragging =
       true;
-
 
     this.dragStartX =
       event.clientX;
 
-
     this.dragStartY =
       event.clientY;
 
-
     this.initialPanX =
       this.panX;
-
 
     this.initialPanY =
       this.panY;
@@ -1443,14 +1776,11 @@ export class RequestDetails implements OnInit {
     this.touchStartX =
       touch.clientX;
 
-
     this.touchStartY =
       touch.clientY;
 
-
     this.touchInitialPanX =
       this.panX;
-
 
     this.touchInitialPanY =
       this.panY;
@@ -1654,8 +1984,16 @@ export class RequestDetails implements OnInit {
     type: string
   ): string {
 
+    if (!type) {
+
+      return 'Plant Approval';
+
+    }
+
+
     if (
-      type === 'PLANT'
+      String(type).trim().toUpperCase() ===
+      'PLANT'
     ) {
 
       return 'Plant Approval';
@@ -1663,8 +2001,7 @@ export class RequestDetails implements OnInit {
     }
 
 
-    return type ||
-      'Plant Approval';
+    return type;
 
   }
 
@@ -1677,11 +2014,17 @@ export class RequestDetails implements OnInit {
     status: string
   ): string {
 
-    switch (status) {
+    const normalizedStatus =
+      String(status || '')
+        .trim()
+        .toUpperCase();
 
-      case 'PENDING_MANAGER':
 
-        return 'Pending Manager Approval';
+    switch (normalizedStatus) {
+
+      case 'PENDING_REVIEWER':
+
+        return 'Pending Reviewer Approval';
 
 
       case 'PENDING_HR':
@@ -1724,12 +2067,22 @@ export class RequestDetails implements OnInit {
 
 
   // ============================================================
-  // MANAGER
+  // REVIEWER
   // ============================================================
 
-  isManager(): boolean {
+  isReviewer(): boolean {
 
+    // NOTE: The database/JWT may still issue the legacy role
+    // name "MANAGER" for reviewer accounts even though the rest
+    // of this app was migrated to use "REVIEWER". Accept both so
+    // the reviewer UI (edit fields, approve/reject, add/delete
+    // image) shows up regardless of which name the backend sends.
+    // Once every account's role_table row is renamed to REVIEWER,
+    // the "|| this.currentUserRole === 'MANAGER'" check below can
+    // be safely removed.
     return (
+      this.currentUserRole ===
+      'REVIEWER' ||
       this.currentUserRole ===
       'MANAGER'
     );
@@ -1752,15 +2105,26 @@ export class RequestDetails implements OnInit {
 
 
   // ============================================================
-  // MANAGER APPROVAL PERMISSION
+  // REVIEWER APPROVAL PERMISSION
   // ============================================================
 
-  canManagerApprove(): boolean {
+  canReviewerApprove(): boolean {
+
+    const currentRequest =
+      this.request;
+
+
+    if (!currentRequest) {
+
+      return false;
+
+    }
+
 
     return (
-      this.isManager() &&
-      this.request?.status ===
-      'PENDING_MANAGER'
+      this.isReviewer() &&
+      currentRequest.status ===
+      'PENDING_REVIEWER'
     );
 
   }
@@ -1772,9 +2136,20 @@ export class RequestDetails implements OnInit {
 
   canHRApprove(): boolean {
 
+    const currentRequest =
+      this.request;
+
+
+    if (!currentRequest) {
+
+      return false;
+
+    }
+
+
     return (
       this.isHR() &&
-      this.request?.status ===
+      currentRequest.status ===
       'PENDING_HR'
     );
 
@@ -1787,7 +2162,11 @@ export class RequestDetails implements OnInit {
 
   canReject(): boolean {
 
-    if (!this.request) {
+    const currentRequest =
+      this.request;
+
+
+    if (!currentRequest) {
 
       return false;
 
@@ -1797,16 +2176,16 @@ export class RequestDetails implements OnInit {
     return (
 
       (
-        this.isManager() &&
-        this.request.status ===
-        'PENDING_MANAGER'
+        this.isReviewer() &&
+        currentRequest.status ===
+        'PENDING_REVIEWER'
       )
 
       ||
 
       (
         this.isHR() &&
-        this.request.status ===
+        currentRequest.status ===
         'PENDING_HR'
       )
 
@@ -1821,7 +2200,17 @@ export class RequestDetails implements OnInit {
 
   approveRequest(): void {
 
-    if (!this.request) {
+    const currentRequest =
+      this.request;
+
+
+    // IMPORTANT:
+    // Local variable guarantees non-null below.
+
+    if (!currentRequest) {
+
+      this.errorMessage =
+        'Request information is not available.';
 
       return;
 
@@ -1829,26 +2218,43 @@ export class RequestDetails implements OnInit {
 
 
     const id =
-      this.request.id;
+      Number(currentRequest.id);
+
+
+    if (
+      !Number.isInteger(id) ||
+      id <= 0
+    ) {
+
+      this.errorMessage =
+        'Invalid request ID.';
+
+      return;
+
+    }
 
 
     // ==========================================================
-    // MANAGER APPROVAL
+    // REVIEWER APPROVAL
     // ==========================================================
 
-    if (this.isManager()) {
+    if (this.isReviewer()) {
 
       const scientificName =
         this.scientificName.trim();
 
 
-      const description =
+      const plantDescription =
         this.description.trim();
 
 
-      const managerComments =
+      const reviewerComments =
         this.comments.trim();
 
+
+      // --------------------------------------------------------
+      // SCIENTIFIC NAME
+      // --------------------------------------------------------
 
       if (!scientificName) {
 
@@ -1860,7 +2266,11 @@ export class RequestDetails implements OnInit {
       }
 
 
-      if (!description) {
+      // --------------------------------------------------------
+      // DESCRIPTION
+      // --------------------------------------------------------
+
+      if (!plantDescription) {
 
         this.errorMessage =
           'Please enter the plant description before approving.';
@@ -1876,11 +2286,11 @@ export class RequestDetails implements OnInit {
           scientificName,
 
         description:
-          description,
+          plantDescription,
 
         comments:
-          managerComments ||
-          'Approved by manager'
+          reviewerComments ||
+          'Approved by reviewer'
 
       };
 
@@ -1888,27 +2298,40 @@ export class RequestDetails implements OnInit {
       this.actionLoading =
         true;
 
-
       this.errorMessage = '';
 
       this.message = '';
 
 
+      console.log(
+        'Reviewer approving request:',
+        id,
+        data
+      );
+
+
       this.requestService
-        .managerApprove(
+        .reviewerApprove(
           id,
           data
         )
         .subscribe({
 
-          next: () => {
+          next: (response: any) => {
+
+            console.log(
+              'Reviewer approval response:',
+              response
+            );
+
 
             this.actionLoading =
               false;
 
 
             this.message =
-              'Plant approved and sent to HR for review.';
+              response?.message ||
+              'Plant approved by reviewer and sent to HR for review.';
 
 
             this.loadRequest(
@@ -1923,8 +2346,14 @@ export class RequestDetails implements OnInit {
           ) => {
 
             console.error(
-              'Manager approval error:',
+              'Reviewer approval error:',
               error
+            );
+
+
+            console.error(
+              'Backend response:',
+              error.error
             );
 
 
@@ -1971,10 +2400,16 @@ export class RequestDetails implements OnInit {
       this.actionLoading =
         true;
 
-
       this.errorMessage = '';
 
       this.message = '';
+
+
+      console.log(
+        'HR approving request:',
+        id,
+        data
+      );
 
 
       this.requestService
@@ -1984,13 +2419,20 @@ export class RequestDetails implements OnInit {
         )
         .subscribe({
 
-          next: () => {
+          next: (response: any) => {
+
+            console.log(
+              'HR approval response:',
+              response
+            );
+
 
             this.actionLoading =
               false;
 
 
             this.message =
+              response?.message ||
               'Plant approved successfully and stored permanently.';
 
 
@@ -2008,6 +2450,12 @@ export class RequestDetails implements OnInit {
             console.error(
               'HR approval error:',
               error
+            );
+
+
+            console.error(
+              'Backend response:',
+              error.error
             );
 
 
@@ -2047,7 +2495,14 @@ export class RequestDetails implements OnInit {
 
   rejectRequest(): void {
 
-    if (!this.request) {
+    const currentRequest =
+      this.request;
+
+
+    if (!currentRequest) {
+
+      this.errorMessage =
+        'Request information is not available.';
 
       return;
 
@@ -2055,22 +2510,59 @@ export class RequestDetails implements OnInit {
 
 
     const id =
-      this.request.id;
+      Number(currentRequest.id);
+
+
+    if (
+      !Number.isInteger(id) ||
+      id <= 0
+    ) {
+
+      this.errorMessage =
+        'Invalid request ID.';
+
+      return;
+
+    }
 
 
     const rejectComments =
       this.comments.trim();
+
+    // Reviewer must provide a reason when rejecting a request.
+    // HR keeps the existing optional-comment behaviour.
+    if (this.isReviewer() && !rejectComments) {
+      this.errorMessage =
+        'Please enter a reason for rejection in the comments box.';
+      this.cdr.detectChanges();
+      return;
+    }
+
+
+    let defaultComment =
+      'Request rejected';
+
+
+    if (this.isReviewer()) {
+
+      defaultComment =
+        'Rejected by reviewer';
+
+    }
+
+    else if (this.isHR()) {
+
+      defaultComment =
+        'Rejected by HR';
+
+    }
 
 
     const data = {
 
       comments:
         rejectComments ||
-        (
-          this.isManager()
-            ? 'Rejected by manager'
-            : 'Rejected by HR'
-        )
+        defaultComment
 
     };
 
@@ -2078,10 +2570,16 @@ export class RequestDetails implements OnInit {
     this.actionLoading =
       true;
 
-
     this.errorMessage = '';
 
     this.message = '';
+
+
+    console.log(
+      'Rejecting request:',
+      id,
+      data
+    );
 
 
     this.requestService
@@ -2091,16 +2589,41 @@ export class RequestDetails implements OnInit {
       )
       .subscribe({
 
-        next: () => {
+        next: (response: any) => {
+
+          console.log(
+            'Reject response:',
+            response
+          );
+
 
           this.actionLoading =
             false;
 
 
-          this.message =
-            this.isManager()
-              ? 'Plant request rejected by manager.'
-              : 'Plant request rejected by HR.';
+          if (this.isReviewer()) {
+
+            this.message =
+              response?.message ||
+              'Plant request rejected by reviewer.';
+
+          }
+
+          else if (this.isHR()) {
+
+            this.message =
+              response?.message ||
+              'Plant request rejected by HR.';
+
+          }
+
+          else {
+
+            this.message =
+              response?.message ||
+              'Plant request rejected.';
+
+          }
 
 
           this.loadRequest(
@@ -2117,6 +2640,12 @@ export class RequestDetails implements OnInit {
           console.error(
             'Rejection error:',
             error
+          );
+
+
+          console.error(
+            'Backend response:',
+            error.error
           );
 
 
@@ -2144,7 +2673,14 @@ export class RequestDetails implements OnInit {
 
   goBack(): void {
 
-    if (this.isManager()) {
+    // ----------------------------------------------------------
+    // REVIEWER
+    // ----------------------------------------------------------
+
+    if (this.isReviewer()) {
+
+      // Keep /manager because your existing dashboard component
+      // is still named Manager and may still use /manager route.
 
       this.router.navigate([
         '/manager'
@@ -2154,6 +2690,10 @@ export class RequestDetails implements OnInit {
 
     }
 
+
+    // ----------------------------------------------------------
+    // HR
+    // ----------------------------------------------------------
 
     if (this.isHR()) {
 
@@ -2165,6 +2705,10 @@ export class RequestDetails implements OnInit {
 
     }
 
+
+    // ----------------------------------------------------------
+    // EMPLOYEE
+    // ----------------------------------------------------------
 
     this.router.navigate([
       '/employee'
@@ -2179,6 +2723,10 @@ export class RequestDetails implements OnInit {
 
   logout(): void {
 
-    this.authService.logout('http://192.168.29.216:8200/');
+    this.authService.logout(
+      'http://192.168.29.51:8200/'
+    );
+
   }
+
 }

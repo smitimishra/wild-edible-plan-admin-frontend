@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, HostListener, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AdminService } from '../../services/admin.service';
@@ -85,8 +85,42 @@ export class Hierarchy implements OnInit {
 
   ngOnInit(): void {
 
+    // Keep Hierarchy Management visually in sync with the Admin Panel
+    // theme. The Admin Panel stores the selected theme in localStorage.
+    this.applyStoredTheme();
+
     this.loadHierarchy();
 
+  }
+
+  /**
+   * Apply the same theme selected in the Admin Panel.
+   * No separate theme selector is added to Hierarchy Management.
+   */
+  private applyStoredTheme(): void {
+    const theme = localStorage.getItem('admin-theme') || 'default';
+
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+      return;
+    }
+
+    if (theme === 'light') {
+      document.documentElement.classList.remove('dark');
+      return;
+    }
+
+    // System Default
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    document.documentElement.classList.toggle('dark', prefersDark);
+  }
+
+  @HostListener('window:storage', ['$event'])
+  onStorageChange(event: StorageEvent): void {
+    if (event.key === 'admin-theme') {
+      this.applyStoredTheme();
+      this.cdr.detectChanges();
+    }
   }
 
 
@@ -432,9 +466,7 @@ export class Hierarchy implements OnInit {
 
 
 
-  // ============================================================
   // DELETE LEVEL
-  // ============================================================
 
   deleteHierarchy(
     hierarchy: HierarchyLevel
