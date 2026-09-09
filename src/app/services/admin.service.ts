@@ -80,6 +80,40 @@ export interface DeleteHierarchyResponse {
   hierarchy: HierarchyLevel[];
 }
 
+export interface HealthMetric {
+  usage: number;
+  status: string;
+}
+
+export interface HealthService {
+  status: string;
+  responseTime: number;
+  error: string;
+  httpStatus?: number;
+  url?: string;
+  host?: string;
+  port?: number;
+}
+
+export interface HealthResponse {
+  timestamp: string;
+  computer: string;
+  overallStatus: string;
+  system: {
+    cpu: HealthMetric;
+    memory: HealthMetric;
+    disk: HealthMetric & { drive: string };
+  };
+  services: {
+    angular: HealthService;
+    backend: HealthService;
+  };
+  alerts: {
+    warnings: string[];
+    critical: string[];
+  };
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -257,6 +291,13 @@ export class AdminService {
     return this.http.patch<any>(
       `${this.apiUrl}/settings/${key}`,
       { value: String(value) },
+      { headers: this.getHeaders() }
+    );
+  }
+
+  getHealth(): Observable<HealthResponse> {
+    return this.http.get<HealthResponse>(
+      `${this.apiUrl}/health`,
       { headers: this.getHeaders() }
     );
   }

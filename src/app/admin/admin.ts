@@ -2,6 +2,7 @@ import {
   ChangeDetectorRef,
   Component,
   HostListener,
+  OnDestroy,
   OnInit
 } from '@angular/core';
 
@@ -16,7 +17,8 @@ import {
 import {
   AdminService,
   AdminUser,
-  HierarchyLevel
+  HierarchyLevel,
+  HealthResponse
 } from '../services/admin.service';
 
 import { AuthService } from '../services/auth';
@@ -48,7 +50,7 @@ type UserStatusFilter =
 
   templateUrl: './admin.html'
 })
-export class Admin implements OnInit {
+export class Admin implements OnInit, OnDestroy {
 
   // Navigation
 
@@ -100,6 +102,11 @@ export class Admin implements OnInit {
   errorMessage = '';
 
   successMessage = '';
+
+  health: HealthResponse | null = null;
+  healthLoading = false;
+  healthError = '';
+  private healthRefreshTimer: ReturnType<typeof setInterval> | null = null;
 
 
   // User modal
@@ -185,6 +192,13 @@ export class Admin implements OnInit {
     this.activeMenu = menu;
 
     this.clearMessages();
+
+    if (menu === 'health-analysis') {
+      this.loadHealth();
+      this.startHealthRefresh();
+    } else {
+      this.stopHealthRefresh();
+    }
 
 
     if (menu === 'users') {
@@ -1654,9 +1668,69 @@ export class Admin implements OnInit {
 
 
   showHealthAnalysisMessage(): void {
-  this.activeMenu = 'health-analysis' as AdminMenu;
-  this.clearMessages();
-}
+    this.setActiveMenu('health-analysis');
+  }
+
+  loadHealth(): void {
+    this.healthLoading = true;
+    this.healthError = '';
+
+    this.adminService.getHealth().subscribe({
+      next: (health) => {
+        this.health = health;
+        this.healthLoading = false;
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        this.healthLoading = false;
+        this.healthError = error?.error?.message ?? 'Health monitor output is not available yet.';
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  startHealthRefresh(): void {
+    this.stopHealthRefresh();
+    this.healthRefreshTimer = setInterval(() => this.loadHealth(), 10000);
+  }
+
+  stopHealthRefresh(): void {
+    if (this.healthRefreshTimer) {
+      clearInterval(this.healthRefreshTimer);
+      this.healthRefreshTimer = null;
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.stopHealthRefresh();
+  }
+
+  healthStatusClass(status: string): string {
+    const normalized = status.toUpperCase();
+    if (normalized === 'CRITICAL' || normalized === 'DOWN') return 'text-red-600';
+    if (normalized === 'WARNING') return 'text-amber-600';
+    return 'text-emerald-600';
+  }
+
+  healthBadgeClass(status: string): string {
+    const normalized = status.toUpperCase();
+    if (normalized === 'CRITICAL' || normalized === 'DOWN') return 'bg-red-100 text-red-700';
+    if (normalized === 'WARNING') return 'bg-amber-100 text-amber-700';
+    return 'bg-emerald-100 text-emerald-700';
+  }
+
+  healthBarClass(status: string): string {
+    const normalized = status.toUpperCase();
+    if (normalized === 'CRITICAL') return 'bg-red-500';
+    if (normalized === 'WARNING') return 'bg-amber-400';
+    return 'bg-emerald-500';
+  }
+
+  healthyServiceCount(health: HealthResponse): number {
+    return [health.services.angular, health.services.backend]
+      .filter((service) => service.status.toUpperCase() === 'UP')
+      .length;
+  }
 
   // ============================================================
   // SETTINGS — login lockout
