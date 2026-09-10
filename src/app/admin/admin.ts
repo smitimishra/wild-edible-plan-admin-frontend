@@ -18,7 +18,7 @@ import { SessionService, DeviceSession } from '../services/session';
 // ADMIN MENU
 // ============================================================
 
-type AdminMenu = 'dashboard' | 'users' | 'roles' | 'hierarchy' | 'health-analysis' | 'settings';
+type AdminMenu = 'dashboard' | 'users' | 'roles' | 'hierarchy' | 'settings';
 
 type UserStatusFilter = 'all' | 'active' | 'inactive';
 
@@ -1004,18 +1004,6 @@ export class Admin implements OnInit, OnDestroy {
     this.themeSubmenuOpen = false;
   }
 
-  // HEALTH ANALYSIS
-
-  goToHealthAnalysis(): void {
-    this.activeMenu = 'health-analysis';
-
-    this.clearMessages();
-
-    // IMPORTANT:
-    // Health Analysis is displayed inside the Admin Panel
-    // using activeMenu, so we do NOT navigate to another route.
-  }
-
   // SETTINGS
 
   goToSettings(): void {
@@ -1180,12 +1168,6 @@ export class Admin implements OnInit, OnDestroy {
     this.errorMessage = '';
 
     this.successMessage = '';
-  }
-
-  showHealthAnalysisMessage(): void {
-    this.activeMenu = 'health-analysis';
-
-    this.clearMessages();
   }
 
   // DESTROY

@@ -145,27 +145,6 @@
       </button>
 
 
-      <!-- Health Analysis -->
-      <button
-  type="button"
-  (click)="goToHealthAnalysis()"
-  class="group flex w-full items-center gap-3 rounded-xl px-4 py-3.5 text-left text-sm font-semibold text-slate-700 dark:text-slate-200 transition-all duration-200 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900"
->
-  <svg
-    class="h-5 w-5 shrink-0"
-    fill="none"
-    stroke="currentColor"
-    stroke-width="1.8"
-    viewBox="0 0 24 24"
-  >
-    <path d="M3 3v18h18"></path>
-    <path d="M7 16l4-5 3 3 5-7"></path>
-  </svg>
-
-  <span>Health Analysis</span>
-</button>
-
-
       <!-- Settings -->
       <div class="relative">
         <button
@@ -312,10 +291,6 @@
 
             @else if (activeMenu === 'hierarchy') {
               Hierarchy Management
-            }
-
-            @else if (activeMenu === 'health-analysis') {
-              Health Analysis
             }
 
             @else if (activeMenu === 'settings' && settingsView === 'logged-in-devices') {
