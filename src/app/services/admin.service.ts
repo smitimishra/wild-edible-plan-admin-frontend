@@ -81,6 +81,40 @@ export interface DeleteHierarchyResponse {
   hierarchy: HierarchyLevel[];
 }
 
+export interface HealthMetric {
+  usage: number;
+  status: string;
+}
+
+export interface HealthService {
+  status: string;
+  responseTime: number;
+  error: string;
+  httpStatus?: number;
+  url?: string;
+  host?: string;
+  port?: number;
+}
+
+export interface HealthResponse {
+  timestamp: string;
+  computer: string;
+  overallStatus: string;
+  system: {
+    cpu: HealthMetric;
+    memory: HealthMetric;
+    disk: HealthMetric & { drive: string };
+  };
+  services: {
+    angular: HealthService;
+    backend: HealthService;
+  };
+  alerts: {
+    warnings: string[];
+    critical: string[];
+  };
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -90,7 +124,7 @@ export class AdminService {
   }
 
   private apiUrl =
-    'http://192.168.29.51:3001/api/admin';
+    'http://192.168.29.216:3001/api/admin';
 
   constructor(
     private http: HttpClient
@@ -242,6 +276,32 @@ export class AdminService {
       {
         headers: this.getHeaders()
       }
+    );
+  }
+
+  // ============================================================
+  // SYSTEM SETTINGS
+  // ============================================================
+
+  getSettings(): Observable<{ settings: Record<string, { value: string; description: string; updated_at: string }> }> {
+    return this.http.get<any>(
+      `${this.apiUrl}/settings`,
+      { headers: this.getHeaders() }
+    );
+  }
+
+  updateSetting(key: string, value: string | number): Observable<{ message: string; setting: { key: string; value: string } }> {
+    return this.http.patch<any>(
+      `${this.apiUrl}/settings/${key}`,
+      { value: String(value) },
+      { headers: this.getHeaders() }
+    );
+  }
+
+  getHealth(): Observable<HealthResponse> {
+    return this.http.get<HealthResponse>(
+      `${this.apiUrl}/health`,
+      { headers: this.getHeaders() }
     );
   }
 }

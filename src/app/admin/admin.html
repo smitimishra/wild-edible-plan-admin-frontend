@@ -1,12 +1,12 @@
-<div class="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white transition-colors duration-300">
+<div class="min-h-screen bg-slate-50">
 
   <!-- SIDEBAR -->
   <aside
-    class="fixed left-0 top-0 z-40 flex h-screen w-[290px] flex-col border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm"
+    class="fixed left-0 top-0 z-40 flex h-screen w-[290px] flex-col border-r border-slate-200 bg-white shadow-sm"
   >
 
     <!-- BRAND -->
-    <div class="border-b border-slate-200 dark:border-slate-800 px-7 py-7">
+    <div class="border-b border-slate-200 px-7 py-7">
 
       <div class="flex items-center gap-3">
 
@@ -17,11 +17,11 @@
         </div>
 
         <div>
-          <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-indigo-600 dark:text-indigo-400">
+          <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-indigo-600">
             Admin
           </p>
 
-          <h1 class="mt-0.5 text-lg font-bold tracking-tight text-slate-900 dark:text-white">
+          <h1 class="mt-0.5 text-lg font-bold tracking-tight text-slate-900">
             Approval System
           </h1>
         </div>
@@ -41,7 +41,7 @@
         [class.bg-indigo-600]="activeMenu === 'dashboard'"
         [class.text-white]="activeMenu === 'dashboard'"
         [class.shadow-sm]="activeMenu === 'dashboard'"
-        class="group flex w-full items-center gap-3 rounded-xl px-4 py-3.5 text-left text-sm font-semibold text-slate-700 dark:text-slate-200 transition-all duration-200 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900"
+        class="group flex w-full items-center gap-3 rounded-xl px-4 py-3.5 text-left text-sm font-semibold text-slate-700 transition-all duration-200 hover:bg-slate-100 hover:text-slate-900"
       >
 
         <svg
@@ -69,7 +69,7 @@
         [class.bg-indigo-600]="activeMenu === 'users'"
         [class.text-white]="activeMenu === 'users'"
         [class.shadow-sm]="activeMenu === 'users'"
-        class="group flex w-full items-center gap-3 rounded-xl px-4 py-3.5 text-left text-sm font-semibold text-slate-700 dark:text-slate-200 transition-all duration-200 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900"
+        class="group flex w-full items-center gap-3 rounded-xl px-4 py-3.5 text-left text-sm font-semibold text-slate-700 transition-all duration-200 hover:bg-slate-100 hover:text-slate-900"
       >
 
         <svg
@@ -97,7 +97,7 @@
         [class.bg-indigo-600]="activeMenu === 'roles'"
         [class.text-white]="activeMenu === 'roles'"
         [class.shadow-sm]="activeMenu === 'roles'"
-        class="group flex w-full items-center gap-3 rounded-xl px-4 py-3.5 text-left text-sm font-semibold text-slate-700 dark:text-slate-200 transition-all duration-200 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900"
+        class="group flex w-full items-center gap-3 rounded-xl px-4 py-3.5 text-left text-sm font-semibold text-slate-700 transition-all duration-200 hover:bg-slate-100 hover:text-slate-900"
       >
 
         <svg
@@ -120,10 +120,7 @@
       <button
         type="button"
         (click)="goToHierarchy()"
-        [class.bg-indigo-600]="activeMenu === 'hierarchy'"
-        [class.text-white]="activeMenu === 'hierarchy'"
-        [class.shadow-sm]="activeMenu === 'hierarchy'"
-        class="group flex w-full items-center gap-3 rounded-xl px-4 py-3.5 text-left text-sm font-semibold text-slate-700 dark:text-slate-200 transition-all duration-200 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900"
+        class="group flex w-full items-center gap-3 rounded-xl px-4 py-3.5 text-left text-sm font-semibold text-slate-700 transition-all duration-200 hover:bg-slate-100 hover:text-slate-900"
       >
 
         <svg
@@ -145,137 +142,103 @@
       </button>
 
 
-      <!-- Settings -->
-      <div class="relative">
-        <button
-          type="button"
-          (click)="toggleSettingsThemeMenu()"
-          [class.bg-indigo-600]="activeMenu === 'settings'"
-          [class.text-white]="activeMenu === 'settings'"
-          [class.shadow-sm]="activeMenu === 'settings'"
-          class="group flex w-full items-center justify-between rounded-xl px-4 py-3.5 text-left text-sm font-semibold text-slate-700 dark:text-slate-200 transition-all duration-200 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900"
-        >
-          <span class="flex items-center gap-3">
-            <svg class="h-5 w-5 shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
-              <path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"></path>
-              <path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-1.7 1.7-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1.03 1.56V20h-2.4v-.2a1.7 1.7 0 0 0-1.03-1.56 1.7 1.7 0 0 0-1.88.34l-.06.06-1.7-1.7.06-.06A1.7 1.7 0 0 0 8.46 15a1.7 1.7 0 0 0-1.56-1.03H6.7v-2.4h.2a1.7 1.7 0 0 0 1.56-1.03 1.7 1.7 0 0 0-.34-1.88l-.06-.06 1.7-1.7.06.06a1.7 1.7 0 0 0 1.88.34A1.7 1.7 0 0 0 12.73 5.7v-.2h2.4v.2a1.7 1.7 0 0 0 1.03 1.56 1.7 1.7 0 0 0 1.88-.34l.06-.06 1.7 1.7-.06.06a1.7 1.7 0 0 0-.34 1.88A1.7 1.7 0 0 0 20.96 11h.2v2.4h-.2A1.7 1.7 0 0 0 19.4 15Z"></path>
-            </svg>
-            <span>Settings</span>
-          </span>
-          <svg class="h-4 w-4 shrink-0 transition-transform duration-200" [class.rotate-180]="settingsThemeMenuOpen" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path d="m6 9 6 6 6-6"></path>
-          </svg>
-        </button>
+      <!-- Health Analysis -->
+      <button
+  type="button"
+  (click)="showHealthAnalysisMessage()"
+  class="group flex w-full items-center gap-3 rounded-xl px-4 py-3.5 text-left text-sm font-semibold text-slate-700 transition-all duration-200 hover:bg-slate-100 hover:text-slate-900"
+>
+  <svg
+    class="h-5 w-5 shrink-0"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="1.8"
+    viewBox="0 0 24 24"
+  >
+    <path d="M3 3v18h18"></path>
+    <path d="M7 16l4-5 3 3 5-7"></path>
+  </svg>
 
-        @if (settingsThemeMenuOpen) {
-          <div class="mt-1 space-y-1 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-1 shadow-lg">
-
-            <!-- ACCOUNT SETTINGS -->
-            <button
-              type="button"
-              (click)="selectAccountSettings()"
-              [class.text-indigo-600]="activeMenu === 'settings' && settingsView === 'main'"
-              [class.dark:text-indigo-400]="activeMenu === 'settings' && settingsView === 'main'"
-              class="flex w-full items-center gap-2 rounded-lg px-3 py-2.5 text-left text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"
-            >
-              <svg class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
-                <circle cx="12" cy="8" r="4"></circle>
-                <path d="M4 20c0-3.3 3.6-6 8-6s8 2.7 8 6"></path>
-              </svg>
-              <span>Account Settings</span>
-            </button>
-
-            <!-- THEME (nested dropdown) -->
-            <div class="relative">
-              <button
-                type="button"
-                (click)="toggleThemeSubmenu()"
-                class="flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-left text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"
-              >
-                <span class="flex items-center gap-2">
-                  <svg class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
-                    <circle cx="12" cy="12" r="9"></circle>
-                    <path d="M12 3a9 9 0 0 0 0 18c1.7 0 2-1 1-2-1-1-.5-2 1-2h1a4 4 0 0 0 4-4c0-5-3.5-10-7-10Z"></path>
-                    <circle cx="8.5" cy="10.5" r="0.75" fill="currentColor"></circle>
-                    <circle cx="12" cy="7.5" r="0.75" fill="currentColor"></circle>
-                    <circle cx="15.5" cy="10.5" r="0.75" fill="currentColor"></circle>
-                  </svg>
-                  <span>Theme</span>
-                </span>
-                <svg class="h-3.5 w-3.5 shrink-0 transition-transform duration-200" [class.rotate-180]="themeSubmenuOpen" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                  <path d="m6 9 6 6 6-6"></path>
-                </svg>
-              </button>
-
-              @if (themeSubmenuOpen) {
-                <div class="mt-1 space-y-1 pl-2">
-                  <button type="button" (click)="selectTheme('light')" class="flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-left text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">
-                    <span class="flex items-center gap-2"><span>☀</span> Light</span>
-                    @if (isThemeSelected('light')) { <span class="text-indigo-600 dark:text-indigo-400">✓</span> }
-                  </button>
-                  <button type="button" (click)="selectTheme('dark')" class="flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-left text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">
-                    <span class="flex items-center gap-2"><span>☾</span> Dark</span>
-                    @if (isThemeSelected('dark')) { <span class="text-indigo-600 dark:text-indigo-400">✓</span> }
-                  </button>
-                  <button type="button" (click)="selectTheme('default')" class="flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-left text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">
-                    <span class="flex items-center gap-2"><span>▣</span> System Default</span>
-                    @if (isThemeSelected('default')) { <span class="text-indigo-600 dark:text-indigo-400">✓</span> }
-                  </button>
-                </div>
-              }
-            </div>
-
-          </div>
-        }
-      </div>
+  <span>Health Analysis</span>
+</button>
     </nav>
 
 
-      <!-- BOTTOM MENU -->
-      <div class="border-t border-slate-200 dark:border-slate-800 p-4">
+    <!-- BOTTOM MENU -->
+    <div class="border-t border-slate-200 p-4">
 
-        <!-- Logout -->
-        <button
-          type="button"
-          (click)="logout()"
-          class="group flex w-full items-center gap-3 rounded-xl px-4 py-3.5 text-left text-sm font-semibold text-red-600 dark:text-red-400 transition-all duration-200 hover:bg-red-50 dark:hover:bg-red-950/30 hover:text-red-700"
+      <!-- Settings -->
+      <button
+        type="button"
+        class="group mb-1 flex w-full items-center gap-3 rounded-xl px-4 py-3.5 text-left text-sm font-semibold text-slate-700 transition-all duration-200 hover:bg-slate-100 hover:text-slate-900"
+      >
+
+        <svg
+          class="h-5 w-5 shrink-0"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          viewBox="0 0 24 24"
         >
-          <svg
-            class="h-5 w-5 shrink-0"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1.8"
-            viewBox="0 0 24 24"
-          >
-            <path d="M10 17l5-5-5-5"></path>
-            <path d="M15 12H3"></path>
-            <path d="M21 3v18"></path>
-          </svg>
-          <span>Logout</span>
-        </button>
+          <path
+            d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"
+          ></path>
 
-      </div>
+          <path
+            d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-1.7 1.7-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1.03 1.56V20h-2.4v-.2a1.7 1.7 0 0 0-1.03-1.56 1.7 1.7 0 0 0-1.88.34l-.06.06-1.7-1.7.06-.06A1.7 1.7 0 0 0 8.46 15a1.7 1.7 0 0 0-1.56-1.03H6.7v-2.4h.2a1.7 1.7 0 0 0 1.56-1.03 1.7 1.7 0 0 0-.34-1.88l-.06-.06 1.7-1.7.06.06a1.7 1.7 0 0 0 1.88.34A1.7 1.7 0 0 0 12.73 5.7v-.2h2.4v.2a1.7 1.7 0 0 0 1.03 1.56 1.7 1.7 0 0 0 1.88-.34l.06-.06 1.7 1.7-.06.06a1.7 1.7 0 0 0-.34 1.88A1.7 1.7 0 0 0 20.96 11h.2v2.4h-.2A1.7 1.7 0 0 0 19.4 15Z"
+          ></path>
+        </svg>
+
+        <span>Settings</span>
+
+      </button>
+
+
+      <!-- Logout -->
+      <button
+        type="button"
+        (click)="logout()"
+        class="group flex w-full items-center gap-3 rounded-xl px-4 py-3.5 text-left text-sm font-semibold text-red-600 transition-all duration-200 hover:bg-red-50 hover:text-red-700"
+      >
+
+        <svg
+          class="h-5 w-5 shrink-0"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          viewBox="0 0 24 24"
+        >
+          <path d="M10 17l5-5-5-5"></path>
+          <path d="M15 12H3"></path>
+          <path d="M21 3v18"></path>
+        </svg>
+
+        <span>Logout</span>
+
+      </button>
+
+    </div>
 
   </aside>
 
 
   <!-- MAIN CONTENT -->
-  <main class="ml-[290px] min-h-screen bg-slate-50 dark:bg-slate-950">
+  <main class="ml-[290px] min-h-screen">
 
     <!-- TOP HEADER -->
     <header
-      class="sticky top-0 z-30 border-b border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 backdrop-blur"
+      class="sticky top-0 z-30 border-b border-slate-200 bg-white/95 backdrop-blur"
     >
 
       <div class="flex min-h-[78px] items-center justify-between px-8">
 
         <div>
 
-          <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 dark:text-slate-500">
+          <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">
             Administration
           </p>
 
-          <h2 class="mt-1 text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+          <h2 class="mt-1 text-2xl font-bold tracking-tight text-slate-900">
 
             @if (activeMenu === 'dashboard') {
               Dashboard
@@ -289,16 +252,8 @@
               Role Management
             }
 
-            @else if (activeMenu === 'hierarchy') {
-              Hierarchy Management
-            }
-
-            @else if (activeMenu === 'settings' && settingsView === 'logged-in-devices') {
-              Logged-in Devices
-            }
-
-            @else if (activeMenu === 'settings') {
-              Settings
+            @else if (activeMenu === 'health-analysis') {
+              Health Analysis
             }
 
             @else {
@@ -315,11 +270,11 @@
 
           <div class="hidden text-right sm:block">
 
-            <p class="text-sm font-semibold text-slate-900 dark:text-white">
+            <p class="text-sm font-semibold text-slate-900">
               Administrator
             </p>
 
-            <p class="text-xs text-slate-500 dark:text-slate-400">
+            <p class="text-xs text-slate-500">
               Admin Panel
             </p>
 
@@ -346,7 +301,7 @@
       @if (successMessage) {
 
         <div
-          class="mb-6 flex items-start gap-3 rounded-xl border border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/40 px-5 py-4 shadow-sm"
+          class="mb-6 flex items-start gap-3 rounded-xl border border-emerald-200 bg-emerald-50 px-5 py-4 shadow-sm"
         >
 
           <div
@@ -355,7 +310,7 @@
             ✓
           </div>
 
-          <p class="text-sm font-medium text-emerald-800 dark:text-emerald-300">
+          <p class="text-sm font-medium text-emerald-800">
             {{ successMessage }}
           </p>
 
@@ -368,7 +323,7 @@
       @if (errorMessage) {
 
         <div
-          class="mb-6 flex items-start gap-3 rounded-xl border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950/40 px-5 py-4 shadow-sm"
+          class="mb-6 flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 px-5 py-4 shadow-sm"
         >
 
           <div
@@ -377,7 +332,7 @@
             !
           </div>
 
-          <p class="text-sm font-medium text-red-800 dark:text-red-300">
+          <p class="text-sm font-medium text-red-800">
             {{ errorMessage }}
           </p>
 
@@ -394,6 +349,20 @@
 
         <section>
 
+          <!-- PAGE TITLE -->
+          <div class="mb-8">
+
+            <h1 class="text-3xl font-bold tracking-tight text-slate-900">
+              Dashboard
+            </h1>
+
+            <p class="mt-2 text-sm text-slate-500">
+              Overview of users and system activity.
+            </p>
+
+          </div>
+
+
           <!-- STATISTICS -->
           <div class="grid grid-cols-1 gap-5 md:grid-cols-3">
 
@@ -402,22 +371,22 @@
             <button
               type="button"
               (click)="showAllUsers()"
-              class="group rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 text-left shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-indigo-200 dark:hover:border-indigo-700 hover:shadow-lg"
+              class="group rounded-2xl border border-slate-200 bg-white p-6 text-left shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-indigo-200 hover:shadow-lg"
             >
 
               <div class="flex items-start justify-between">
 
                 <div>
 
-                  <p class="text-sm font-medium text-slate-500 dark:text-slate-400">
+                  <p class="text-sm font-medium text-slate-500">
                     Total Users
                   </p>
 
-                  <p class="mt-3 text-4xl font-bold tracking-tight text-slate-900 dark:text-white">
+                  <p class="mt-3 text-4xl font-bold tracking-tight text-slate-900">
                     {{ users.length }}
                   </p>
 
-                  <p class="mt-3 text-xs text-slate-400 dark:text-slate-500">
+                  <p class="mt-3 text-xs text-slate-400">
                     Click to view all users
                   </p>
 
@@ -425,7 +394,7 @@
 
 
                 <div
-                  class="flex h-11 w-11 items-center justify-center rounded-xl bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 transition group-hover:bg-indigo-600 group-hover:text-white"
+                  class="flex h-11 w-11 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 transition group-hover:bg-indigo-600 group-hover:text-white"
                 >
 
                   <svg
@@ -452,14 +421,14 @@
             <button
               type="button"
               (click)="showActiveUsers()"
-              class="group rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 text-left shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-emerald-200 hover:shadow-lg"
+              class="group rounded-2xl border border-slate-200 bg-white p-6 text-left shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-emerald-200 hover:shadow-lg"
             >
 
               <div class="flex items-start justify-between">
 
                 <div>
 
-                  <p class="text-sm font-medium text-slate-500 dark:text-slate-400">
+                  <p class="text-sm font-medium text-slate-500">
                     Active Users
                   </p>
 
@@ -467,7 +436,7 @@
                     {{ activeUsers.length }}
                   </p>
 
-                  <p class="mt-3 text-xs text-slate-400 dark:text-slate-500">
+                  <p class="mt-3 text-xs text-slate-400">
                     Click to view active users
                   </p>
 
@@ -475,7 +444,7 @@
 
 
                 <div
-                  class="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 transition group-hover:bg-emerald-600 group-hover:text-white"
+                  class="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 transition group-hover:bg-emerald-600 group-hover:text-white"
                 >
 
                   <span class="h-3 w-3 rounded-full bg-current"></span>
@@ -491,22 +460,22 @@
             <button
               type="button"
               (click)="showInactiveUsers()"
-              class="group rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 text-left shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-red-200 hover:shadow-lg"
+              class="group rounded-2xl border border-slate-200 bg-white p-6 text-left shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-red-200 hover:shadow-lg"
             >
 
               <div class="flex items-start justify-between">
 
                 <div>
 
-                  <p class="text-sm font-medium text-slate-500 dark:text-slate-400">
+                  <p class="text-sm font-medium text-slate-500">
                     Inactive Users
                   </p>
 
-                  <p class="mt-3 text-4xl font-bold tracking-tight text-red-600 dark:text-red-400">
+                  <p class="mt-3 text-4xl font-bold tracking-tight text-red-600">
                     {{ inactiveUsers.length }}
                   </p>
 
-                  <p class="mt-3 text-xs text-slate-400 dark:text-slate-500">
+                  <p class="mt-3 text-xs text-slate-400">
                     Click to view inactive users
                   </p>
 
@@ -514,7 +483,7 @@
 
 
                 <div
-                  class="flex h-11 w-11 items-center justify-center rounded-xl bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-400 transition group-hover:bg-red-600 group-hover:text-white"
+                  class="flex h-11 w-11 items-center justify-center rounded-xl bg-red-50 text-red-600 transition group-hover:bg-red-600 group-hover:text-white"
                 >
 
                   <span class="text-lg font-bold">
@@ -536,22 +505,22 @@
 
             <!-- ADMIN -->
             <div
-              class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm"
+              class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
             >
 
               <div class="flex items-start justify-between">
 
                 <div>
 
-                  <p class="text-sm font-medium text-slate-500 dark:text-slate-400">
+                  <p class="text-sm font-medium text-slate-500">
                     Administrators
                   </p>
 
-                  <p class="mt-3 text-3xl font-bold text-slate-900 dark:text-white">
+                  <p class="mt-3 text-3xl font-bold text-slate-900">
                     {{ adminUsers.length }}
                   </p>
 
-                  <p class="mt-2 text-xs text-slate-400 dark:text-slate-500">
+                  <p class="mt-2 text-xs text-slate-400">
                     System administration accounts
                   </p>
 
@@ -559,7 +528,7 @@
 
 
                 <div
-                  class="flex h-10 w-10 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 text-sm font-bold text-slate-700 dark:text-slate-200"
+                  class="flex h-10 w-10 items-center justify-center rounded-lg bg-slate-100 text-sm font-bold text-slate-700"
                 >
                   A
                 </div>
@@ -571,14 +540,14 @@
 
             <!-- EMPLOYEE -->
             <div
-              class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm"
+              class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
             >
 
               <div class="flex items-start justify-between">
 
                 <div>
 
-                  <p class="text-sm font-medium text-slate-500 dark:text-slate-400">
+                  <p class="text-sm font-medium text-slate-500">
                     Employee / Field Staff
                   </p>
 
@@ -586,7 +555,7 @@
                     {{ employeeUsers.length }}
                   </p>
 
-                  <p class="mt-2 text-xs text-slate-400 dark:text-slate-500">
+                  <p class="mt-2 text-xs text-slate-400">
                     Users who submit requests
                   </p>
 
@@ -606,14 +575,14 @@
 
             <!-- REVIEWER -->
             <div
-              class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm"
+              class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
             >
 
               <div class="flex items-start justify-between">
 
                 <div>
 
-                  <p class="text-sm font-medium text-slate-500 dark:text-slate-400">
+                  <p class="text-sm font-medium text-slate-500">
                     Reviewers
                   </p>
 
@@ -621,7 +590,7 @@
                     {{ reviewerUsers.length }}
                   </p>
 
-                  <p class="mt-2 text-xs text-slate-400 dark:text-slate-500">
+                  <p class="mt-2 text-xs text-slate-400">
                     Users responsible for approval
                   </p>
 
@@ -652,16 +621,38 @@
       @if (activeMenu === 'users') {
 
         <section
-          class="overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm"
+          class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"
         >
 
           <!-- HEADER -->
-          <div class="border-b border-slate-200 dark:border-slate-800 px-7 py-6">
+          <div class="border-b border-slate-200 px-7 py-6">
 
-            <div>
-              <p class="text-sm text-slate-500 dark:text-slate-400">
-                Manage Admin, Employee / Field Staff and Reviewer accounts.
-              </p>
+            <div
+              class="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between"
+            >
+
+              <div>
+
+                <h1 class="text-2xl font-bold tracking-tight text-slate-900">
+                  User Management
+                </h1>
+
+                <p class="mt-1 text-sm text-slate-500">
+                  Manage Admin, Employee / Field Staff and Reviewer accounts.
+                </p>
+
+              </div>
+
+
+              <!-- ADD USER -->
+              <button
+                type="button"
+                (click)="openAddUser()"
+                class="rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white shadow-sm transition-all hover:bg-indigo-700 hover:shadow-md"
+              >
+                Add User
+              </button>
+
             </div>
 
 
@@ -671,7 +662,7 @@
               <div class="relative">
 
                 <svg
-                  class="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400 dark:text-slate-500"
+                  class="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"
                   fill="none"
                   stroke="currentColor"
                   stroke-width="2"
@@ -686,23 +677,11 @@
                   [(ngModel)]="userSearchTerm"
                   (input)="onUserSearch()"
                   placeholder="Search by name, email, employee code, role or approval position..."
-                  class="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 py-3 pl-11 pr-4 text-sm text-slate-900 dark:text-white outline-none transition focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-100"
+                  class="w-full rounded-xl border border-slate-300 bg-slate-50 py-3 pl-11 pr-4 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-100"
                 />
 
               </div>
 
-            </div>
-
-
-            <!-- ADD USER -->
-            <div class="mt-4 flex justify-end">
-              <button
-                type="button"
-                (click)="openAddUser()"
-                class="rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white shadow-sm transition-all hover:bg-indigo-700 hover:shadow-md"
-              >
-                Add User
-              </button>
             </div>
 
 
@@ -761,10 +740,10 @@
             <div class="px-6 py-16 text-center">
 
               <div
-                class="mx-auto h-8 w-8 animate-spin rounded-full border-2 border-slate-200 dark:border-slate-800 border-t-indigo-600"
+                class="mx-auto h-8 w-8 animate-spin rounded-full border-2 border-slate-200 border-t-indigo-600"
               ></div>
 
-              <p class="mt-4 text-sm text-slate-500 dark:text-slate-400">
+              <p class="mt-4 text-sm text-slate-500">
                 Loading users...
               </p>
 
@@ -780,42 +759,42 @@
 
               <table class="min-w-full">
 
-                <thead class="border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950">
+                <thead class="border-b border-slate-200 bg-slate-50">
 
                   <tr>
 
                     <th
-                      class="px-6 py-4 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400"
+                      class="px-6 py-4 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500"
                     >
                       User
                     </th>
 
                     <th
-                      class="px-6 py-4 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400"
+                      class="px-6 py-4 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500"
                     >
                       Employee Code
                     </th>
 
                     <th
-                      class="px-6 py-4 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400"
+                      class="px-6 py-4 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500"
                     >
                       Role
                     </th>
 
                     <th
-                      class="px-6 py-4 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400"
+                      class="px-6 py-4 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500"
                     >
                       Approval Position
                     </th>
 
                     <th
-                      class="px-6 py-4 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400"
+                      class="px-6 py-4 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500"
                     >
                       Status
                     </th>
 
                     <th
-                      class="px-6 py-4 text-right text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400"
+                      class="px-6 py-4 text-right text-[11px] font-bold uppercase tracking-wider text-slate-500"
                     >
                       Actions
                     </th>
@@ -832,18 +811,18 @@
                     track user.id
                   ) {
 
-                    <tr class="transition-colors hover:bg-slate-50 dark:hover:bg-slate-800">
+                    <tr class="transition-colors hover:bg-slate-50">
 
                       <!-- USER -->
                       <td class="px-6 py-5">
 
                         <div>
 
-                          <p class="font-semibold text-slate-900 dark:text-white">
+                          <p class="font-semibold text-slate-900">
                             {{ user.name }}
                           </p>
 
-                          <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                          <p class="mt-1 text-sm text-slate-500">
                             {{ user.email }}
                           </p>
 
@@ -856,7 +835,7 @@
                       <td class="px-6 py-5">
 
                         <span
-                          class="rounded-md bg-slate-100 dark:bg-slate-800 px-2.5 py-1.5 font-mono text-xs font-semibold text-slate-700 dark:text-slate-200"
+                          class="rounded-md bg-slate-100 px-2.5 py-1.5 font-mono text-xs font-semibold text-slate-700"
                         >
                           {{ user.employee_code || '—' }}
                         </span>
@@ -870,7 +849,7 @@
                         @if (user.role === 'ADMIN') {
 
                           <span
-                            class="inline-flex rounded-full bg-indigo-50 dark:bg-indigo-950/40 px-3 py-1.5 text-xs font-semibold text-indigo-700 dark:text-indigo-300"
+                            class="inline-flex rounded-full bg-indigo-50 px-3 py-1.5 text-xs font-semibold text-indigo-700"
                           >
                             Admin
                           </span>
@@ -880,7 +859,7 @@
                         @else if (user.role === 'EMPLOYEE') {
 
                           <span
-                            class="inline-flex rounded-full bg-blue-50 dark:bg-blue-950/40 px-3 py-1.5 text-xs font-semibold text-blue-700 dark:text-blue-300"
+                            class="inline-flex rounded-full bg-blue-50 px-3 py-1.5 text-xs font-semibold text-blue-700"
                           >
                             Employee / Field Staff
                           </span>
@@ -890,7 +869,7 @@
                         @else {
 
                           <span
-                            class="inline-flex rounded-full bg-purple-50 dark:bg-purple-950/40 px-3 py-1.5 text-xs font-semibold text-purple-700 dark:text-purple-300"
+                            class="inline-flex rounded-full bg-purple-50 px-3 py-1.5 text-xs font-semibold text-purple-700"
                           >
                             Reviewer
                           </span>
@@ -906,7 +885,7 @@
                         @if (user.approval_position) {
 
                           <span
-                            class="text-sm font-medium text-slate-700 dark:text-slate-200"
+                            class="text-sm font-medium text-slate-700"
                           >
                             {{ user.approval_position }}
                           </span>
@@ -915,7 +894,7 @@
 
                         @else {
 
-                          <span class="text-sm text-slate-400 dark:text-slate-500">
+                          <span class="text-sm text-slate-400">
                             NULL
                           </span>
 
@@ -930,7 +909,7 @@
                         @if (user.is_active) {
 
                           <span
-                            class="inline-flex items-center gap-2 rounded-full bg-emerald-50 dark:bg-emerald-950/40 px-3 py-1.5 text-xs font-semibold text-emerald-700 dark:text-emerald-400"
+                            class="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-700"
                           >
 
                             <span
@@ -946,7 +925,7 @@
                         @else {
 
                           <span
-                            class="inline-flex items-center gap-2 rounded-full bg-red-50 dark:bg-red-950/40 px-3 py-1.5 text-xs font-semibold text-red-700 dark:text-red-400"
+                            class="inline-flex items-center gap-2 rounded-full bg-red-50 px-3 py-1.5 text-xs font-semibold text-red-700"
                           >
 
                             <span
@@ -970,7 +949,7 @@
                           <button
                             type="button"
                             (click)="toggleActionMenu(user.id)"
-                            class="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-lg font-bold leading-none text-slate-600 dark:text-slate-300 transition-all hover:border-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900"
+                            class="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-lg font-bold leading-none text-slate-600 transition-all hover:border-slate-300 hover:bg-slate-100 hover:text-slate-900"
                             title="Actions"
                             aria-label="Actions"
                           >
@@ -980,7 +959,7 @@
                           @if (openActionMenuId === user.id) {
 
                             <div
-                              class="absolute right-0 top-11 z-50 w-44 overflow-hidden rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 py-1 shadow-xl"
+                              class="absolute right-0 top-11 z-50 w-44 overflow-hidden rounded-xl border border-slate-200 bg-white py-1 shadow-xl"
                             >
 
                               <!-- EDIT -->
@@ -1008,7 +987,7 @@
                                 <button
                                   type="button"
                                   (click)="deactivateUser(user); closeActionMenu()"
-                                  class="flex w-full items-center gap-3 px-4 py-3 text-left text-sm font-medium text-amber-700 dark:text-amber-400 transition hover:bg-amber-50"
+                                  class="flex w-full items-center gap-3 px-4 py-3 text-left text-sm font-medium text-amber-700 transition hover:bg-amber-50"
                                 >
                                   <svg
                                     class="h-4 w-4 shrink-0"
@@ -1031,7 +1010,7 @@
                                 <button
                                   type="button"
                                   (click)="reactivateUser(user); closeActionMenu()"
-                                  class="flex w-full items-center gap-3 px-4 py-3 text-left text-sm font-medium text-emerald-700 dark:text-emerald-400 transition hover:bg-emerald-50"
+                                  class="flex w-full items-center gap-3 px-4 py-3 text-left text-sm font-medium text-emerald-700 transition hover:bg-emerald-50"
                                 >
                                   <svg
                                     class="h-4 w-4 shrink-0"
@@ -1051,7 +1030,7 @@
                               <button
                                 type="button"
                                 (click)="deleteUser(user); closeActionMenu()"
-                                class="flex w-full items-center gap-3 px-4 py-3 text-left text-sm font-medium text-red-600 dark:text-red-400 transition hover:bg-red-50"
+                                class="flex w-full items-center gap-3 px-4 py-3 text-left text-sm font-medium text-red-600 transition hover:bg-red-50"
                               >
                                 <svg
                                   class="h-4 w-4 shrink-0"
@@ -1091,16 +1070,16 @@
                       >
 
                         <div
-                          class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500"
+                          class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-slate-400"
                         >
                           —
                         </div>
 
-                        <p class="mt-4 text-sm font-semibold text-slate-700 dark:text-slate-200">
+                        <p class="mt-4 text-sm font-semibold text-slate-700">
                           No users found.
                         </p>
 
-                        <p class="mt-1 text-xs text-slate-400 dark:text-slate-500">
+                        <p class="mt-1 text-xs text-slate-400">
                           Try changing your search or filter.
                         </p>
 
@@ -1119,26 +1098,26 @@
 
             <!-- PAGINATION -->
             <div
-              class="flex flex-col gap-4 border-t border-slate-200 dark:border-slate-800 px-6 py-4 sm:flex-row sm:items-center sm:justify-between"
+              class="flex flex-col gap-4 border-t border-slate-200 px-6 py-4 sm:flex-row sm:items-center sm:justify-between"
             >
 
-              <p class="text-sm text-slate-500 dark:text-slate-400">
+              <p class="text-sm text-slate-500">
 
                 Showing
 
-                <span class="font-semibold text-slate-900 dark:text-white">
+                <span class="font-semibold text-slate-900">
                   {{ paginationStart }}
                 </span>
 
                 -
 
-                <span class="font-semibold text-slate-900 dark:text-white">
+                <span class="font-semibold text-slate-900">
                   {{ paginationEnd }}
                 </span>
 
                 of
 
-                <span class="font-semibold text-slate-900 dark:text-white">
+                <span class="font-semibold text-slate-900">
                   {{ filteredUsersByStatus.length }}
                 </span>
 
@@ -1153,14 +1132,14 @@
                   type="button"
                   (click)="previousPage()"
                   [disabled]="currentPage === 1"
-                  class="rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-2 text-xs font-semibold text-slate-700 dark:text-slate-200 transition hover:bg-slate-100 dark:hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-40"
+                  class="rounded-lg border border-slate-300 bg-white px-4 py-2 text-xs font-semibold text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-40"
                 >
                   Previous
                 </button>
 
 
                 <span
-                  class="min-w-[70px] text-center text-sm font-semibold text-slate-800 dark:text-slate-100"
+                  class="min-w-[70px] text-center text-sm font-semibold text-slate-800"
                 >
                   {{ currentPage }} / {{ totalPages }}
                 </span>
@@ -1170,7 +1149,7 @@
                   type="button"
                   (click)="nextPage()"
                   [disabled]="currentPage === totalPages"
-                  class="rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-2 text-xs font-semibold text-slate-700 dark:text-slate-200 transition hover:bg-slate-100 dark:hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-40"
+                  class="rounded-lg border border-slate-300 bg-white px-4 py-2 text-xs font-semibold text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-40"
                 >
                   Next
                 </button>
@@ -1194,10 +1173,18 @@
 
         <section>
 
-          <!-- DESCRIPTION -->
-          <p class="mb-7 text-sm text-slate-500 dark:text-slate-400">
-            Manage roles assigned to system users.
-          </p>
+          <!-- HEADER -->
+          <div class="mb-7">
+
+            <h1 class="text-3xl font-bold tracking-tight text-slate-900">
+              Role Management
+            </h1>
+
+            <p class="mt-2 text-sm text-slate-500">
+              Manage roles assigned to system users.
+            </p>
+
+          </div>
 
 
           <!-- ROLE SUMMARY -->
@@ -1206,25 +1193,25 @@
 
             <!-- ADMIN -->
             <div
-              class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm"
+              class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
             >
 
               <div class="flex items-center justify-between">
 
                 <div>
 
-                  <p class="text-sm font-medium text-slate-500 dark:text-slate-400">
+                  <p class="text-sm font-medium text-slate-500">
                     Administrators
                   </p>
 
-                  <p class="mt-3 text-3xl font-bold text-indigo-600 dark:text-indigo-400">
+                  <p class="mt-3 text-3xl font-bold text-indigo-600">
                     {{ adminUsers.length }}
                   </p>
 
                 </div>
 
                 <div
-                  class="flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-50 dark:bg-indigo-950/40 text-sm font-bold text-indigo-600 dark:text-indigo-400"
+                  class="flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-50 text-sm font-bold text-indigo-600"
                 >
                   A
                 </div>
@@ -1236,14 +1223,14 @@
 
             <!-- EMPLOYEE -->
             <div
-              class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm"
+              class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
             >
 
               <div class="flex items-center justify-between">
 
                 <div>
 
-                  <p class="text-sm font-medium text-slate-500 dark:text-slate-400">
+                  <p class="text-sm font-medium text-slate-500">
                     Employee / Field Staff
                   </p>
 
@@ -1266,14 +1253,14 @@
 
             <!-- REVIEWER -->
             <div
-              class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm"
+              class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
             >
 
               <div class="flex items-center justify-between">
 
                 <div>
 
-                  <p class="text-sm font-medium text-slate-500 dark:text-slate-400">
+                  <p class="text-sm font-medium text-slate-500">
                     Reviewers
                   </p>
 
@@ -1298,16 +1285,16 @@
 
           <!-- ROLE TABLE -->
           <section
-            class="overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm"
+            class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"
           >
 
             <!-- SEARCH -->
-            <div class="border-b border-slate-200 dark:border-slate-800 px-6 py-5">
+            <div class="border-b border-slate-200 px-6 py-5">
 
               <div class="relative">
 
                 <svg
-                  class="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400 dark:text-slate-500"
+                  class="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"
                   fill="none"
                   stroke="currentColor"
                   stroke-width="2"
@@ -1322,7 +1309,7 @@
                   [(ngModel)]="roleSearchTerm"
                   (input)="applyRoleSearch()"
                   placeholder="Search by name, email, employee code or role..."
-                  class="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 py-3 pl-11 pr-4 text-sm text-slate-900 dark:text-white outline-none transition focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-100"
+                  class="w-full rounded-xl border border-slate-300 bg-slate-50 py-3 pl-11 pr-4 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-100"
                 />
 
               </div>
@@ -1335,30 +1322,30 @@
 
               <table class="min-w-full">
 
-                <thead class="border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950">
+                <thead class="border-b border-slate-200 bg-slate-50">
 
                   <tr>
 
                     <th
-                      class="px-6 py-4 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400"
+                      class="px-6 py-4 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500"
                     >
                       User
                     </th>
 
                     <th
-                      class="px-6 py-4 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400"
+                      class="px-6 py-4 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500"
                     >
                       Employee Code
                     </th>
 
                     <th
-                      class="px-6 py-4 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400"
+                      class="px-6 py-4 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500"
                     >
                       Current Role
                     </th>
 
                     <th
-                      class="px-6 py-4 text-right text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400"
+                      class="px-6 py-4 text-right text-[11px] font-bold uppercase tracking-wider text-slate-500"
                     >
                       Action
                     </th>
@@ -1375,16 +1362,16 @@
                     track user.id
                   ) {
 
-                    <tr class="transition-colors hover:bg-slate-50 dark:hover:bg-slate-800">
+                    <tr class="transition-colors hover:bg-slate-50">
 
                       <!-- USER -->
                       <td class="px-6 py-5">
 
-                        <p class="font-semibold text-slate-900 dark:text-white">
+                        <p class="font-semibold text-slate-900">
                           {{ user.name }}
                         </p>
 
-                        <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                        <p class="mt-1 text-sm text-slate-500">
                           {{ user.email }}
                         </p>
 
@@ -1395,7 +1382,7 @@
                       <td class="px-6 py-5">
 
                         <span
-                          class="rounded-md bg-slate-100 dark:bg-slate-800 px-2.5 py-1.5 font-mono text-xs font-semibold text-slate-700 dark:text-slate-200"
+                          class="rounded-md bg-slate-100 px-2.5 py-1.5 font-mono text-xs font-semibold text-slate-700"
                         >
                           {{ user.employee_code || '—' }}
                         </span>
@@ -1409,7 +1396,7 @@
                         @if (user.role === 'ADMIN') {
 
                           <span
-                            class="inline-flex rounded-full bg-indigo-50 dark:bg-indigo-950/40 px-3 py-1.5 text-xs font-semibold text-indigo-700 dark:text-indigo-300"
+                            class="inline-flex rounded-full bg-indigo-50 px-3 py-1.5 text-xs font-semibold text-indigo-700"
                           >
                             Admin
                           </span>
@@ -1419,7 +1406,7 @@
                         @else if (user.role === 'EMPLOYEE') {
 
                           <span
-                            class="inline-flex rounded-full bg-blue-50 dark:bg-blue-950/40 px-3 py-1.5 text-xs font-semibold text-blue-700 dark:text-blue-300"
+                            class="inline-flex rounded-full bg-blue-50 px-3 py-1.5 text-xs font-semibold text-blue-700"
                           >
                             Employee / Field Staff
                           </span>
@@ -1429,7 +1416,7 @@
                         @else {
 
                           <span
-                            class="inline-flex rounded-full bg-purple-50 dark:bg-purple-950/40 px-3 py-1.5 text-xs font-semibold text-purple-700 dark:text-purple-300"
+                            class="inline-flex rounded-full bg-purple-50 px-3 py-1.5 text-xs font-semibold text-purple-700"
                           >
                             Reviewer
                           </span>
@@ -1447,19 +1434,19 @@
                         ) {
 
                           <button
-  type="button"
-  (click)="openRoleModal(user)"
-  class="rounded-lg border border-purple-200 dark:border-purple-800 bg-purple-50 dark:bg-purple-950/40 px-4 py-2 text-xs font-semibold text-purple-700 dark:text-purple-300 transition-all hover:bg-purple-600 dark:hover:bg-purple-600 hover:text-white"
->
-  Change Role
-</button>
+                            type="button"
+                            (click)="openRoleModal(user)"
+                            class="rounded-lg border border-purple-200 bg-purple-50 px-4 py-2 text-xs font-semibold text-purple-700 transition-all hover:bg-purple-600 hover:text-white"
+                          >
+                            Change Role
+                          </button>
 
                         }
 
                         @else {
 
                           <span
-                            class="inline-flex rounded-lg bg-slate-100 dark:bg-slate-800 px-3 py-2 text-xs font-semibold text-slate-400 dark:text-slate-500"
+                            class="inline-flex rounded-lg bg-slate-100 px-3 py-2 text-xs font-semibold text-slate-400"
                           >
                             Protected
                           </span>
@@ -1482,11 +1469,11 @@
                         class="px-6 py-16 text-center"
                       >
 
-                        <p class="text-sm font-semibold text-slate-700 dark:text-slate-200">
+                        <p class="text-sm font-semibold text-slate-700">
                           No users found.
                         </p>
 
-                        <p class="mt-1 text-xs text-slate-400 dark:text-slate-500">
+                        <p class="mt-1 text-xs text-slate-400">
                           Try changing your search.
                         </p>
 
@@ -1505,26 +1492,26 @@
 
             <!-- PAGINATION -->
             <div
-              class="flex flex-col gap-4 border-t border-slate-200 dark:border-slate-800 px-6 py-4 sm:flex-row sm:items-center sm:justify-between"
+              class="flex flex-col gap-4 border-t border-slate-200 px-6 py-4 sm:flex-row sm:items-center sm:justify-between"
             >
 
-              <p class="text-sm text-slate-500 dark:text-slate-400">
+              <p class="text-sm text-slate-500">
 
                 Showing
 
-                <span class="font-semibold text-slate-900 dark:text-white">
+                <span class="font-semibold text-slate-900">
                   {{ rolePaginationStart }}
                 </span>
 
                 -
 
-                <span class="font-semibold text-slate-900 dark:text-white">
+                <span class="font-semibold text-slate-900">
                   {{ rolePaginationEnd }}
                 </span>
 
                 of
 
-                <span class="font-semibold text-slate-900 dark:text-white">
+                <span class="font-semibold text-slate-900">
                   {{ filteredRoleUsers.length }}
                 </span>
 
@@ -1539,14 +1526,14 @@
                   type="button"
                   (click)="previousRolePage()"
                   [disabled]="roleCurrentPage === 1"
-                  class="rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-2 text-xs font-semibold text-slate-700 dark:text-slate-200 transition hover:bg-slate-100 dark:hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-40"
+                  class="rounded-lg border border-slate-300 bg-white px-4 py-2 text-xs font-semibold text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-40"
                 >
                   Previous
                 </button>
 
 
                 <span
-                  class="min-w-[70px] text-center text-sm font-semibold text-slate-800 dark:text-slate-100"
+                  class="min-w-[70px] text-center text-sm font-semibold text-slate-800"
                 >
                   {{ roleCurrentPage }} / {{ roleTotalPages }}
                 </span>
@@ -1556,7 +1543,7 @@
                   type="button"
                   (click)="nextRolePage()"
                   [disabled]="roleCurrentPage === roleTotalPages"
-                  class="rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-2 text-xs font-semibold text-slate-700 dark:text-slate-200 transition hover:bg-slate-100 dark:hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-40"
+                  class="rounded-lg border border-slate-300 bg-white px-4 py-2 text-xs font-semibold text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-40"
                 >
                   Next
                 </button>
@@ -1571,312 +1558,152 @@
 
       }
 
-      <!-- ====================================================== -->
-      <!-- HIERARCHY MANAGEMENT -->
-      <!-- ====================================================== -->
 
-      @if (activeMenu === 'hierarchy') {
-        <app-hierarchy></app-hierarchy>
-      }
+      @if (activeMenu === 'health-analysis') {
+        <section class="space-y-6">
+          <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+            <div>
+              <p class="text-sm font-semibold text-indigo-600">ServerMonitor</p>
+              <h1 class="mt-1 text-3xl font-bold tracking-tight text-slate-900">Health Analysis</h1>
+              <p class="mt-2 text-sm text-slate-500">
+                Live system and application health from {{ health?.computer || 'the monitored server' }}.
+              </p>
+            </div>
+            <button
+              type="button"
+              (click)="loadHealth()"
+              [disabled]="healthLoading"
+              class="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700 disabled:opacity-60"
+            >
+              <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M20 11a8.1 8.1 0 0 0-14.8-4L3 9"></path>
+                <path d="M3 4v5h5"></path>
+                <path d="M4 13a8.1 8.1 0 0 0 14.8 4L21 15"></path>
+                <path d="M21 20v-5h-5"></path>
+              </svg>
+              {{ healthLoading ? 'Refreshing...' : 'Refresh now' }}
+            </button>
+          </div>
 
+          @if (healthLoading && !health) {
+            <div class="flex min-h-[420px] flex-col items-center justify-center rounded-2xl border border-slate-200 bg-white px-6 py-16 text-center shadow-sm">
+              <div class="h-12 w-12 animate-spin rounded-full border-4 border-indigo-100 border-t-indigo-600"></div>
+              <h2 class="mt-5 text-lg font-bold text-slate-900">Loading health analysis</h2>
+              <p class="mt-2 max-w-sm text-sm text-slate-500">
+                Running ServerMonitor and waiting for the latest health response...
+              </p>
+            </div>
+          }
 
-      <!-- ====================================================== -->
-      <!-- SETTINGS -->
-      <!-- (merged from the standalone AccountSettings and       -->
-      <!-- LoggedInDevices components — settingsView switches     -->
-      <!-- between them instead of routing)                       -->
-      <!-- ====================================================== -->
+          @if (healthError) {
+            <div class="rounded-2xl border border-amber-200 bg-amber-50 px-5 py-4 text-sm font-medium text-amber-800">
+              {{ healthError }}
+            </div>
+          }
 
-      @if (activeMenu === 'settings') {
-
-        @if (settingsView === 'main') {
-
-          <section>
-
-            <!-- DESCRIPTION -->
-            <p class="mb-8 text-sm text-slate-500 dark:text-slate-400">
-              Manage your account and security preferences.
-            </p>
-
-
-            <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
-
-              <!-- LOGGED-IN DEVICES -->
-              <button
-                type="button"
-                (click)="goToLoggedInDevices()"
-                class="group rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 text-left shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-indigo-200 dark:hover:border-indigo-700 hover:shadow-lg"
-              >
-
-                <div class="flex items-start justify-between">
-
-                  <div>
-
-                    <p class="text-base font-semibold text-slate-900 dark:text-white">
-                      Logged-in Devices
-                    </p>
-
-                    <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">
-                      View and manage devices currently signed in to your account.
-                    </p>
-
-                  </div>
-
-
-                  <div
-                    class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 transition group-hover:bg-indigo-600 group-hover:text-white"
-                  >
-
-                    <svg
-                      class="h-5 w-5"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="1.8"
-                      viewBox="0 0 24 24"
-                    >
-                      <rect x="4" y="4" width="16" height="12" rx="2"></rect>
-                      <path d="M8 20h8"></path>
-                      <path d="M12 16v4"></path>
-                    </svg>
-
-                  </div>
-
+          @if (health; as currentHealth) {
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+              <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                <div class="flex items-center justify-between">
+                  <span class="text-sm font-semibold text-slate-500">Overall Status</span>
+                  <span class="h-3 w-3 rounded-full" [class.bg-emerald-500]="currentHealth.overallStatus === 'HEALTHY'" [class.bg-amber-400]="currentHealth.overallStatus === 'WARNING'" [class.bg-red-500]="currentHealth.overallStatus === 'CRITICAL'"></span>
                 </div>
-
-              </button>
-
-
+                <p class="mt-3 text-2xl font-bold" [class]="healthStatusClass(currentHealth.overallStatus)">{{ currentHealth.overallStatus }}</p>
+                <p class="mt-1 text-xs text-slate-500">Last updated {{ currentHealth.timestamp }}</p>
+              </div>
+              <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                <span class="text-sm font-semibold text-slate-500">Services</span>
+                <p class="mt-3 text-3xl font-bold text-slate-900">{{ healthyServiceCount(currentHealth) }} / 2</p>
+                <p class="mt-1 text-xs text-slate-500">Angular and backend checks</p>
+              </div>
+              <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                <span class="text-sm font-semibold text-slate-500">Warnings</span>
+                <p class="mt-3 text-3xl font-bold text-amber-600">{{ currentHealth.alerts.warnings.length }}</p>
+                <p class="mt-1 text-xs text-slate-500">Needs attention</p>
+              </div>
+              <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                <span class="text-sm font-semibold text-slate-500">Critical Alerts</span>
+                <p class="mt-3 text-3xl font-bold text-red-600">{{ currentHealth.alerts.critical.length }}</p>
+                <p class="mt-1 text-xs text-slate-500">Immediate attention required</p>
+              </div>
             </div>
 
-          </section>
-
-        }
-
-        @else if (settingsView === 'logged-in-devices') {
-
-          <section
-            class="overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm"
-          >
-
-            <!-- HEADER -->
-            <div class="border-b border-slate-200 dark:border-slate-800 px-7 py-6">
-
-              <div
-                class="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between"
-              >
-
+            <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+              <div class="mb-5 flex items-center justify-between">
                 <div>
-
-                  <button
-                    type="button"
-                    (click)="backToSettingsMain()"
-                    class="mb-3 inline-flex items-center gap-1.5 text-xs font-semibold text-indigo-600 dark:text-indigo-400 transition hover:text-indigo-700"
-                  >
-                    <svg
-                      class="h-3.5 w-3.5"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2.2"
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="m15 18-6-6 6-6"></path>
-                    </svg>
-                    Back to Settings
-                  </button>
-
-                  <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
-                    {{ activeDeviceCount }} active of {{ totalDevices }} total devices
-                  </p>
-
+                  <h2 class="text-lg font-bold text-slate-900">System Resources</h2>
+                  <p class="mt-1 text-xs text-slate-500">Current machine utilization</p>
                 </div>
-
-
-                <!-- LOGOUT ALL -->
-                <button
-                  type="button"
-                  (click)="logoutAllDevices()"
-                  [disabled]="devices.length === 0"
-                  class="rounded-xl border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950/40 px-5 py-3 text-sm font-semibold text-red-700 dark:text-red-400 shadow-sm transition-all hover:bg-red-600 hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
-                >
-                  Logout All Devices
-                </button>
-
+                <span class="text-xs font-medium text-slate-400">Auto-refresh: 10 sec</span>
               </div>
-
+              <div class="grid grid-cols-1 gap-5 lg:grid-cols-3">
+                @for (metric of [
+                  { label: 'CPU Usage', data: currentHealth.system.cpu },
+                  { label: 'Memory Usage', data: currentHealth.system.memory },
+                  { label: 'Disk Usage (' + currentHealth.system.disk.drive + ')', data: currentHealth.system.disk }
+                ]; track metric.label) {
+                  <div class="rounded-xl border border-slate-100 bg-slate-50 p-5">
+                    <div class="flex items-start justify-between gap-3">
+                      <span class="text-sm font-semibold text-slate-700">{{ metric.label }}</span>
+                      <span class="rounded-full px-2 py-1 text-[10px] font-bold uppercase" [class]="healthBadgeClass(metric.data.status)">{{ metric.data.status }}</span>
+                    </div>
+                    <p class="mt-4 text-3xl font-bold" [class]="healthStatusClass(metric.data.status)">{{ metric.data.usage | number:'1.0-1' }}%</p>
+                    <div class="mt-4 h-2 overflow-hidden rounded-full bg-slate-200">
+                      <div class="h-full rounded-full transition-all" [class]="healthBarClass(metric.data.status)" [style.width.%]="metric.data.usage"></div>
+                    </div>
+                  </div>
+                }
+              </div>
             </div>
 
-
-            <!-- DEVICES ERROR -->
-            @if (devicesErrorMessage) {
-
-              <div class="px-7 pt-6">
-
-                <div
-                  class="flex items-start gap-3 rounded-xl border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950/40 px-5 py-4"
-                >
-
-                  <div
-                    class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-red-600 text-xs font-bold text-white"
-                  >
-                    !
-                  </div>
-
-                  <p class="text-sm font-medium text-red-800 dark:text-red-300">
-                    {{ devicesErrorMessage }}
-                  </p>
-
+            <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+              <div class="mb-5 flex items-center justify-between">
+                <div>
+                  <h2 class="text-lg font-bold text-slate-900">Application &amp; Services</h2>
+                  <p class="mt-1 text-xs text-slate-500">Availability and response time</p>
                 </div>
-
               </div>
-
-            }
-
-
-            <!-- LOADING -->
-            @if (devicesLoading) {
-
-              <div class="px-6 py-16 text-center">
-
-                <div
-                  class="mx-auto h-8 w-8 animate-spin rounded-full border-2 border-slate-200 dark:border-slate-800 border-t-indigo-600"
-                ></div>
-
-                <p class="mt-4 text-sm text-slate-500 dark:text-slate-400">
-                  Loading devices...
-                </p>
-
-              </div>
-
-            }
-
-
-            @else {
-
-              <!-- DEVICE LIST -->
-              <div class="divide-y divide-slate-100 px-2 py-2 sm:px-4">
-
-                @for (device of devices; track device.id) {
-
-                  <div
-                    class="flex flex-col gap-3 px-4 py-5 sm:flex-row sm:items-center sm:justify-between"
-                  >
-
-                    <div class="flex items-start gap-4">
-
-                      <div
-                        class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300"
-                      >
-
-                        <svg
-                          class="h-5 w-5"
-                          fill="none"
-                          stroke="currentColor"
-                          stroke-width="1.8"
-                          viewBox="0 0 24 24"
-                        >
-                          <rect x="4" y="4" width="16" height="12" rx="2"></rect>
-                          <path d="M8 20h8"></path>
-                          <path d="M12 16v4"></path>
-                        </svg>
-
-                      </div>
-
-
-                      <div>
-
-                        <p class="font-semibold text-slate-900 dark:text-white">
-                          {{ device.device_name || device.browser || 'Unknown device' }}
-                        </p>
-
-                        <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
-                          {{ device.ip_address }}
-
-                          @if (device.location) {
-                            &middot; {{ device.location }}
-                          }
-
-                        </p>
-
-                        @if (device.last_active) {
-
-                          <p class="mt-0.5 text-xs text-slate-400 dark:text-slate-500">
-                            Last active: {{ device.last_active }}
-                          </p>
-
-                        }
-
-                      </div>
-
-                    </div>
-
-
+              <div class="space-y-3">
+                @for (service of [currentHealth.services.angular, currentHealth.services.backend]; track service.host || service.url) {
+                  <div class="grid grid-cols-1 gap-3 rounded-xl border border-slate-100 p-4 md:grid-cols-[1.5fr_0.7fr_0.8fr_1.5fr] md:items-center">
                     <div>
-
-                      @if (device.active) {
-
-                        <span
-                          class="inline-flex items-center gap-2 rounded-full bg-emerald-50 dark:bg-emerald-950/40 px-3 py-1.5 text-xs font-semibold text-emerald-700 dark:text-emerald-400"
-                        >
-
-                          <span
-                            class="h-1.5 w-1.5 rounded-full bg-emerald-600"
-                          ></span>
-
-                          Active
-
-                        </span>
-
-                      }
-
-                      @else {
-
-                        <span
-                          class="inline-flex items-center gap-2 rounded-full bg-slate-100 dark:bg-slate-800 px-3 py-1.5 text-xs font-semibold text-slate-500 dark:text-slate-400"
-                        >
-
-                          <span
-                            class="h-1.5 w-1.5 rounded-full bg-slate-400"
-                          ></span>
-
-                          Signed out
-
-                        </span>
-
-                      }
-
+                      <p class="font-semibold text-slate-800">{{ service.url ? 'Angular Frontend' : 'Backend API' }}</p>
+                      <p class="mt-1 break-all text-xs text-slate-500">{{ service.url || service.host + ':' + service.port }}</p>
                     </div>
-
+                    <span class="w-fit rounded-full px-3 py-1 text-xs font-bold" [class]="healthBadgeClass(service.status)">{{ service.status }}</span>
+                    <p class="text-sm font-bold" [class]="healthStatusClass(service.status)">{{ service.responseTime | number:'1.0-0' }} ms</p>
+                    <p class="text-xs text-slate-500">{{ service.error || (service.httpStatus ? 'HTTP ' + service.httpStatus + ' OK' : 'Port ' + service.port + ' Open') }}</p>
                   </div>
-
                 }
-
-
-                @empty {
-
-                  <div class="px-6 py-16 text-center">
-
-                    <div
-                      class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500"
-                    >
-                      —
-                    </div>
-
-                    <p class="mt-4 text-sm font-semibold text-slate-700 dark:text-slate-200">
-                      No logged-in devices found.
-                    </p>
-
-                  </div>
-
-                }
-
               </div>
+            </div>
 
-            }
-
-          </section>
-
-        }
-
+            <div class="grid grid-cols-1 gap-5 lg:grid-cols-2">
+              <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                <h2 class="text-lg font-bold text-slate-900">Recent Alerts</h2>
+                <div class="mt-4 space-y-3">
+                  @for (alert of currentHealth.alerts.critical; track alert) {
+                    <div class="flex gap-3 rounded-xl bg-red-50 p-3 text-sm text-red-800"><span class="font-bold">!</span><span>{{ alert }}</span></div>
+                  }
+                  @for (alert of currentHealth.alerts.warnings; track alert) {
+                    <div class="flex gap-3 rounded-xl bg-amber-50 p-3 text-sm text-amber-800"><span class="font-bold">!</span><span>{{ alert }}</span></div>
+                  }
+                  @if (!currentHealth.alerts.critical.length && !currentHealth.alerts.warnings.length) {
+                    <p class="rounded-xl bg-emerald-50 p-3 text-sm text-emerald-800">All systems are running normally.</p>
+                  }
+                </div>
+              </div>
+              <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                <h2 class="text-lg font-bold text-slate-900">Monitor Details</h2>
+                <dl class="mt-4 space-y-4 text-sm">
+                  <div class="flex justify-between gap-4 border-b border-slate-100 pb-3"><dt class="text-slate-500">Computer</dt><dd class="font-semibold text-slate-800">{{ currentHealth.computer }}</dd></div>
+                  <div class="flex justify-between gap-4 border-b border-slate-100 pb-3"><dt class="text-slate-500">Disk</dt><dd class="font-semibold text-slate-800">{{ currentHealth.system.disk.drive }}</dd></div>
+                  <div class="flex justify-between gap-4"><dt class="text-slate-500">Monitor timestamp</dt><dd class="text-right font-semibold text-slate-800">{{ currentHealth.timestamp }}</dd></div>
+                </dl>
+              </div>
+            </div>
+          }
+        </section>
       }
 
     </div>
@@ -1895,17 +1722,17 @@
     >
 
       <div
-        class="w-full max-w-lg overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl"
+        class="w-full max-w-lg overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl"
       >
 
         <!-- HEADER -->
         <div
-          class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 px-6 py-5"
+          class="flex items-center justify-between border-b border-slate-200 px-6 py-5"
         >
 
           <div>
 
-            <h3 class="text-lg font-bold text-slate-900 dark:text-white">
+            <h3 class="text-lg font-bold text-slate-900">
 
               @if (editingUser) {
                 Edit User
@@ -1917,7 +1744,7 @@
 
             </h3>
 
-            <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">
+            <p class="mt-1 text-xs text-slate-500">
               Enter the user information below.
             </p>
 
@@ -1927,7 +1754,7 @@
           <button
             type="button"
             (click)="closeUserModal()"
-            class="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 dark:text-slate-500 transition hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900"
+            class="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition hover:bg-slate-100 hover:text-slate-900"
           >
             ×
           </button>
@@ -1941,14 +1768,14 @@
           <!-- NAME -->
           <div>
 
-            <label class="mb-2 block text-sm font-semibold text-slate-800 dark:text-slate-100">
+            <label class="mb-2 block text-sm font-semibold text-slate-800">
               Name
             </label>
 
             <input
               type="text"
               [(ngModel)]="userForm.name"
-              class="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-3 text-sm text-slate-900 dark:text-white outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+              class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
             />
 
           </div>
@@ -1957,32 +1784,14 @@
           <!-- EMAIL -->
           <div>
 
-            <label class="mb-2 block text-sm font-semibold text-slate-800 dark:text-slate-100">
+            <label class="mb-2 block text-sm font-semibold text-slate-800">
               Email
             </label>
 
             <input
               type="email"
               [(ngModel)]="userForm.email"
-              class="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-3 text-sm text-slate-900 dark:text-white outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
-            />
-
-          </div>
-
-
-          <!-- PHONE NUMBER -->
-          <div>
-
-            <label class="mb-2 block text-sm font-semibold text-slate-800 dark:text-slate-100">
-              Phone Number
-              <span class="font-normal text-slate-400 dark:text-slate-500">(optional)</span>
-            </label>
-
-            <input
-              type="tel"
-              [(ngModel)]="userForm.phone_number"
-              placeholder="e.g. 9876543210"
-              class="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-3 text-sm text-slate-900 dark:text-white outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+              class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
             />
 
           </div>
@@ -1991,13 +1800,13 @@
           <!-- ROLE -->
           <div>
 
-            <label class="mb-2 block text-sm font-semibold text-slate-800 dark:text-slate-100">
+            <label class="mb-2 block text-sm font-semibold text-slate-800">
               Role
             </label>
 
             <select
               [(ngModel)]="userForm.role"
-              class="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-3 text-sm text-slate-900 dark:text-white outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+              class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
             >
 
               <option value="ADMIN">
@@ -2019,14 +1828,14 @@
 
           <!-- APPROVAL POSITION -->
           <div
-            class="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 px-4 py-4"
+            class="rounded-xl border border-slate-200 bg-slate-50 px-4 py-4"
           >
 
-            <p class="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+            <p class="text-[11px] font-bold uppercase tracking-wider text-slate-500">
               Approval Position
             </p>
 
-            <p class="mt-2 text-sm font-semibold text-slate-900 dark:text-white">
+            <p class="mt-2 text-sm font-semibold text-slate-900">
               {{ getApprovalPosition() || 'NULL' }}
             </p>
 
@@ -2037,13 +1846,13 @@
 
         <!-- FOOTER -->
         <div
-          class="flex justify-end gap-3 border-t border-slate-200 dark:border-slate-800 px-6 py-5"
+          class="flex justify-end gap-3 border-t border-slate-200 px-6 py-5"
         >
 
           <button
             type="button"
             (click)="closeUserModal()"
-            class="rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-5 py-2.5 text-sm font-semibold text-slate-700 dark:text-slate-200 transition hover:bg-slate-100 dark:hover:bg-slate-800"
+            class="rounded-xl border border-slate-300 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-100"
           >
             Cancel
           </button>
@@ -2077,23 +1886,23 @@
     >
 
       <div
-        class="w-full max-w-md overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl"
+        class="w-full max-w-md overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl"
       >
 
         <!-- HEADER -->
         <div
-          class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 px-6 py-5"
+          class="flex items-center justify-between border-b border-slate-200 px-6 py-5"
         >
 
           <div>
 
-            <h3 class="text-lg font-bold text-slate-900 dark:text-white">
+            <h3 class="text-lg font-bold text-slate-900">
               Change Role
             </h3>
 
             @if (selectedRoleUser) {
 
-              <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
+              <p class="mt-1 text-sm text-slate-500">
                 {{ selectedRoleUser.name }}
               </p>
 
@@ -2105,7 +1914,7 @@
           <button
             type="button"
             (click)="closeRoleModal()"
-            class="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 dark:text-slate-500 transition hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900"
+            class="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition hover:bg-slate-100 hover:text-slate-900"
           >
             ×
           </button>
@@ -2116,13 +1925,13 @@
         <!-- FORM -->
         <div class="px-6 py-6">
 
-          <label class="mb-2 block text-sm font-semibold text-slate-800 dark:text-slate-100">
+          <label class="mb-2 block text-sm font-semibold text-slate-800">
             Role
           </label>
 
           <select
             [(ngModel)]="selectedRole"
-            class="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-3 text-sm text-slate-900 dark:text-white outline-none transition focus:border-purple-500 focus:ring-2 focus:ring-purple-100"
+            class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-purple-500 focus:ring-2 focus:ring-purple-100"
           >
 
             <option value="EMPLOYEE">
@@ -2140,13 +1949,13 @@
 
         <!-- FOOTER -->
         <div
-          class="flex justify-end gap-3 border-t border-slate-200 dark:border-slate-800 px-6 py-5"
+          class="flex justify-end gap-3 border-t border-slate-200 px-6 py-5"
         >
 
           <button
             type="button"
             (click)="closeRoleModal()"
-            class="rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-5 py-2.5 text-sm font-semibold text-slate-700 dark:text-slate-200 transition hover:bg-slate-100 dark:hover:bg-slate-800"
+            class="rounded-xl border border-slate-300 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-100"
           >
             Cancel
           </button>
