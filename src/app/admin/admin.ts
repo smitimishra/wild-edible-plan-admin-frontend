@@ -1727,9 +1727,42 @@ export class Admin implements OnInit, OnDestroy {
   }
 
   healthyServiceCount(health: HealthResponse): number {
-    return [health.services.angular, health.services.backend]
+    return this.healthServices(health)
+      .map((item) => item.service)
       .filter((service) => service.status.toUpperCase() === 'UP')
       .length;
+  }
+
+  healthServices(health: HealthResponse): Array<{ key: string; label: string; service: import('../services/admin.service').HealthService }> {
+    const services: Array<{ key: string; label: string; service: import('../services/admin.service').HealthService }> = [
+      { key: 'angular', label: 'Angular Frontend', service: health.services.angular },
+      { key: 'backend', label: 'Node API', service: health.services.backend }
+    ];
+
+    if (health.services.database) {
+      services.push({
+        key: 'database',
+        label: 'Postgres Database',
+        service: health.services.database
+      });
+    }
+
+    return services;
+  }
+
+  healthServiceEndpoint(item: { service: import('../services/admin.service').HealthService }): string {
+    const service = item.service;
+    if (service.url) return service.url;
+    if (service.name) return `${service.name} at ${service.host}:${service.port}`;
+    return `${service.host ?? 'Unknown host'}:${service.port ?? ''}`;
+  }
+
+  healthServiceDetails(item: { service: import('../services/admin.service').HealthService }): string {
+    const service = item.service;
+    if (service.error) return service.error;
+    if (service.httpStatus) return `HTTP ${service.httpStatus} OK`;
+    if (service.checkType) return `${service.checkType} check passed`;
+    return `Port ${service.port ?? ''} Open`;
   }
 
   // ============================================================
