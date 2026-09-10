@@ -60,7 +60,7 @@ export interface LogoutAllDevicesResponse {
 export class SessionService {
 
   private readonly apiUrl =
-    'http://192.168.29.51:8080/api/sessions';
+    'http://192.168.29.216:8080/api/sessions';
 
 
   // ==========================================================
