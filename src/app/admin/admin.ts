@@ -2,6 +2,7 @@ import {
   ChangeDetectorRef,
   Component,
   HostListener,
+  OnDestroy,
   OnInit
 } from '@angular/core';
 
@@ -16,7 +17,8 @@ import {
 import {
   AdminService,
   AdminUser,
-  HierarchyLevel
+  HierarchyLevel,
+  HealthResponse
 } from '../services/admin.service';
 
 import { AuthService } from '../services/auth';
@@ -27,7 +29,7 @@ type AdminMenu =
   | 'dashboard'
   | 'users'
   | 'roles'
-  | 'settings';
+  | 'health-analysis';
 
 
 type UserStatusFilter =
@@ -48,7 +50,7 @@ type UserStatusFilter =
 
   templateUrl: './admin.html'
 })
-export class Admin implements OnInit {
+export class Admin implements OnInit, OnDestroy {
 
   // Navigation
 
@@ -101,6 +103,11 @@ export class Admin implements OnInit {
 
   successMessage = '';
 
+  health: HealthResponse | null = null;
+  healthLoading = false;
+  healthError = '';
+  private healthRefreshTimer: ReturnType<typeof setInterval> | null = null;
+
 
   // User modal
 
@@ -122,12 +129,6 @@ export class Admin implements OnInit {
   openActionMenuId: number | null = null;
 
 
-  // Settings dropdown (Account Settings + Theme)
-  settingsThemeMenuOpen = false;
-  themeSubmenuOpen = false;
-  selectedTheme: 'light' | 'dark' | 'default' = 'default';
-
-
   constructor(
     private adminService: AdminService,
     private authService: AuthService,
@@ -142,8 +143,6 @@ export class Admin implements OnInit {
   // ============================================================
 
   ngOnInit(): void {
-  this.applyStoredTheme();
-
   this.route.queryParamMap.subscribe(params => {
     const urlToken = params.get('token');
 
@@ -194,12 +193,11 @@ export class Admin implements OnInit {
 
     this.clearMessages();
 
-    if (menu !== 'settings') {
-
-      this.settingsThemeMenuOpen = false;
-
-      this.themeSubmenuOpen = false;
-
+    if (menu === 'health-analysis') {
+      this.loadHealth();
+      this.startHealthRefresh();
+    } else {
+      this.stopHealthRefresh();
     }
 
 
@@ -216,7 +214,7 @@ export class Admin implements OnInit {
 
     }
 
-    if (menu === 'settings') {
+    if ((menu as string) === 'settings') {
       this.loadSettings();
     }
 
@@ -1576,7 +1574,7 @@ export class Admin implements OnInit {
 
 
     this.authService.logout(
-      'http://192.168.29.51:8200/'
+      'http://192.168.29.216:8200/'
     );
 
   }
@@ -1669,101 +1667,102 @@ export class Admin implements OnInit {
   }
 
 
-  // ============================================================
-  // SETTINGS DROPDOWN (Account Settings + Theme)
-  // ============================================================
+  showHealthAnalysisMessage(): void {
+    this.setActiveMenu('health-analysis');
+  }
 
-  toggleSettingsThemeMenu(): void {
+  loadHealth(): void {
+    this.healthLoading = true;
+    this.healthError = '';
 
-    this.settingsThemeMenuOpen = !this.settingsThemeMenuOpen;
+    this.adminService.getHealth().subscribe({
+      next: (health) => {
+        this.health = health;
+        this.healthLoading = false;
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        this.healthLoading = false;
+        this.healthError = error?.error?.message ?? 'Health monitor output is not available yet.';
+        this.cdr.detectChanges();
+      }
+    });
+  }
 
-    // Collapse the nested Theme submenu whenever the outer
-    // Settings dropdown is closed (or freshly reopened) so it
-    // doesn't reappear already-expanded next time.
-    if (!this.settingsThemeMenuOpen) {
-      this.themeSubmenuOpen = false;
+  startHealthRefresh(): void {
+    this.stopHealthRefresh();
+    this.healthRefreshTimer = setInterval(() => this.loadHealth(), 10000);
+  }
+
+  stopHealthRefresh(): void {
+    if (this.healthRefreshTimer) {
+      clearInterval(this.healthRefreshTimer);
+      this.healthRefreshTimer = null;
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.stopHealthRefresh();
+  }
+
+  healthStatusClass(status: string): string {
+    const normalized = status.toUpperCase();
+    if (normalized === 'CRITICAL' || normalized === 'DOWN') return 'text-red-600';
+    if (normalized === 'WARNING') return 'text-amber-600';
+    return 'text-emerald-600';
+  }
+
+  healthBadgeClass(status: string): string {
+    const normalized = status.toUpperCase();
+    if (normalized === 'CRITICAL' || normalized === 'DOWN') return 'bg-red-100 text-red-700';
+    if (normalized === 'WARNING') return 'bg-amber-100 text-amber-700';
+    return 'bg-emerald-100 text-emerald-700';
+  }
+
+  healthBarClass(status: string): string {
+    const normalized = status.toUpperCase();
+    if (normalized === 'CRITICAL') return 'bg-red-500';
+    if (normalized === 'WARNING') return 'bg-amber-400';
+    return 'bg-emerald-500';
+  }
+
+  healthyServiceCount(health: HealthResponse): number {
+    return this.healthServices(health)
+      .map((item) => item.service)
+      .filter((service) => service.status.toUpperCase() === 'UP')
+      .length;
+  }
+
+  healthServices(health: HealthResponse): Array<{ key: string; label: string; service: import('../services/admin.service').HealthService }> {
+    const services: Array<{ key: string; label: string; service: import('../services/admin.service').HealthService }> = [
+      { key: 'angular', label: 'Angular Frontend', service: health.services.angular },
+      { key: 'backend', label: 'Node API', service: health.services.backend }
+    ];
+
+    if (health.services.database) {
+      services.push({
+        key: 'database',
+        label: 'Postgres Database',
+        service: health.services.database
+      });
     }
 
+    return services;
   }
 
-  toggleThemeSubmenu(): void {
-
-    this.themeSubmenuOpen = !this.themeSubmenuOpen;
-
+  healthServiceEndpoint(item: { service: import('../services/admin.service').HealthService }): string {
+    const service = item.service;
+    if (service.url) return service.url;
+    if (service.name) return `${service.name} at ${service.host}:${service.port}`;
+    return `${service.host ?? 'Unknown host'}:${service.port ?? ''}`;
   }
 
-  selectAccountSettings(): void {
-
-    this.setActiveMenu('settings');
-
-    this.settingsThemeMenuOpen = false;
-
-    this.themeSubmenuOpen = false;
-
-  }
-
-  selectTheme(
-    theme: 'light' | 'dark' | 'default'
-  ): void {
-
-    this.selectedTheme = theme;
-
-    this.settingsThemeMenuOpen = false;
-
-    this.themeSubmenuOpen = false;
-
-    localStorage.setItem('theme', theme);
-
-    this.applyTheme(theme);
-
-  }
-
-  isThemeSelected(
-    theme: 'light' | 'dark' | 'default'
-  ): boolean {
-
-    return this.selectedTheme === theme;
-
-  }
-
-  private applyStoredTheme(): void {
-
-    const stored =
-      localStorage.getItem('theme') as
-        'light' | 'dark' | 'default' | null;
-
-    this.selectedTheme = stored || 'default';
-
-    this.applyTheme(this.selectedTheme);
-
-  }
-
-  private applyTheme(
-    theme: 'light' | 'dark' | 'default'
-  ): void {
-
-    const root = document.documentElement;
-
-    if (theme === 'dark') {
-
-      root.classList.add('dark');
-
-    } else if (theme === 'light') {
-
-      root.classList.remove('dark');
-
-    } else {
-
-      // System Default — follow the OS-level preference.
-      const prefersDark =
-        window.matchMedia(
-          '(prefers-color-scheme: dark)'
-        ).matches;
-
-      root.classList.toggle('dark', prefersDark);
-
-    }
-
+  healthServiceDetails(item: { service: import('../services/admin.service').HealthService }): string {
+    const service = item.service;
+    if (service.error) return service.error;
+    if (service.httpStatus) return `HTTP ${service.httpStatus} OK`;
+    if (service.checkType) return `${service.checkType} check passed`;
+    return `Port ${service.port ?? ''} Open`;
   }
 
   // ============================================================

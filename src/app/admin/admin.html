@@ -145,7 +145,7 @@
       <!-- Health Analysis -->
       <button
   type="button"
-  (click)="goToHealthAnalysis()"
+  (click)="showHealthAnalysisMessage()"
   class="group flex w-full items-center gap-3 rounded-xl px-4 py-3.5 text-left text-sm font-semibold text-slate-700 transition-all duration-200 hover:bg-slate-100 hover:text-slate-900"
 >
   <svg
@@ -161,137 +161,38 @@
 
   <span>Health Analysis</span>
 </button>
-
-
-      <!-- Settings (dropdown: Account Settings + Theme) -->
-      <div class="relative">
-
-        <button
-          type="button"
-          (click)="toggleSettingsThemeMenu()"
-          [class.bg-indigo-600]="activeMenu === 'settings'"
-          [class.text-white]="activeMenu === 'settings'"
-          [class.shadow-sm]="activeMenu === 'settings'"
-          class="group flex w-full items-center justify-between rounded-xl px-4 py-3.5 text-left text-sm font-semibold text-slate-700 transition-all duration-200 hover:bg-slate-100 hover:text-slate-900"
-        >
-
-          <span class="flex items-center gap-3">
-
-            <svg
-              class="h-5 w-5 shrink-0"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.8"
-              viewBox="0 0 24 24"
-            >
-              <path
-                d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"
-              ></path>
-
-              <path
-                d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-1.7 1.7-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1.03 1.56V20h-2.4v-.2a1.7 1.7 0 0 0-1.03-1.56 1.7 1.7 0 0 0-1.88.34l-.06.06-1.7-1.7.06-.06A1.7 1.7 0 0 0 8.46 15a1.7 1.7 0 0 0-1.56-1.03H6.7v-2.4h.2a1.7 1.7 0 0 0 1.56-1.03 1.7 1.7 0 0 0-.34-1.88l-.06-.06 1.7-1.7.06.06a1.7 1.7 0 0 0 1.88.34A1.7 1.7 0 0 0 12.73 5.7v-.2h2.4v.2a1.7 1.7 0 0 0 1.03 1.56 1.7 1.7 0 0 0 1.88-.34l.06-.06 1.7 1.7-.06.06a1.7 1.7 0 0 0-.34 1.88A1.7 1.7 0 0 0 20.96 11h.2v2.4h-.2A1.7 1.7 0 0 0 19.4 15Z"
-              ></path>
-            </svg>
-
-            <span>Settings</span>
-
-          </span>
-
-          <svg
-            class="h-4 w-4 shrink-0 transition-transform duration-200"
-            [class.rotate-180]="settingsThemeMenuOpen"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            viewBox="0 0 24 24"
-          >
-            <path d="m6 9 6 6 6-6"></path>
-          </svg>
-
-        </button>
-
-        @if (settingsThemeMenuOpen) {
-
-          <div class="mt-1 space-y-1 rounded-xl border border-slate-200 bg-white p-1 shadow-lg">
-
-            <!-- ACCOUNT SETTINGS -->
-            <button
-              type="button"
-              (click)="selectAccountSettings()"
-              class="flex w-full items-center gap-2 rounded-lg px-3 py-2.5 text-left text-sm font-medium text-slate-700 hover:bg-slate-100"
-            >
-              <svg class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
-                <circle cx="12" cy="8" r="4"></circle>
-                <path d="M4 20c0-3.3 3.6-6 8-6s8 2.7 8 6"></path>
-              </svg>
-              <span>Account Settings</span>
-            </button>
-
-            <!-- THEME (nested dropdown) -->
-            <div class="relative">
-
-              <button
-                type="button"
-                (click)="toggleThemeSubmenu()"
-                class="flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-left text-sm font-medium text-slate-700 hover:bg-slate-100"
-              >
-                <span class="flex items-center gap-2">
-                  <svg class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
-                    <circle cx="12" cy="12" r="9"></circle>
-                    <path d="M12 3a9 9 0 0 0 0 18c1.7 0 2-1 1-2-1-1-.5-2 1-2h1a4 4 0 0 0 4-4c0-5-3.5-10-7-10Z"></path>
-                    <circle cx="8.5" cy="10.5" r="0.75" fill="currentColor"></circle>
-                    <circle cx="12" cy="7.5" r="0.75" fill="currentColor"></circle>
-                    <circle cx="15.5" cy="10.5" r="0.75" fill="currentColor"></circle>
-                  </svg>
-                  <span>Theme</span>
-                </span>
-                <svg
-                  class="h-3.5 w-3.5 shrink-0 transition-transform duration-200"
-                  [class.rotate-180]="themeSubmenuOpen"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  viewBox="0 0 24 24"
-                >
-                  <path d="m6 9 6 6 6-6"></path>
-                </svg>
-              </button>
-
-              @if (themeSubmenuOpen) {
-
-                <div class="mt-1 space-y-1 pl-2">
-
-                  <button type="button" (click)="selectTheme('light')" class="flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-left text-sm font-medium text-slate-700 hover:bg-slate-100">
-                    <span class="flex items-center gap-2"><span>☀</span> Light</span>
-                    @if (isThemeSelected('light')) { <span class="text-indigo-600">✓</span> }
-                  </button>
-
-                  <button type="button" (click)="selectTheme('dark')" class="flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-left text-sm font-medium text-slate-700 hover:bg-slate-100">
-                    <span class="flex items-center gap-2"><span>☾</span> Dark</span>
-                    @if (isThemeSelected('dark')) { <span class="text-indigo-600">✓</span> }
-                  </button>
-
-                  <button type="button" (click)="selectTheme('default')" class="flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-left text-sm font-medium text-slate-700 hover:bg-slate-100">
-                    <span class="flex items-center gap-2"><span>▣</span> System Default</span>
-                    @if (isThemeSelected('default')) { <span class="text-indigo-600">✓</span> }
-                  </button>
-
-                </div>
-
-              }
-
-            </div>
-
-          </div>
-
-        }
-
-      </div>
     </nav>
 
 
     <!-- BOTTOM MENU -->
     <div class="border-t border-slate-200 p-4">
+
+      <!-- Settings -->
+      <button
+        type="button"
+        class="group mb-1 flex w-full items-center gap-3 rounded-xl px-4 py-3.5 text-left text-sm font-semibold text-slate-700 transition-all duration-200 hover:bg-slate-100 hover:text-slate-900"
+      >
+
+        <svg
+          class="h-5 w-5 shrink-0"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"
+          ></path>
+
+          <path
+            d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-1.7 1.7-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1.03 1.56V20h-2.4v-.2a1.7 1.7 0 0 0-1.03-1.56 1.7 1.7 0 0 0-1.88.34l-.06.06-1.7-1.7.06-.06A1.7 1.7 0 0 0 8.46 15a1.7 1.7 0 0 0-1.56-1.03H6.7v-2.4h.2a1.7 1.7 0 0 0 1.56-1.03 1.7 1.7 0 0 0-.34-1.88l-.06-.06 1.7-1.7.06.06a1.7 1.7 0 0 0 1.88.34A1.7 1.7 0 0 0 12.73 5.7v-.2h2.4v.2a1.7 1.7 0 0 0 1.03 1.56 1.7 1.7 0 0 0 1.88-.34l.06-.06 1.7 1.7-.06.06a1.7 1.7 0 0 0-.34 1.88A1.7 1.7 0 0 0 20.96 11h.2v2.4h-.2A1.7 1.7 0 0 0 19.4 15Z"
+          ></path>
+        </svg>
+
+        <span>Settings</span>
+
+      </button>
+
 
       <!-- Logout -->
       <button
@@ -351,8 +252,8 @@
               Role Management
             }
 
-            @else if (activeMenu === 'settings') {
-              Account Settings
+            @else if (activeMenu === 'health-analysis') {
+              Health Analysis
             }
 
             @else {
@@ -1658,120 +1559,151 @@
       }
 
 
-      @if (activeMenu === 'settings') {
-
-        <section>
-
-          <div class="mb-8">
-
-            <h1 class="text-3xl font-bold tracking-tight text-slate-900">
-              Account Settings
-            </h1>
-
-            <p class="mt-2 text-sm text-slate-500">
-              Configure login security settings for all users.
-            </p>
-
+      @if (activeMenu === 'health-analysis') {
+        <section class="space-y-6">
+          <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+            <div>
+              <p class="text-sm font-semibold text-indigo-600">ServerMonitor</p>
+              <h1 class="mt-1 text-3xl font-bold tracking-tight text-slate-900">Health Analysis</h1>
+              <p class="mt-2 text-sm text-slate-500">
+                Live system and application health from {{ health?.computer || 'the monitored server' }}.
+              </p>
+            </div>
+            <button
+              type="button"
+              (click)="loadHealth()"
+              [disabled]="healthLoading"
+              class="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700 disabled:opacity-60"
+            >
+              <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M20 11a8.1 8.1 0 0 0-14.8-4L3 9"></path>
+                <path d="M3 4v5h5"></path>
+                <path d="M4 13a8.1 8.1 0 0 0 14.8 4L21 15"></path>
+                <path d="M21 20v-5h-5"></path>
+              </svg>
+              {{ healthLoading ? 'Refreshing...' : 'Refresh now' }}
+            </button>
           </div>
 
+          @if (healthLoading && !health) {
+            <div class="flex min-h-[420px] flex-col items-center justify-center rounded-2xl border border-slate-200 bg-white px-6 py-16 text-center shadow-sm">
+              <div class="h-12 w-12 animate-spin rounded-full border-4 border-indigo-100 border-t-indigo-600"></div>
+              <h2 class="mt-5 text-lg font-bold text-slate-900">Loading health analysis</h2>
+              <p class="mt-2 max-w-sm text-sm text-slate-500">
+                Running ServerMonitor and waiting for the latest health response...
+              </p>
+            </div>
+          }
 
-          <div class="max-w-xl rounded-2xl border border-slate-200 bg-white p-7 shadow-sm">
+          @if (healthError) {
+            <div class="rounded-2xl border border-amber-200 bg-amber-50 px-5 py-4 text-sm font-medium text-amber-800">
+              {{ healthError }}
+            </div>
+          }
 
-            @if (settingsLoading) {
-
-              <div class="py-10 text-center">
-
-                <div class="mx-auto h-8 w-8 animate-spin rounded-full border-2 border-slate-200 border-t-indigo-600"></div>
-
-                <p class="mt-4 text-sm text-slate-500">
-                  Loading settings...
-                </p>
-
+          @if (health; as currentHealth) {
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+              <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                <div class="flex items-center justify-between">
+                  <span class="text-sm font-semibold text-slate-500">Overall Status</span>
+                  <span class="h-3 w-3 rounded-full" [class.bg-emerald-500]="currentHealth.overallStatus === 'HEALTHY'" [class.bg-amber-400]="currentHealth.overallStatus === 'WARNING'" [class.bg-red-500]="currentHealth.overallStatus === 'CRITICAL'"></span>
+                </div>
+                <p class="mt-3 text-2xl font-bold" [class]="healthStatusClass(currentHealth.overallStatus)">{{ currentHealth.overallStatus }}</p>
+                <p class="mt-1 text-xs text-slate-500">Last updated {{ currentHealth.timestamp }}</p>
               </div>
+              <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                <span class="text-sm font-semibold text-slate-500">Services</span>
+                <p class="mt-3 text-3xl font-bold text-slate-900">{{ healthyServiceCount(currentHealth) }} / {{ healthServices(currentHealth).length }}</p>
+                <p class="mt-1 text-xs text-slate-500">Frontend, Node API and database checks</p>
+              </div>
+              <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                <span class="text-sm font-semibold text-slate-500">Warnings</span>
+                <p class="mt-3 text-3xl font-bold text-amber-600">{{ currentHealth.alerts.warnings.length }}</p>
+                <p class="mt-1 text-xs text-slate-500">Needs attention</p>
+              </div>
+              <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                <span class="text-sm font-semibold text-slate-500">Critical Alerts</span>
+                <p class="mt-3 text-3xl font-bold text-red-600">{{ currentHealth.alerts.critical.length }}</p>
+                <p class="mt-1 text-xs text-slate-500">Immediate attention required</p>
+              </div>
+            </div>
 
-            }
-
-            @else {
-
-              @if (settingsError) {
-
-                <div class="mb-5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-800">
-                  {{ settingsError }}
-                </div>
-
-              }
-
-              @if (settingsSuccess) {
-
-                <div class="mb-5 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-800">
-                  {{ settingsSuccess }}
-                </div>
-
-              }
-
-              <div class="space-y-5">
-
+            <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+              <div class="mb-5 flex items-center justify-between">
                 <div>
-
-                  <label class="mb-2 block text-sm font-semibold text-slate-800">
-                    Max Login Attempts
-                  </label>
-
-                  <input
-                    type="number"
-                    [(ngModel)]="settingMaxAttempts"
-                    min="1"
-                    max="100"
-                    class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
-                  />
-
-                  <p class="mt-1.5 text-xs text-slate-400">
-                    Number of failed attempts before an account is locked out.
-                  </p>
-
+                  <h2 class="text-lg font-bold text-slate-900">System Resources</h2>
+                  <p class="mt-1 text-xs text-slate-500">Current machine utilization</p>
                 </div>
+                <span class="text-xs font-medium text-slate-400">Auto-refresh: 10 sec</span>
+              </div>
+              <div class="grid grid-cols-1 gap-5 lg:grid-cols-3">
+                @for (metric of [
+                  { label: 'CPU Usage', data: currentHealth.system.cpu },
+                  { label: 'Memory Usage', data: currentHealth.system.memory },
+                  { label: 'Disk Usage (' + currentHealth.system.disk.drive + ')', data: currentHealth.system.disk }
+                ]; track metric.label) {
+                  <div class="rounded-xl border border-slate-100 bg-slate-50 p-5">
+                    <div class="flex items-start justify-between gap-3">
+                      <span class="text-sm font-semibold text-slate-700">{{ metric.label }}</span>
+                      <span class="rounded-full px-2 py-1 text-[10px] font-bold uppercase" [class]="healthBadgeClass(metric.data.status)">{{ metric.data.status }}</span>
+                    </div>
+                    <p class="mt-4 text-3xl font-bold" [class]="healthStatusClass(metric.data.status)">{{ metric.data.usage | number:'1.0-1' }}%</p>
+                    <div class="mt-4 h-2 overflow-hidden rounded-full bg-slate-200">
+                      <div class="h-full rounded-full transition-all" [class]="healthBarClass(metric.data.status)" [style.width.%]="metric.data.usage"></div>
+                    </div>
+                  </div>
+                }
+              </div>
+            </div>
 
+            <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+              <div class="mb-5 flex items-center justify-between">
                 <div>
-
-                  <label class="mb-2 block text-sm font-semibold text-slate-800">
-                    Lockout Duration (hours)
-                  </label>
-
-                  <input
-                    type="number"
-                    [(ngModel)]="settingLockoutHours"
-                    min="1"
-                    max="168"
-                    class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
-                  />
-
-                  <p class="mt-1.5 text-xs text-slate-400">
-                    How long a locked-out account stays locked.
-                  </p>
-
+                  <h2 class="text-lg font-bold text-slate-900">Application &amp; Services</h2>
+                  <p class="mt-1 text-xs text-slate-500">Availability and response time</p>
                 </div>
-
               </div>
-
-              <div class="mt-7 flex justify-end">
-
-                <button
-                  type="button"
-                  (click)="saveSettings()"
-                  [disabled]="settingsSaving"
-                  class="rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-60"
-                >
-                  {{ settingsSaving ? 'Saving...' : 'Save Changes' }}
-                </button>
-
+              <div class="space-y-3">
+                @for (item of healthServices(currentHealth); track item.key) {
+                  <div class="grid grid-cols-1 gap-3 rounded-xl border border-slate-100 p-4 md:grid-cols-[1.5fr_0.7fr_0.8fr_1.5fr] md:items-center">
+                    <div>
+                      <p class="font-semibold text-slate-800">{{ item.label }}</p>
+                      <p class="mt-1 break-all text-xs text-slate-500">{{ healthServiceEndpoint(item) }}</p>
+                    </div>
+                    <span class="w-fit rounded-full px-3 py-1 text-xs font-bold" [class]="healthBadgeClass(item.service.status)">{{ item.service.status }}</span>
+                    <p class="text-sm font-bold" [class]="healthStatusClass(item.service.status)">{{ item.service.responseTime | number:'1.0-0' }} ms</p>
+                    <p class="text-xs text-slate-500">{{ healthServiceDetails(item) }}</p>
+                  </div>
+                }
               </div>
+            </div>
 
-            }
-
-          </div>
-
+            <div class="grid grid-cols-1 gap-5 lg:grid-cols-2">
+              <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                <h2 class="text-lg font-bold text-slate-900">Recent Alerts</h2>
+                <div class="mt-4 space-y-3">
+                  @for (alert of currentHealth.alerts.critical; track alert) {
+                    <div class="flex gap-3 rounded-xl bg-red-50 p-3 text-sm text-red-800"><span class="font-bold">!</span><span>{{ alert }}</span></div>
+                  }
+                  @for (alert of currentHealth.alerts.warnings; track alert) {
+                    <div class="flex gap-3 rounded-xl bg-amber-50 p-3 text-sm text-amber-800"><span class="font-bold">!</span><span>{{ alert }}</span></div>
+                  }
+                  @if (!currentHealth.alerts.critical.length && !currentHealth.alerts.warnings.length) {
+                    <p class="rounded-xl bg-emerald-50 p-3 text-sm text-emerald-800">All systems are running normally.</p>
+                  }
+                </div>
+              </div>
+              <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                <h2 class="text-lg font-bold text-slate-900">Monitor Details</h2>
+                <dl class="mt-4 space-y-4 text-sm">
+                  <div class="flex justify-between gap-4 border-b border-slate-100 pb-3"><dt class="text-slate-500">Computer</dt><dd class="font-semibold text-slate-800">{{ currentHealth.computer }}</dd></div>
+                  <div class="flex justify-between gap-4 border-b border-slate-100 pb-3"><dt class="text-slate-500">Disk</dt><dd class="font-semibold text-slate-800">{{ currentHealth.system.disk.drive }}</dd></div>
+                  <div class="flex justify-between gap-4"><dt class="text-slate-500">Monitor timestamp</dt><dd class="text-right font-semibold text-slate-800">{{ currentHealth.timestamp }}</dd></div>
+                </dl>
+              </div>
+            </div>
+          }
         </section>
-
       }
 
     </div>

@@ -94,6 +94,8 @@ export interface HealthService {
   url?: string;
   host?: string;
   port?: number;
+  name?: string;
+  checkType?: string;
 }
 
 export interface HealthResponse {
@@ -108,6 +110,7 @@ export interface HealthResponse {
   services: {
     angular: HealthService;
     backend: HealthService;
+    database?: HealthService;
   };
   alerts: {
     warnings: string[];
