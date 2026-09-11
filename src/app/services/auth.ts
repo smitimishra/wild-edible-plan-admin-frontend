@@ -435,101 +435,90 @@ export class AuthService implements OnDestroy {
   // backend as /login.
   // ============================================================
 
-  private checkSession(): void {
+  // ============================================================
+// VALIDATE CURRENT SESSION
+// ============================================================
 
-    const token =
-      this.getToken();
+private checkSession(): void {
 
-    if (!token) {
+  const token = this.getToken();
 
-      this.stopSessionPolling();
-
-      return;
-    }
-
-
-    // Optional local expiration check first
-
-    if (
-      this.isTokenExpired(token)
-    ) {
-
-      this.markSessionInvalid();
-
-      return;
-    }
-
-
-    // IMPORTANT:
-    // Do NOT use port 8080 here.
-    //
-    // Backend auth routes are running on:
-    //
-    // http://192.168.29.51:3001/api/auth
-    //
-    // Therefore validation is:
-    //
-    // /api/auth/validate-session
-
-    fetch(
-      `${this.apiUrl}/validate-session`,
-      {
-        method: 'POST',
-
-        headers: {
-          'Content-Type':
-            'application/json'
-        },
-
-        body: JSON.stringify({
-          token
-        })
-      }
-    )
-
-      .then(
-        response => {
-
-          if (
-            response.status === 401
-          ) {
-
-            this.markSessionInvalid();
-
-            return;
-          }
-
-
-          if (!response.ok) {
-
-            console.warn(
-              'Session validation returned HTTP status:',
-              response.status
-            );
-
-            return;
-          }
-
-
-          return response.json();
-
-        }
-      )
-
-      .catch(
-        error => {
-
-          // Network failure should not
-          // immediately log the user out.
-
-          console.warn(
-            'Session validation request failed:',
-            error
-          );
-        }
-      );
+  if (!token) {
+    this.stopSessionPolling();
+    return;
   }
 
+  // Optional local expiration check first
+  if (this.isTokenExpired(token)) {
+    this.markSessionInvalid();
+    return;
+  }
+
+  // ============================================================
+  // VALIDATE SESSION USING BACKEND
+  // ============================================================
+
+  fetch(
+    `${this.apiUrl}/validate-session`,
+    {
+      method: 'POST',
+
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+
+      body: JSON.stringify({})
+    }
+  )
+    .then(response => {
+
+      if (response.status === 401) {
+
+        console.warn(
+          'Session validation returned 401 Unauthorized'
+        );
+
+        this.markSessionInvalid();
+
+        return;
+      }
+
+      if (!response.ok) {
+
+        console.warn(
+          'Session validation returned HTTP status:',
+          response.status
+        );
+
+        return;
+      }
+
+      return response.json();
+
+    })
+    .then(data => {
+
+      if (data) {
+        console.log(
+          'Session validation successful:',
+          data
+        );
+      }
+
+    })
+    .catch(error => {
+
+      // Network failure should not
+      // immediately log the user out.
+
+      console.warn(
+        'Session validation request failed:',
+        error
+      );
+
+    });
+}
 
   // ============================================================
   // MARK SESSION INVALID

@@ -122,10 +122,6 @@ export interface HealthResponse {
   providedIn: 'root'
 })
 export class AdminService {
-  deleteHierarchy(id: number) {
-    throw new Error('Method not implemented.');
-  }
-
   private apiUrl =
     'http://192.168.29.51:3001/api/admin';
 

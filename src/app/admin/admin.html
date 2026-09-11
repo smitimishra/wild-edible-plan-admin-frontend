@@ -1,12 +1,15 @@
-<div class="min-h-screen bg-slate-50">
+<div class="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
+
+  <!-- Dark-mode form/control normalization -->
+  <div class="hidden dark:block" aria-hidden="true"></div>
 
   <!-- SIDEBAR -->
   <aside
-    class="fixed left-0 top-0 z-40 flex h-screen w-[290px] flex-col border-r border-slate-200 bg-white shadow-sm"
+    class="fixed left-0 top-0 z-40 flex h-screen w-[290px] flex-col border-r border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900"
   >
 
     <!-- BRAND -->
-    <div class="border-b border-slate-200 px-7 py-7">
+    <div class="border-b border-slate-200 px-7 py-7 dark:border-slate-800">
 
       <div class="flex items-center gap-3">
 
@@ -21,7 +24,7 @@
             Admin
           </p>
 
-          <h1 class="mt-0.5 text-lg font-bold tracking-tight text-slate-900">
+          <h1 class="mt-0.5 text-lg font-bold tracking-tight text-slate-900 dark:text-white">
             Approval System
           </h1>
         </div>
@@ -41,7 +44,7 @@
         [class.bg-indigo-600]="activeMenu === 'dashboard'"
         [class.text-white]="activeMenu === 'dashboard'"
         [class.shadow-sm]="activeMenu === 'dashboard'"
-        class="group flex w-full items-center gap-3 rounded-xl px-4 py-3.5 text-left text-sm font-semibold text-slate-700 transition-all duration-200 hover:bg-slate-100 hover:text-slate-900"
+        class="group flex w-full items-center gap-3 rounded-xl px-4 py-3.5 text-left text-sm font-semibold text-slate-700 transition-all duration-200 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white dark:text-slate-200"
       >
 
         <svg
@@ -69,7 +72,7 @@
         [class.bg-indigo-600]="activeMenu === 'users'"
         [class.text-white]="activeMenu === 'users'"
         [class.shadow-sm]="activeMenu === 'users'"
-        class="group flex w-full items-center gap-3 rounded-xl px-4 py-3.5 text-left text-sm font-semibold text-slate-700 transition-all duration-200 hover:bg-slate-100 hover:text-slate-900"
+        class="group flex w-full items-center gap-3 rounded-xl px-4 py-3.5 text-left text-sm font-semibold text-slate-700 transition-all duration-200 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white dark:text-slate-200"
       >
 
         <svg
@@ -97,7 +100,7 @@
         [class.bg-indigo-600]="activeMenu === 'roles'"
         [class.text-white]="activeMenu === 'roles'"
         [class.shadow-sm]="activeMenu === 'roles'"
-        class="group flex w-full items-center gap-3 rounded-xl px-4 py-3.5 text-left text-sm font-semibold text-slate-700 transition-all duration-200 hover:bg-slate-100 hover:text-slate-900"
+        class="group flex w-full items-center gap-3 rounded-xl px-4 py-3.5 text-left text-sm font-semibold text-slate-700 transition-all duration-200 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white dark:text-slate-200"
       >
 
         <svg
@@ -119,8 +122,11 @@
       <!-- Hierarchy Management -->
       <button
         type="button"
-        (click)="goToHierarchy()"
-        class="group flex w-full items-center gap-3 rounded-xl px-4 py-3.5 text-left text-sm font-semibold text-slate-700 transition-all duration-200 hover:bg-slate-100 hover:text-slate-900"
+        (click)="setActiveMenu('hierarchy')"
+        [class.bg-indigo-600]="activeMenu === 'hierarchy'"
+        [class.text-white]="activeMenu === 'hierarchy'"
+        [class.shadow-sm]="activeMenu === 'hierarchy'"
+        class="group flex w-full items-center gap-3 rounded-xl px-4 py-3.5 text-left text-sm font-semibold text-slate-700 transition-all duration-200 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white dark:text-slate-200"
       >
 
         <svg
@@ -146,7 +152,7 @@
       <button
   type="button"
   (click)="showHealthAnalysisMessage()"
-  class="group flex w-full items-center gap-3 rounded-xl px-4 py-3.5 text-left text-sm font-semibold text-slate-700 transition-all duration-200 hover:bg-slate-100 hover:text-slate-900"
+  class="group flex w-full items-center gap-3 rounded-xl px-4 py-3.5 text-left text-sm font-semibold text-slate-700 transition-all duration-200 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white dark:text-slate-200"
 >
   <svg
     class="h-5 w-5 shrink-0"
@@ -161,44 +167,148 @@
 
   <span>Health Analysis</span>
 </button>
+
+
+      <!-- Settings (dropdown) -->
+      <div>
+
+        <button
+          type="button"
+          (click)="toggleSettingsMenu()"
+          [class.bg-indigo-50]="settingsMenuOpen"
+          [class.text-indigo-700]="settingsMenuOpen"
+          class="group flex w-full items-center justify-between gap-3 rounded-xl px-4 py-3.5 text-left text-sm font-semibold text-slate-700 transition-all duration-200 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white dark:text-slate-200"
+        >
+
+          <span class="flex items-center gap-3">
+
+            <svg
+              class="h-5 w-5 shrink-0"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"
+              ></path>
+
+              <path
+                d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-1.7 1.7-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1.03 1.56V20h-2.4v-.2a1.7 1.7 0 0 0-1.03-1.56 1.7 1.7 0 0 0-1.88.34l-.06.06-1.7-1.7.06-.06A1.7 1.7 0 0 0 8.46 15a1.7 1.7 0 0 0-1.56-1.03H6.7v-2.4h.2a1.7 1.7 0 0 0 1.56-1.03 1.7 1.7 0 0 0-.34-1.88l-.06-.06 1.7-1.7.06.06a1.7 1.7 0 0 0 1.88.34A1.7 1.7 0 0 0 12.73 5.7v-.2h2.4v.2a1.7 1.7 0 0 0 1.03 1.56 1.7 1.7 0 0 0 1.88-.34l.06-.06 1.7 1.7-.06.06a1.7 1.7 0 0 0-.34 1.88A1.7 1.7 0 0 0 20.96 11h.2v2.4h-.2A1.7 1.7 0 0 0 19.4 15Z"
+              ></path>
+            </svg>
+
+            <span>Settings</span>
+
+          </span>
+
+          <svg
+            class="h-4 w-4 shrink-0 transition-transform duration-200"
+            [class.rotate-180]="settingsMenuOpen"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+          >
+            <path d="m6 9 6 6 6-6"></path>
+          </svg>
+
+        </button>
+
+
+        @if (settingsMenuOpen) {
+
+          <div class="ml-4 mt-1 space-y-1 border-l border-slate-200 pl-3 dark:border-slate-800">
+
+            <!-- Account Settings -->
+            <button
+              type="button"
+              (click)="setActiveMenu('settings')"
+              [class.bg-indigo-600]="activeMenu === 'settings'"
+              [class.text-white]="activeMenu === 'settings'"
+              [class.text-slate-600]="activeMenu !== 'settings'"
+              class="flex w-full items-center gap-2 rounded-lg px-3 py-2.5 text-left text-sm font-medium transition hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-slate-800 dark:hover:text-white"
+            >
+              Account Settings
+            </button>
+
+
+            <!-- Theme (nested dropdown) -->
+            <div>
+
+              <button
+                type="button"
+                (click)="toggleThemeMenu()"
+                class="flex w-full items-center justify-between gap-2 rounded-lg px-3 py-2.5 text-left text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white"
+              >
+                <span>Theme</span>
+
+                <svg
+                  class="h-3.5 w-3.5 shrink-0 transition-transform duration-200"
+                  [class.rotate-180]="themeMenuOpen"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="m6 9 6 6 6-6"></path>
+                </svg>
+              </button>
+
+
+              @if (themeMenuOpen) {
+
+                <div class="ml-3 mt-1 space-y-0.5 border-l border-slate-200 pl-3 dark:border-slate-800">
+
+                  <button
+                    type="button"
+                    (click)="setTheme('light')"
+                    class="flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-xs font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white"
+                  >
+                    <span>Light</span>
+                    @if (currentTheme === 'light') { <span class="text-indigo-600">✓</span> }
+                  </button>
+
+                  <button
+                    type="button"
+                    (click)="setTheme('dark')"
+                    class="flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-xs font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white"
+                  >
+                    <span>Dark</span>
+                    @if (currentTheme === 'dark') { <span class="text-indigo-600">✓</span> }
+                  </button>
+
+                  <button
+                    type="button"
+                    (click)="setTheme('system')"
+                    class="flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-xs font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white"
+                  >
+                    <span>System Default</span>
+                    @if (currentTheme === 'system') { <span class="text-indigo-600">✓</span> }
+                  </button>
+
+                </div>
+
+              }
+
+            </div>
+
+          </div>
+
+        }
+
+      </div>
     </nav>
 
 
     <!-- BOTTOM MENU -->
-    <div class="border-t border-slate-200 p-4">
-
-      <!-- Settings -->
-      <button
-        type="button"
-        class="group mb-1 flex w-full items-center gap-3 rounded-xl px-4 py-3.5 text-left text-sm font-semibold text-slate-700 transition-all duration-200 hover:bg-slate-100 hover:text-slate-900"
-      >
-
-        <svg
-          class="h-5 w-5 shrink-0"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.8"
-          viewBox="0 0 24 24"
-        >
-          <path
-            d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"
-          ></path>
-
-          <path
-            d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-1.7 1.7-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1.03 1.56V20h-2.4v-.2a1.7 1.7 0 0 0-1.03-1.56 1.7 1.7 0 0 0-1.88.34l-.06.06-1.7-1.7.06-.06A1.7 1.7 0 0 0 8.46 15a1.7 1.7 0 0 0-1.56-1.03H6.7v-2.4h.2a1.7 1.7 0 0 0 1.56-1.03 1.7 1.7 0 0 0-.34-1.88l-.06-.06 1.7-1.7.06.06a1.7 1.7 0 0 0 1.88.34A1.7 1.7 0 0 0 12.73 5.7v-.2h2.4v.2a1.7 1.7 0 0 0 1.03 1.56 1.7 1.7 0 0 0 1.88-.34l.06-.06 1.7 1.7-.06.06a1.7 1.7 0 0 0-.34 1.88A1.7 1.7 0 0 0 20.96 11h.2v2.4h-.2A1.7 1.7 0 0 0 19.4 15Z"
-          ></path>
-        </svg>
-
-        <span>Settings</span>
-
-      </button>
-
+    <div class="border-t border-slate-200 p-4 dark:border-slate-800">
 
       <!-- Logout -->
       <button
         type="button"
         (click)="logout()"
-        class="group flex w-full items-center gap-3 rounded-xl px-4 py-3.5 text-left text-sm font-semibold text-red-600 transition-all duration-200 hover:bg-red-50 hover:text-red-700"
+        class="group flex w-full items-center gap-3 rounded-xl px-4 py-3.5 text-left text-sm font-semibold text-red-600 transition-all duration-200 hover:bg-red-50 hover:text-red-700 dark:hover:bg-red-950 dark:hover:text-red-400"
       >
 
         <svg
@@ -227,7 +337,7 @@
 
     <!-- TOP HEADER -->
     <header
-      class="sticky top-0 z-30 border-b border-slate-200 bg-white/95 backdrop-blur"
+      class="sticky top-0 z-30 border-b border-slate-200 bg-white/95 backdrop-blur dark:border-slate-800 dark:bg-slate-900/95"
     >
 
       <div class="flex min-h-[78px] items-center justify-between px-8">
@@ -238,7 +348,7 @@
             Administration
           </p>
 
-          <h2 class="mt-1 text-2xl font-bold tracking-tight text-slate-900">
+          <h2 class="mt-1 text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
 
             @if (activeMenu === 'dashboard') {
               Dashboard
@@ -256,6 +366,14 @@
               Health Analysis
             }
 
+            @else if (activeMenu === 'hierarchy') {
+              Hierarchy Management
+            }
+
+            @else if (activeMenu === 'settings') {
+              Settings
+            }
+
             @else {
               Administration
             }
@@ -270,11 +388,11 @@
 
           <div class="hidden text-right sm:block">
 
-            <p class="text-sm font-semibold text-slate-900">
+            <p class="text-sm font-semibold text-slate-900 dark:text-white">
               Administrator
             </p>
 
-            <p class="text-xs text-slate-500">
+            <p class="text-xs text-slate-500 dark:text-slate-400">
               Admin Panel
             </p>
 
@@ -301,7 +419,7 @@
       @if (successMessage) {
 
         <div
-          class="mb-6 flex items-start gap-3 rounded-xl border border-emerald-200 bg-emerald-50 px-5 py-4 shadow-sm"
+          class="mb-6 flex items-start gap-3 rounded-xl border border-emerald-200 bg-emerald-50 px-5 py-4 shadow-sm dark:bg-emerald-950"
         >
 
           <div
@@ -323,7 +441,7 @@
       @if (errorMessage) {
 
         <div
-          class="mb-6 flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 px-5 py-4 shadow-sm"
+          class="mb-6 flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 px-5 py-4 shadow-sm dark:bg-red-950"
         >
 
           <div
@@ -349,19 +467,6 @@
 
         <section>
 
-          <!-- PAGE TITLE -->
-          <div class="mb-8">
-
-            <h1 class="text-3xl font-bold tracking-tight text-slate-900">
-              Dashboard
-            </h1>
-
-            <p class="mt-2 text-sm text-slate-500">
-              Overview of users and system activity.
-            </p>
-
-          </div>
-
 
           <!-- STATISTICS -->
           <div class="grid grid-cols-1 gap-5 md:grid-cols-3">
@@ -371,18 +476,18 @@
             <button
               type="button"
               (click)="showAllUsers()"
-              class="group rounded-2xl border border-slate-200 bg-white p-6 text-left shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-indigo-200 hover:shadow-lg"
+              class="group rounded-2xl border border-slate-200 bg-white p-6 text-left shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-indigo-200 hover:shadow-lg dark:bg-slate-900 dark:border-slate-800"
             >
 
               <div class="flex items-start justify-between">
 
                 <div>
 
-                  <p class="text-sm font-medium text-slate-500">
+                  <p class="text-sm font-medium text-slate-500 dark:text-slate-400">
                     Total Users
                   </p>
 
-                  <p class="mt-3 text-4xl font-bold tracking-tight text-slate-900">
+                  <p class="mt-3 text-4xl font-bold tracking-tight text-slate-900 dark:text-white">
                     {{ users.length }}
                   </p>
 
@@ -394,7 +499,7 @@
 
 
                 <div
-                  class="flex h-11 w-11 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 transition group-hover:bg-indigo-600 group-hover:text-white"
+                  class="flex h-11 w-11 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 transition group-hover:bg-indigo-600 group-hover:text-white dark:bg-indigo-950"
                 >
 
                   <svg
@@ -421,14 +526,14 @@
             <button
               type="button"
               (click)="showActiveUsers()"
-              class="group rounded-2xl border border-slate-200 bg-white p-6 text-left shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-emerald-200 hover:shadow-lg"
+              class="group rounded-2xl border border-slate-200 bg-white p-6 text-left shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-emerald-200 hover:shadow-lg dark:bg-slate-900 dark:border-slate-800"
             >
 
               <div class="flex items-start justify-between">
 
                 <div>
 
-                  <p class="text-sm font-medium text-slate-500">
+                  <p class="text-sm font-medium text-slate-500 dark:text-slate-400">
                     Active Users
                   </p>
 
@@ -444,7 +549,7 @@
 
 
                 <div
-                  class="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 transition group-hover:bg-emerald-600 group-hover:text-white"
+                  class="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 transition group-hover:bg-emerald-600 group-hover:text-white dark:bg-emerald-950"
                 >
 
                   <span class="h-3 w-3 rounded-full bg-current"></span>
@@ -460,14 +565,14 @@
             <button
               type="button"
               (click)="showInactiveUsers()"
-              class="group rounded-2xl border border-slate-200 bg-white p-6 text-left shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-red-200 hover:shadow-lg"
+              class="group rounded-2xl border border-slate-200 bg-white p-6 text-left shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-red-200 hover:shadow-lg dark:bg-slate-900 dark:border-slate-800"
             >
 
               <div class="flex items-start justify-between">
 
                 <div>
 
-                  <p class="text-sm font-medium text-slate-500">
+                  <p class="text-sm font-medium text-slate-500 dark:text-slate-400">
                     Inactive Users
                   </p>
 
@@ -483,7 +588,7 @@
 
 
                 <div
-                  class="flex h-11 w-11 items-center justify-center rounded-xl bg-red-50 text-red-600 transition group-hover:bg-red-600 group-hover:text-white"
+                  class="flex h-11 w-11 items-center justify-center rounded-xl bg-red-50 text-red-600 transition group-hover:bg-red-600 group-hover:text-white dark:bg-red-950"
                 >
 
                   <span class="text-lg font-bold">
@@ -505,18 +610,18 @@
 
             <!-- ADMIN -->
             <div
-              class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
+              class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:bg-slate-900 dark:border-slate-800"
             >
 
               <div class="flex items-start justify-between">
 
                 <div>
 
-                  <p class="text-sm font-medium text-slate-500">
+                  <p class="text-sm font-medium text-slate-500 dark:text-slate-400">
                     Administrators
                   </p>
 
-                  <p class="mt-3 text-3xl font-bold text-slate-900">
+                  <p class="mt-3 text-3xl font-bold text-slate-900 dark:text-white">
                     {{ adminUsers.length }}
                   </p>
 
@@ -528,7 +633,7 @@
 
 
                 <div
-                  class="flex h-10 w-10 items-center justify-center rounded-lg bg-slate-100 text-sm font-bold text-slate-700"
+                  class="flex h-10 w-10 items-center justify-center rounded-lg bg-slate-100 text-sm font-bold text-slate-700 dark:bg-slate-800 dark:text-slate-200"
                 >
                   A
                 </div>
@@ -540,14 +645,14 @@
 
             <!-- EMPLOYEE -->
             <div
-              class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
+              class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:bg-slate-900 dark:border-slate-800"
             >
 
               <div class="flex items-start justify-between">
 
                 <div>
 
-                  <p class="text-sm font-medium text-slate-500">
+                  <p class="text-sm font-medium text-slate-500 dark:text-slate-400">
                     Employee / Field Staff
                   </p>
 
@@ -563,7 +668,7 @@
 
 
                 <div
-                  class="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50 text-sm font-bold text-blue-600"
+                  class="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50 text-sm font-bold text-blue-600 dark:bg-blue-950"
                 >
                   E
                 </div>
@@ -575,14 +680,14 @@
 
             <!-- REVIEWER -->
             <div
-              class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
+              class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:bg-slate-900 dark:border-slate-800"
             >
 
               <div class="flex items-start justify-between">
 
                 <div>
 
-                  <p class="text-sm font-medium text-slate-500">
+                  <p class="text-sm font-medium text-slate-500 dark:text-slate-400">
                     Reviewers
                   </p>
 
@@ -598,7 +703,7 @@
 
 
                 <div
-                  class="flex h-10 w-10 items-center justify-center rounded-lg bg-purple-50 text-sm font-bold text-purple-600"
+                  class="flex h-10 w-10 items-center justify-center rounded-lg bg-purple-50 text-sm font-bold text-purple-600 dark:bg-purple-950"
                 >
                   R
                 </div>
@@ -621,40 +726,11 @@
       @if (activeMenu === 'users') {
 
         <section
-          class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"
+          class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:bg-slate-900 dark:border-slate-800"
         >
 
           <!-- HEADER -->
-          <div class="border-b border-slate-200 px-7 py-6">
-
-            <div
-              class="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between"
-            >
-
-              <div>
-
-                <h1 class="text-2xl font-bold tracking-tight text-slate-900">
-                  User Management
-                </h1>
-
-                <p class="mt-1 text-sm text-slate-500">
-                  Manage Admin, Employee / Field Staff and Reviewer accounts.
-                </p>
-
-              </div>
-
-
-              <!-- ADD USER -->
-              <button
-                type="button"
-                (click)="openAddUser()"
-                class="rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white shadow-sm transition-all hover:bg-indigo-700 hover:shadow-md"
-              >
-                Add User
-              </button>
-
-            </div>
-
+          <div class="border-b border-slate-200 px-7 py-6 dark:border-slate-800">
 
             <!-- SEARCH -->
             <div class="mt-6">
@@ -677,11 +753,23 @@
                   [(ngModel)]="userSearchTerm"
                   (input)="onUserSearch()"
                   placeholder="Search by name, email, employee code, role or approval position..."
-                  class="w-full rounded-xl border border-slate-300 bg-slate-50 py-3 pl-11 pr-4 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-100"
+                  class="w-full rounded-xl border border-slate-300 bg-slate-50 py-3 pl-11 pr-4 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-100 dark:bg-slate-950 dark:text-white dark:border-slate-700 dark:focus:bg-slate-800 dark:focus:ring-indigo-900"
                 />
 
               </div>
 
+            </div>
+
+
+            <!-- ADD USER -->
+            <div class="mt-4 flex justify-end">
+              <button
+                type="button"
+                (click)="openAddUser()"
+                class="rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white shadow-sm transition-all hover:bg-indigo-700 hover:shadow-md dark:bg-indigo-600 dark:hover:bg-indigo-500"
+              >
+                Add User
+              </button>
             </div>
 
 
@@ -696,7 +784,7 @@
                 [class.text-white]="userStatusFilter === 'all'"
                 [class.bg-slate-100]="userStatusFilter !== 'all'"
                 [class.text-slate-700]="userStatusFilter !== 'all'"
-                class="rounded-lg px-4 py-2 text-xs font-semibold transition-all hover:bg-indigo-50"
+                class="rounded-lg px-4 py-2 text-xs font-semibold transition-all hover:bg-indigo-50 dark:hover:bg-indigo-950"
               >
                 All Users
               </button>
@@ -740,10 +828,10 @@
             <div class="px-6 py-16 text-center">
 
               <div
-                class="mx-auto h-8 w-8 animate-spin rounded-full border-2 border-slate-200 border-t-indigo-600"
+                class="mx-auto h-8 w-8 animate-spin rounded-full border-2 border-slate-200 border-t-indigo-600 dark:border-slate-800"
               ></div>
 
-              <p class="mt-4 text-sm text-slate-500">
+              <p class="mt-4 text-sm text-slate-500 dark:text-slate-400">
                 Loading users...
               </p>
 
@@ -759,42 +847,42 @@
 
               <table class="min-w-full">
 
-                <thead class="border-b border-slate-200 bg-slate-50">
+                <thead class="border-b border-slate-200 bg-slate-50 dark:bg-slate-950 dark:border-slate-800">
 
                   <tr>
 
                     <th
-                      class="px-6 py-4 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500"
+                      class="px-6 py-4 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400"
                     >
                       User
                     </th>
 
                     <th
-                      class="px-6 py-4 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500"
+                      class="px-6 py-4 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400"
                     >
                       Employee Code
                     </th>
 
                     <th
-                      class="px-6 py-4 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500"
+                      class="px-6 py-4 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400"
                     >
                       Role
                     </th>
 
                     <th
-                      class="px-6 py-4 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500"
+                      class="px-6 py-4 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400"
                     >
                       Approval Position
                     </th>
 
                     <th
-                      class="px-6 py-4 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500"
+                      class="px-6 py-4 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400"
                     >
                       Status
                     </th>
 
                     <th
-                      class="px-6 py-4 text-right text-[11px] font-bold uppercase tracking-wider text-slate-500"
+                      class="px-6 py-4 text-right text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400"
                     >
                       Actions
                     </th>
@@ -811,18 +899,18 @@
                     track user.id
                   ) {
 
-                    <tr class="transition-colors hover:bg-slate-50">
+                    <tr class="transition-colors hover:bg-slate-50 dark:hover:bg-slate-800">
 
                       <!-- USER -->
                       <td class="px-6 py-5">
 
                         <div>
 
-                          <p class="font-semibold text-slate-900">
+                          <p class="font-semibold text-slate-900 dark:text-white">
                             {{ user.name }}
                           </p>
 
-                          <p class="mt-1 text-sm text-slate-500">
+                          <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
                             {{ user.email }}
                           </p>
 
@@ -835,7 +923,7 @@
                       <td class="px-6 py-5">
 
                         <span
-                          class="rounded-md bg-slate-100 px-2.5 py-1.5 font-mono text-xs font-semibold text-slate-700"
+                          class="rounded-md bg-slate-100 px-2.5 py-1.5 font-mono text-xs font-semibold text-slate-700 dark:bg-slate-800 dark:text-slate-200"
                         >
                           {{ user.employee_code || '—' }}
                         </span>
@@ -849,7 +937,7 @@
                         @if (user.role === 'ADMIN') {
 
                           <span
-                            class="inline-flex rounded-full bg-indigo-50 px-3 py-1.5 text-xs font-semibold text-indigo-700"
+                            class="inline-flex rounded-full bg-indigo-50 px-3 py-1.5 text-xs font-semibold text-indigo-700 dark:bg-indigo-950"
                           >
                             Admin
                           </span>
@@ -859,7 +947,7 @@
                         @else if (user.role === 'EMPLOYEE') {
 
                           <span
-                            class="inline-flex rounded-full bg-blue-50 px-3 py-1.5 text-xs font-semibold text-blue-700"
+                            class="inline-flex rounded-full bg-blue-50 px-3 py-1.5 text-xs font-semibold text-blue-700 dark:bg-blue-950"
                           >
                             Employee / Field Staff
                           </span>
@@ -869,7 +957,7 @@
                         @else {
 
                           <span
-                            class="inline-flex rounded-full bg-purple-50 px-3 py-1.5 text-xs font-semibold text-purple-700"
+                            class="inline-flex rounded-full bg-purple-50 px-3 py-1.5 text-xs font-semibold text-purple-700 dark:bg-purple-950"
                           >
                             Reviewer
                           </span>
@@ -885,7 +973,7 @@
                         @if (user.approval_position) {
 
                           <span
-                            class="text-sm font-medium text-slate-700"
+                            class="text-sm font-medium text-slate-700 dark:text-slate-200"
                           >
                             {{ user.approval_position }}
                           </span>
@@ -909,7 +997,7 @@
                         @if (user.is_active) {
 
                           <span
-                            class="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-700"
+                            class="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-700 dark:bg-emerald-950"
                           >
 
                             <span
@@ -925,7 +1013,7 @@
                         @else {
 
                           <span
-                            class="inline-flex items-center gap-2 rounded-full bg-red-50 px-3 py-1.5 text-xs font-semibold text-red-700"
+                            class="inline-flex items-center gap-2 rounded-full bg-red-50 px-3 py-1.5 text-xs font-semibold text-red-700 dark:bg-red-950"
                           >
 
                             <span
@@ -949,7 +1037,7 @@
                           <button
                             type="button"
                             (click)="toggleActionMenu(user.id)"
-                            class="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-lg font-bold leading-none text-slate-600 transition-all hover:border-slate-300 hover:bg-slate-100 hover:text-slate-900"
+                            class="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-lg font-bold leading-none text-slate-600 transition-all hover:border-slate-300 hover:bg-slate-100 hover:text-slate-900 dark:bg-slate-900 dark:text-slate-300 dark:border-slate-800 dark:hover:bg-slate-800 dark:hover:text-white dark:hover:border-slate-600"
                             title="Actions"
                             aria-label="Actions"
                           >
@@ -959,14 +1047,14 @@
                           @if (openActionMenuId === user.id) {
 
                             <div
-                              class="absolute right-0 top-11 z-50 w-44 overflow-hidden rounded-xl border border-slate-200 bg-white py-1 shadow-xl"
+                              class="absolute right-0 top-11 z-50 w-44 overflow-hidden rounded-xl border border-slate-200 bg-white py-1 shadow-xl dark:bg-slate-900 dark:border-slate-800"
                             >
 
                               <!-- EDIT -->
                               <button
                                 type="button"
                                 (click)="openEditUser(user); closeActionMenu()"
-                                class="flex w-full items-center gap-3 px-4 py-3 text-left text-sm font-medium text-blue-700 transition hover:bg-blue-50"
+                                class="flex w-full items-center gap-3 px-4 py-3 text-left text-sm font-medium text-blue-700 transition hover:bg-blue-50 dark:hover:bg-blue-950"
                               >
                                 <svg
                                   class="h-4 w-4 shrink-0"
@@ -1010,7 +1098,7 @@
                                 <button
                                   type="button"
                                   (click)="reactivateUser(user); closeActionMenu()"
-                                  class="flex w-full items-center gap-3 px-4 py-3 text-left text-sm font-medium text-emerald-700 transition hover:bg-emerald-50"
+                                  class="flex w-full items-center gap-3 px-4 py-3 text-left text-sm font-medium text-emerald-700 transition hover:bg-emerald-50 dark:hover:bg-emerald-950"
                                 >
                                   <svg
                                     class="h-4 w-4 shrink-0"
@@ -1030,7 +1118,7 @@
                               <button
                                 type="button"
                                 (click)="deleteUser(user); closeActionMenu()"
-                                class="flex w-full items-center gap-3 px-4 py-3 text-left text-sm font-medium text-red-600 transition hover:bg-red-50"
+                                class="flex w-full items-center gap-3 px-4 py-3 text-left text-sm font-medium text-red-600 transition hover:bg-red-50 dark:hover:bg-red-950"
                               >
                                 <svg
                                   class="h-4 w-4 shrink-0"
@@ -1070,12 +1158,12 @@
                       >
 
                         <div
-                          class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-slate-400"
+                          class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-slate-400 dark:bg-slate-800"
                         >
                           —
                         </div>
 
-                        <p class="mt-4 text-sm font-semibold text-slate-700">
+                        <p class="mt-4 text-sm font-semibold text-slate-700 dark:text-slate-200">
                           No users found.
                         </p>
 
@@ -1098,26 +1186,26 @@
 
             <!-- PAGINATION -->
             <div
-              class="flex flex-col gap-4 border-t border-slate-200 px-6 py-4 sm:flex-row sm:items-center sm:justify-between"
+              class="flex flex-col gap-4 border-t border-slate-200 px-6 py-4 sm:flex-row sm:items-center sm:justify-between dark:border-slate-800"
             >
 
-              <p class="text-sm text-slate-500">
+              <p class="text-sm text-slate-500 dark:text-slate-400">
 
                 Showing
 
-                <span class="font-semibold text-slate-900">
+                <span class="font-semibold text-slate-900 dark:text-white">
                   {{ paginationStart }}
                 </span>
 
                 -
 
-                <span class="font-semibold text-slate-900">
+                <span class="font-semibold text-slate-900 dark:text-white">
                   {{ paginationEnd }}
                 </span>
 
                 of
 
-                <span class="font-semibold text-slate-900">
+                <span class="font-semibold text-slate-900 dark:text-white">
                   {{ filteredUsersByStatus.length }}
                 </span>
 
@@ -1132,14 +1220,14 @@
                   type="button"
                   (click)="previousPage()"
                   [disabled]="currentPage === 1"
-                  class="rounded-lg border border-slate-300 bg-white px-4 py-2 text-xs font-semibold text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-40"
+                  class="rounded-lg border border-slate-300 bg-white px-4 py-2 text-xs font-semibold text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-40 dark:bg-slate-900 dark:text-slate-200 dark:border-slate-700 dark:hover:bg-slate-800"
                 >
                   Previous
                 </button>
 
 
                 <span
-                  class="min-w-[70px] text-center text-sm font-semibold text-slate-800"
+                  class="min-w-[70px] text-center text-sm font-semibold text-slate-800 dark:text-slate-100"
                 >
                   {{ currentPage }} / {{ totalPages }}
                 </span>
@@ -1149,7 +1237,7 @@
                   type="button"
                   (click)="nextPage()"
                   [disabled]="currentPage === totalPages"
-                  class="rounded-lg border border-slate-300 bg-white px-4 py-2 text-xs font-semibold text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-40"
+                  class="rounded-lg border border-slate-300 bg-white px-4 py-2 text-xs font-semibold text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-40 dark:bg-slate-900 dark:text-slate-200 dark:border-slate-700 dark:hover:bg-slate-800"
                 >
                   Next
                 </button>
@@ -1173,34 +1261,20 @@
 
         <section>
 
-          <!-- HEADER -->
-          <div class="mb-7">
-
-            <h1 class="text-3xl font-bold tracking-tight text-slate-900">
-              Role Management
-            </h1>
-
-            <p class="mt-2 text-sm text-slate-500">
-              Manage roles assigned to system users.
-            </p>
-
-          </div>
-
-
           <!-- ROLE SUMMARY -->
           <div class="mb-6 grid grid-cols-1 gap-5 md:grid-cols-3">
 
 
             <!-- ADMIN -->
             <div
-              class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
+              class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:bg-slate-900 dark:border-slate-800"
             >
 
               <div class="flex items-center justify-between">
 
                 <div>
 
-                  <p class="text-sm font-medium text-slate-500">
+                  <p class="text-sm font-medium text-slate-500 dark:text-slate-400">
                     Administrators
                   </p>
 
@@ -1211,7 +1285,7 @@
                 </div>
 
                 <div
-                  class="flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-50 text-sm font-bold text-indigo-600"
+                  class="flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-50 text-sm font-bold text-indigo-600 dark:bg-indigo-950"
                 >
                   A
                 </div>
@@ -1223,14 +1297,14 @@
 
             <!-- EMPLOYEE -->
             <div
-              class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
+              class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:bg-slate-900 dark:border-slate-800"
             >
 
               <div class="flex items-center justify-between">
 
                 <div>
 
-                  <p class="text-sm font-medium text-slate-500">
+                  <p class="text-sm font-medium text-slate-500 dark:text-slate-400">
                     Employee / Field Staff
                   </p>
 
@@ -1241,7 +1315,7 @@
                 </div>
 
                 <div
-                  class="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50 text-sm font-bold text-blue-600"
+                  class="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50 text-sm font-bold text-blue-600 dark:bg-blue-950"
                 >
                   E
                 </div>
@@ -1253,14 +1327,14 @@
 
             <!-- REVIEWER -->
             <div
-              class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
+              class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:bg-slate-900 dark:border-slate-800"
             >
 
               <div class="flex items-center justify-between">
 
                 <div>
 
-                  <p class="text-sm font-medium text-slate-500">
+                  <p class="text-sm font-medium text-slate-500 dark:text-slate-400">
                     Reviewers
                   </p>
 
@@ -1271,7 +1345,7 @@
                 </div>
 
                 <div
-                  class="flex h-10 w-10 items-center justify-center rounded-lg bg-purple-50 text-sm font-bold text-purple-600"
+                  class="flex h-10 w-10 items-center justify-center rounded-lg bg-purple-50 text-sm font-bold text-purple-600 dark:bg-purple-950"
                 >
                   R
                 </div>
@@ -1285,11 +1359,11 @@
 
           <!-- ROLE TABLE -->
           <section
-            class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"
+            class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:bg-slate-900 dark:border-slate-800"
           >
 
             <!-- SEARCH -->
-            <div class="border-b border-slate-200 px-6 py-5">
+            <div class="border-b border-slate-200 px-6 py-5 dark:border-slate-800">
 
               <div class="relative">
 
@@ -1309,7 +1383,7 @@
                   [(ngModel)]="roleSearchTerm"
                   (input)="applyRoleSearch()"
                   placeholder="Search by name, email, employee code or role..."
-                  class="w-full rounded-xl border border-slate-300 bg-slate-50 py-3 pl-11 pr-4 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-100"
+                  class="w-full rounded-xl border border-slate-300 bg-slate-50 py-3 pl-11 pr-4 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-100 dark:bg-slate-950 dark:text-white dark:border-slate-700 dark:focus:bg-slate-800 dark:focus:ring-indigo-900"
                 />
 
               </div>
@@ -1322,30 +1396,30 @@
 
               <table class="min-w-full">
 
-                <thead class="border-b border-slate-200 bg-slate-50">
+                <thead class="border-b border-slate-200 bg-slate-50 dark:bg-slate-950 dark:border-slate-800">
 
                   <tr>
 
                     <th
-                      class="px-6 py-4 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500"
+                      class="px-6 py-4 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400"
                     >
                       User
                     </th>
 
                     <th
-                      class="px-6 py-4 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500"
+                      class="px-6 py-4 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400"
                     >
                       Employee Code
                     </th>
 
                     <th
-                      class="px-6 py-4 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500"
+                      class="px-6 py-4 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400"
                     >
                       Current Role
                     </th>
 
                     <th
-                      class="px-6 py-4 text-right text-[11px] font-bold uppercase tracking-wider text-slate-500"
+                      class="px-6 py-4 text-right text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400"
                     >
                       Action
                     </th>
@@ -1362,16 +1436,16 @@
                     track user.id
                   ) {
 
-                    <tr class="transition-colors hover:bg-slate-50">
+                    <tr class="transition-colors hover:bg-slate-50 dark:hover:bg-slate-800">
 
                       <!-- USER -->
                       <td class="px-6 py-5">
 
-                        <p class="font-semibold text-slate-900">
+                        <p class="font-semibold text-slate-900 dark:text-white">
                           {{ user.name }}
                         </p>
 
-                        <p class="mt-1 text-sm text-slate-500">
+                        <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
                           {{ user.email }}
                         </p>
 
@@ -1382,7 +1456,7 @@
                       <td class="px-6 py-5">
 
                         <span
-                          class="rounded-md bg-slate-100 px-2.5 py-1.5 font-mono text-xs font-semibold text-slate-700"
+                          class="rounded-md bg-slate-100 px-2.5 py-1.5 font-mono text-xs font-semibold text-slate-700 dark:bg-slate-800 dark:text-slate-200"
                         >
                           {{ user.employee_code || '—' }}
                         </span>
@@ -1396,7 +1470,7 @@
                         @if (user.role === 'ADMIN') {
 
                           <span
-                            class="inline-flex rounded-full bg-indigo-50 px-3 py-1.5 text-xs font-semibold text-indigo-700"
+                            class="inline-flex rounded-full bg-indigo-50 px-3 py-1.5 text-xs font-semibold text-indigo-700 dark:bg-indigo-950"
                           >
                             Admin
                           </span>
@@ -1406,7 +1480,7 @@
                         @else if (user.role === 'EMPLOYEE') {
 
                           <span
-                            class="inline-flex rounded-full bg-blue-50 px-3 py-1.5 text-xs font-semibold text-blue-700"
+                            class="inline-flex rounded-full bg-blue-50 px-3 py-1.5 text-xs font-semibold text-blue-700 dark:bg-blue-950"
                           >
                             Employee / Field Staff
                           </span>
@@ -1416,7 +1490,7 @@
                         @else {
 
                           <span
-                            class="inline-flex rounded-full bg-purple-50 px-3 py-1.5 text-xs font-semibold text-purple-700"
+                            class="inline-flex rounded-full bg-purple-50 px-3 py-1.5 text-xs font-semibold text-purple-700 dark:bg-purple-950"
                           >
                             Reviewer
                           </span>
@@ -1436,7 +1510,7 @@
                           <button
                             type="button"
                             (click)="openRoleModal(user)"
-                            class="rounded-lg border border-purple-200 bg-purple-50 px-4 py-2 text-xs font-semibold text-purple-700 transition-all hover:bg-purple-600 hover:text-white"
+                            class="rounded-lg border border-purple-200 bg-purple-50 px-4 py-2 text-xs font-semibold text-purple-700 transition-all hover:bg-purple-600 hover:text-white dark:bg-purple-950"
                           >
                             Change Role
                           </button>
@@ -1446,7 +1520,7 @@
                         @else {
 
                           <span
-                            class="inline-flex rounded-lg bg-slate-100 px-3 py-2 text-xs font-semibold text-slate-400"
+                            class="inline-flex rounded-lg bg-slate-100 px-3 py-2 text-xs font-semibold text-slate-400 dark:bg-slate-800"
                           >
                             Protected
                           </span>
@@ -1469,7 +1543,7 @@
                         class="px-6 py-16 text-center"
                       >
 
-                        <p class="text-sm font-semibold text-slate-700">
+                        <p class="text-sm font-semibold text-slate-700 dark:text-slate-200">
                           No users found.
                         </p>
 
@@ -1492,26 +1566,26 @@
 
             <!-- PAGINATION -->
             <div
-              class="flex flex-col gap-4 border-t border-slate-200 px-6 py-4 sm:flex-row sm:items-center sm:justify-between"
+              class="flex flex-col gap-4 border-t border-slate-200 px-6 py-4 sm:flex-row sm:items-center sm:justify-between dark:border-slate-800"
             >
 
-              <p class="text-sm text-slate-500">
+              <p class="text-sm text-slate-500 dark:text-slate-400">
 
                 Showing
 
-                <span class="font-semibold text-slate-900">
+                <span class="font-semibold text-slate-900 dark:text-white">
                   {{ rolePaginationStart }}
                 </span>
 
                 -
 
-                <span class="font-semibold text-slate-900">
+                <span class="font-semibold text-slate-900 dark:text-white">
                   {{ rolePaginationEnd }}
                 </span>
 
                 of
 
-                <span class="font-semibold text-slate-900">
+                <span class="font-semibold text-slate-900 dark:text-white">
                   {{ filteredRoleUsers.length }}
                 </span>
 
@@ -1526,14 +1600,14 @@
                   type="button"
                   (click)="previousRolePage()"
                   [disabled]="roleCurrentPage === 1"
-                  class="rounded-lg border border-slate-300 bg-white px-4 py-2 text-xs font-semibold text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-40"
+                  class="rounded-lg border border-slate-300 bg-white px-4 py-2 text-xs font-semibold text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-40 dark:bg-slate-900 dark:text-slate-200 dark:border-slate-700 dark:hover:bg-slate-800"
                 >
                   Previous
                 </button>
 
 
                 <span
-                  class="min-w-[70px] text-center text-sm font-semibold text-slate-800"
+                  class="min-w-[70px] text-center text-sm font-semibold text-slate-800 dark:text-slate-100"
                 >
                   {{ roleCurrentPage }} / {{ roleTotalPages }}
                 </span>
@@ -1543,7 +1617,7 @@
                   type="button"
                   (click)="nextRolePage()"
                   [disabled]="roleCurrentPage === roleTotalPages"
-                  class="rounded-lg border border-slate-300 bg-white px-4 py-2 text-xs font-semibold text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-40"
+                  class="rounded-lg border border-slate-300 bg-white px-4 py-2 text-xs font-semibold text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-40 dark:bg-slate-900 dark:text-slate-200 dark:border-slate-700 dark:hover:bg-slate-800"
                 >
                   Next
                 </button>
@@ -1564,8 +1638,8 @@
           <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
             <div>
               <p class="text-sm font-semibold text-indigo-600">ServerMonitor</p>
-              <h1 class="mt-1 text-3xl font-bold tracking-tight text-slate-900">Health Analysis</h1>
-              <p class="mt-2 text-sm text-slate-500">
+              <h1 class="mt-1 text-3xl font-bold tracking-tight text-slate-900 dark:text-white">Health Analysis</h1>
+              <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">
                 Live system and application health from {{ health?.computer || 'the monitored server' }}.
               </p>
             </div>
@@ -1586,53 +1660,53 @@
           </div>
 
           @if (healthLoading && !health) {
-            <div class="flex min-h-[420px] flex-col items-center justify-center rounded-2xl border border-slate-200 bg-white px-6 py-16 text-center shadow-sm">
+            <div class="flex min-h-[420px] flex-col items-center justify-center rounded-2xl border border-slate-200 bg-white px-6 py-16 text-center shadow-sm dark:bg-slate-900 dark:border-slate-800">
               <div class="h-12 w-12 animate-spin rounded-full border-4 border-indigo-100 border-t-indigo-600"></div>
-              <h2 class="mt-5 text-lg font-bold text-slate-900">Loading health analysis</h2>
-              <p class="mt-2 max-w-sm text-sm text-slate-500">
+              <h2 class="mt-5 text-lg font-bold text-slate-900 dark:text-white">Loading health analysis</h2>
+              <p class="mt-2 max-w-sm text-sm text-slate-500 dark:text-slate-400">
                 Running ServerMonitor and waiting for the latest health response...
               </p>
             </div>
           }
 
           @if (healthError) {
-            <div class="rounded-2xl border border-amber-200 bg-amber-50 px-5 py-4 text-sm font-medium text-amber-800">
+            <div class="rounded-2xl border border-amber-200 bg-amber-50 px-5 py-4 text-sm font-medium text-amber-800 dark:bg-amber-950">
               {{ healthError }}
             </div>
           }
 
           @if (health; as currentHealth) {
             <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-              <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+              <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:bg-slate-900 dark:border-slate-800">
                 <div class="flex items-center justify-between">
-                  <span class="text-sm font-semibold text-slate-500">Overall Status</span>
+                  <span class="text-sm font-semibold text-slate-500 dark:text-slate-400">Overall Status</span>
                   <span class="h-3 w-3 rounded-full" [class.bg-emerald-500]="currentHealth.overallStatus === 'HEALTHY'" [class.bg-amber-400]="currentHealth.overallStatus === 'WARNING'" [class.bg-red-500]="currentHealth.overallStatus === 'CRITICAL'"></span>
                 </div>
                 <p class="mt-3 text-2xl font-bold" [class]="healthStatusClass(currentHealth.overallStatus)">{{ currentHealth.overallStatus }}</p>
-                <p class="mt-1 text-xs text-slate-500">Last updated {{ currentHealth.timestamp }}</p>
+                <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Last updated {{ currentHealth.timestamp }}</p>
               </div>
-              <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-                <span class="text-sm font-semibold text-slate-500">Services</span>
-                <p class="mt-3 text-3xl font-bold text-slate-900">{{ healthyServiceCount(currentHealth) }} / {{ healthServices(currentHealth).length }}</p>
-                <p class="mt-1 text-xs text-slate-500">Frontend, Node API and database checks</p>
+              <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:bg-slate-900 dark:border-slate-800">
+                <span class="text-sm font-semibold text-slate-500 dark:text-slate-400">Services</span>
+                <p class="mt-3 text-3xl font-bold text-slate-900 dark:text-white">{{ healthyServiceCount(currentHealth) }} / {{ healthServices(currentHealth).length }}</p>
+                <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Frontend, Node API and database checks</p>
               </div>
-              <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-                <span class="text-sm font-semibold text-slate-500">Warnings</span>
+              <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:bg-slate-900 dark:border-slate-800">
+                <span class="text-sm font-semibold text-slate-500 dark:text-slate-400">Warnings</span>
                 <p class="mt-3 text-3xl font-bold text-amber-600">{{ currentHealth.alerts.warnings.length }}</p>
-                <p class="mt-1 text-xs text-slate-500">Needs attention</p>
+                <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Needs attention</p>
               </div>
-              <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-                <span class="text-sm font-semibold text-slate-500">Critical Alerts</span>
+              <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:bg-slate-900 dark:border-slate-800">
+                <span class="text-sm font-semibold text-slate-500 dark:text-slate-400">Critical Alerts</span>
                 <p class="mt-3 text-3xl font-bold text-red-600">{{ currentHealth.alerts.critical.length }}</p>
-                <p class="mt-1 text-xs text-slate-500">Immediate attention required</p>
+                <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Immediate attention required</p>
               </div>
             </div>
 
-            <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+            <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:bg-slate-900 dark:border-slate-800">
               <div class="mb-5 flex items-center justify-between">
                 <div>
-                  <h2 class="text-lg font-bold text-slate-900">System Resources</h2>
-                  <p class="mt-1 text-xs text-slate-500">Current machine utilization</p>
+                  <h2 class="text-lg font-bold text-slate-900 dark:text-white">System Resources</h2>
+                  <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Current machine utilization</p>
                 </div>
                 <span class="text-xs font-medium text-slate-400">Auto-refresh: 10 sec</span>
               </div>
@@ -1642,13 +1716,13 @@
                   { label: 'Memory Usage', data: currentHealth.system.memory },
                   { label: 'Disk Usage (' + currentHealth.system.disk.drive + ')', data: currentHealth.system.disk }
                 ]; track metric.label) {
-                  <div class="rounded-xl border border-slate-100 bg-slate-50 p-5">
+                  <div class="rounded-xl border border-slate-100 bg-slate-50 p-5 dark:bg-slate-950">
                     <div class="flex items-start justify-between gap-3">
-                      <span class="text-sm font-semibold text-slate-700">{{ metric.label }}</span>
+                      <span class="text-sm font-semibold text-slate-700 dark:text-slate-200">{{ metric.label }}</span>
                       <span class="rounded-full px-2 py-1 text-[10px] font-bold uppercase" [class]="healthBadgeClass(metric.data.status)">{{ metric.data.status }}</span>
                     </div>
                     <p class="mt-4 text-3xl font-bold" [class]="healthStatusClass(metric.data.status)">{{ metric.data.usage | number:'1.0-1' }}%</p>
-                    <div class="mt-4 h-2 overflow-hidden rounded-full bg-slate-200">
+                    <div class="mt-4 h-2 overflow-hidden rounded-full bg-slate-200 dark:bg-slate-700">
                       <div class="h-full rounded-full transition-all" [class]="healthBarClass(metric.data.status)" [style.width.%]="metric.data.usage"></div>
                     </div>
                   </div>
@@ -1656,54 +1730,482 @@
               </div>
             </div>
 
-            <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+            <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:bg-slate-900 dark:border-slate-800">
               <div class="mb-5 flex items-center justify-between">
                 <div>
-                  <h2 class="text-lg font-bold text-slate-900">Application &amp; Services</h2>
-                  <p class="mt-1 text-xs text-slate-500">Availability and response time</p>
+                  <h2 class="text-lg font-bold text-slate-900 dark:text-white">Application &amp; Services</h2>
+                  <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Availability and response time</p>
                 </div>
               </div>
               <div class="space-y-3">
                 @for (item of healthServices(currentHealth); track item.key) {
-                  <div class="grid grid-cols-1 gap-3 rounded-xl border border-slate-100 p-4 md:grid-cols-[1.5fr_0.7fr_0.8fr_1.5fr] md:items-center">
+                  <div class="grid grid-cols-1 gap-3 rounded-xl border border-slate-100 p-4 md:grid-cols-[1.5fr_0.7fr_0.8fr_1.5fr] md:items-center dark:border-slate-800">
                     <div>
-                      <p class="font-semibold text-slate-800">{{ item.label }}</p>
-                      <p class="mt-1 break-all text-xs text-slate-500">{{ healthServiceEndpoint(item) }}</p>
+                      <p class="font-semibold text-slate-800 dark:text-slate-100">{{ item.label }}</p>
+                      <p class="mt-1 break-all text-xs text-slate-500 dark:text-slate-400">{{ healthServiceEndpoint(item) }}</p>
                     </div>
                     <span class="w-fit rounded-full px-3 py-1 text-xs font-bold" [class]="healthBadgeClass(item.service.status)">{{ item.service.status }}</span>
                     <p class="text-sm font-bold" [class]="healthStatusClass(item.service.status)">{{ item.service.responseTime | number:'1.0-0' }} ms</p>
-                    <p class="text-xs text-slate-500">{{ healthServiceDetails(item) }}</p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">{{ healthServiceDetails(item) }}</p>
                   </div>
                 }
               </div>
             </div>
 
             <div class="grid grid-cols-1 gap-5 lg:grid-cols-2">
-              <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-                <h2 class="text-lg font-bold text-slate-900">Recent Alerts</h2>
+              <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:bg-slate-900 dark:border-slate-800">
+                <h2 class="text-lg font-bold text-slate-900 dark:text-white">Recent Alerts</h2>
                 <div class="mt-4 space-y-3">
                   @for (alert of currentHealth.alerts.critical; track alert) {
-                    <div class="flex gap-3 rounded-xl bg-red-50 p-3 text-sm text-red-800"><span class="font-bold">!</span><span>{{ alert }}</span></div>
+                    <div class="flex gap-3 rounded-xl bg-red-50 p-3 text-sm text-red-800 dark:bg-red-950"><span class="font-bold">!</span><span>{{ alert }}</span></div>
                   }
                   @for (alert of currentHealth.alerts.warnings; track alert) {
-                    <div class="flex gap-3 rounded-xl bg-amber-50 p-3 text-sm text-amber-800"><span class="font-bold">!</span><span>{{ alert }}</span></div>
+                    <div class="flex gap-3 rounded-xl bg-amber-50 p-3 text-sm text-amber-800 dark:bg-amber-950"><span class="font-bold">!</span><span>{{ alert }}</span></div>
                   }
                   @if (!currentHealth.alerts.critical.length && !currentHealth.alerts.warnings.length) {
-                    <p class="rounded-xl bg-emerald-50 p-3 text-sm text-emerald-800">All systems are running normally.</p>
+                    <p class="rounded-xl bg-emerald-50 p-3 text-sm text-emerald-800 dark:bg-emerald-950">All systems are running normally.</p>
                   }
                 </div>
               </div>
-              <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-                <h2 class="text-lg font-bold text-slate-900">Monitor Details</h2>
+              <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:bg-slate-900 dark:border-slate-800">
+                <h2 class="text-lg font-bold text-slate-900 dark:text-white">Monitor Details</h2>
                 <dl class="mt-4 space-y-4 text-sm">
-                  <div class="flex justify-between gap-4 border-b border-slate-100 pb-3"><dt class="text-slate-500">Computer</dt><dd class="font-semibold text-slate-800">{{ currentHealth.computer }}</dd></div>
-                  <div class="flex justify-between gap-4 border-b border-slate-100 pb-3"><dt class="text-slate-500">Disk</dt><dd class="font-semibold text-slate-800">{{ currentHealth.system.disk.drive }}</dd></div>
-                  <div class="flex justify-between gap-4"><dt class="text-slate-500">Monitor timestamp</dt><dd class="text-right font-semibold text-slate-800">{{ currentHealth.timestamp }}</dd></div>
+                  <div class="flex justify-between gap-4 border-b border-slate-100 pb-3 dark:border-slate-800"><dt class="text-slate-500 dark:text-slate-400">Computer</dt><dd class="font-semibold text-slate-800 dark:text-slate-100">{{ currentHealth.computer }}</dd></div>
+                  <div class="flex justify-between gap-4 border-b border-slate-100 pb-3 dark:border-slate-800"><dt class="text-slate-500 dark:text-slate-400">Disk</dt><dd class="font-semibold text-slate-800 dark:text-slate-100">{{ currentHealth.system.disk.drive }}</dd></div>
+                  <div class="flex justify-between gap-4"><dt class="text-slate-500 dark:text-slate-400">Monitor timestamp</dt><dd class="text-right font-semibold text-slate-800 dark:text-slate-100">{{ currentHealth.timestamp }}</dd></div>
                 </dl>
               </div>
             </div>
           }
         </section>
+      }
+
+
+      <!-- ====================================================== -->
+      <!-- HIERARCHY MANAGEMENT (rendered inline, no separate page) -->
+      <!-- ====================================================== -->
+
+      @if (activeMenu === 'hierarchy') {
+
+        <section>
+
+          <!-- PAGE INTRO -->
+          <div class="mb-7 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+
+            <div>
+
+              <h1 class="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
+                Manage Approval Hierarchy
+              </h1>
+
+              <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">
+                Configure the order in which requests move through approval.
+              </p>
+
+            </div>
+
+            <div
+              class="rounded-lg border border-indigo-100 bg-indigo-50 px-4 py-3 text-sm text-indigo-700 dark:bg-indigo-950"
+            >
+              Changes to the hierarchy affect the approval workflow.
+            </div>
+
+          </div>
+
+
+          <!-- MAIN CONTENT -->
+          <div class="grid grid-cols-1 gap-6 lg:grid-cols-[40%_60%]">
+
+            <!-- LEFT — FLOWCHART -->
+            <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:bg-slate-900 dark:border-slate-800">
+
+              <div class="mb-6">
+                <h2 class="text-lg font-semibold text-slate-900 dark:text-white">Workflow Preview</h2>
+                <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Current approval flow</p>
+              </div>
+
+              @if (hierarchyLoading) {
+
+                <div class="flex min-h-[400px] items-center justify-center">
+                  <div class="text-sm text-slate-500 dark:text-slate-400">Loading workflow...</div>
+                </div>
+
+              } @else if (hierarchyLoadError) {
+
+                <div class="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700 dark:bg-red-950">
+                  {{ hierarchyLoadError }}
+                </div>
+
+              } @else if (hierarchy.length === 0) {
+
+                <div class="flex min-h-[400px] items-center justify-center rounded-xl border border-dashed border-slate-300 dark:border-slate-700">
+                  <div class="text-center">
+                    <div class="mb-2 text-3xl">↕</div>
+                    <p class="font-medium text-slate-700 dark:text-slate-200">No approval levels found</p>
+                    <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Add an approval level to create the workflow.</p>
+                  </div>
+                </div>
+
+              } @else {
+
+                <div class="flex min-h-[400px] flex-col items-center">
+
+                  @for (level of hierarchy; track level.id; let last = $last) {
+
+                    <div class="group relative w-full max-w-[260px]">
+                      <div class="rounded-2xl border border-indigo-200 bg-indigo-50 px-5 py-4 text-center shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-indigo-400 hover:shadow-md dark:bg-indigo-950">
+                        <div class="text-xs font-semibold uppercase tracking-wider text-indigo-500">
+                          Level {{ level.approval_level }}
+                        </div>
+                        <div class="mt-1 text-lg font-bold text-slate-900 dark:text-white">
+                          {{ level.role }}
+                        </div>
+                      </div>
+                    </div>
+
+                    @if (!last) {
+                      <div class="flex flex-col items-center">
+                        <div class="h-7 w-px bg-slate-300 dark:bg-slate-700"></div>
+                        <div class="text-xl leading-none text-slate-400">↓</div>
+                      </div>
+                    }
+
+                  }
+
+                </div>
+
+              }
+
+            </div>
+
+
+            <!-- RIGHT — HIERARCHY LEVELS -->
+            <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:bg-slate-900 dark:border-slate-800">
+
+              <div class="mb-6 flex items-start justify-between gap-4">
+
+                <div>
+                  <h2 class="text-lg font-semibold text-slate-900 dark:text-white">Approval Levels</h2>
+                  <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Manage the roles in your approval workflow.</p>
+                </div>
+
+                <button
+                  type="button"
+                  (click)="openAddHierarchy()"
+                  class="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700"
+                >
+                  <span class="text-lg leading-none">+</span>
+                  Add Level
+                </button>
+
+              </div>
+
+              @if (hierarchySuccessMessage) {
+                <div class="mb-4 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700 dark:bg-emerald-950">
+                  {{ hierarchySuccessMessage }}
+                </div>
+              }
+
+              @if (hierarchyErrorMessage) {
+                <div class="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700 dark:bg-red-950">
+                  {{ hierarchyErrorMessage }}
+                </div>
+              }
+
+              @if (hierarchyLoading) {
+
+                <div class="py-10 text-center text-sm text-slate-500 dark:text-slate-400">
+                  Loading approval levels...
+                </div>
+
+              } @else if (hierarchy.length === 0) {
+
+                <div class="rounded-xl border border-dashed border-slate-300 p-8 text-center dark:border-slate-700">
+                  <p class="font-medium text-slate-700 dark:text-slate-200">No approval levels configured.</p>
+                  <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Use "Add Level" to create the first level.</p>
+                </div>
+
+              } @else {
+
+                <div class="space-y-3">
+
+                  @for (level of hierarchy; track level.id) {
+
+                    <div class="flex items-center gap-4 rounded-xl border border-slate-200 bg-slate-50 p-4 transition hover:border-indigo-200 hover:bg-indigo-50/40 dark:bg-slate-950 dark:border-slate-800">
+
+                      <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-indigo-100 text-sm font-bold text-indigo-700">
+                        {{ level.approval_level }}
+                      </div>
+
+                      <div class="min-w-0 flex-1">
+                        <div class="text-xs font-medium uppercase tracking-wide text-slate-400">Approval Role</div>
+                        <div class="truncate font-semibold text-slate-900 dark:text-white">{{ level.role }}</div>
+                      </div>
+
+                      <div class="flex shrink-0 gap-2">
+
+                        <button
+                          type="button"
+                          (click)="openEditHierarchy(level)"
+                          class="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-600 transition hover:border-indigo-300 hover:text-indigo-600 dark:bg-slate-900 dark:text-slate-300 dark:border-slate-800"
+                        >
+                          Edit
+                        </button>
+
+                        <button
+                          type="button"
+                          (click)="deleteHierarchy(level)"
+                          class="rounded-lg border border-red-200 bg-white px-3 py-2 text-sm font-medium text-red-600 transition hover:bg-red-50 dark:bg-slate-900"
+                        >
+                          Delete
+                        </button>
+
+                      </div>
+
+                    </div>
+
+                  }
+
+                </div>
+
+              }
+
+            </div>
+
+          </div>
+
+        </section>
+
+
+        <!-- ADD / EDIT LEVEL MODAL -->
+        @if (showHierarchyModal) {
+
+          <div class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/70 px-4 py-6">
+
+            <div class="w-full max-w-md overflow-hidden rounded-2xl bg-white shadow-2xl dark:bg-slate-900">
+
+              <div class="border-b border-slate-200 px-6 py-5 dark:border-slate-800">
+                <div class="flex items-start justify-between">
+                  <div>
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white">
+                      {{ editingHierarchy ? 'Edit Approval Level' : 'Add Approval Level' }}
+                    </h3>
+                    <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                      {{ editingHierarchy ? 'Update this level in the approval workflow.' : 'Add a new level to the approval workflow.' }}
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    (click)="closeHierarchyModal()"
+                    class="rounded-lg p-2 text-slate-400 transition hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800"
+                  >
+                    ✕
+                  </button>
+                </div>
+              </div>
+
+              <div class="space-y-5 px-6 py-6">
+
+                @if (hierarchyErrorMessage) {
+                  <div class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:bg-red-950">
+                    {{ hierarchyErrorMessage }}
+                  </div>
+                }
+
+                <div>
+                  <label class="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-200">Approval Level</label>
+                  <input
+                    type="number"
+                    min="1"
+                    [(ngModel)]="hierarchyForm.approval_level"
+                    class="w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 dark:border-slate-700 dark:focus:ring-indigo-900"
+                  />
+                  <p class="mt-1.5 text-xs text-slate-400">The order in which this role approves requests (1 = first).</p>
+                </div>
+
+                <div>
+                  <label class="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-200">Role</label>
+                  <input
+                    type="text"
+                    [(ngModel)]="hierarchyForm.role"
+                    placeholder="e.g. Manager, Assistant Manager, HR"
+                    class="w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 dark:border-slate-700 dark:focus:ring-indigo-900"
+                  />
+                  <p class="mt-1.5 text-xs text-slate-400">The value will be saved in uppercase.</p>
+                </div>
+
+              </div>
+
+              <div class="flex justify-end gap-3 border-t border-slate-200 bg-slate-50 px-6 py-4 dark:bg-slate-950 dark:border-slate-800">
+
+                <button
+                  type="button"
+                  (click)="closeHierarchyModal()"
+                  class="rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 dark:bg-slate-900 dark:text-slate-200 dark:border-slate-700 dark:hover:bg-slate-800"
+                >
+                  Cancel
+                </button>
+
+                <button
+                  type="button"
+                  (click)="saveHierarchy()"
+                  [disabled]="hierarchySaving"
+                  class="rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  @if (hierarchySaving) {
+                    <span>Saving...</span>
+                  } @else {
+                    <span>{{ editingHierarchy ? 'Save Changes' : 'Add Level' }}</span>
+                  }
+                </button>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        }
+
+      }
+
+
+      <!-- ====================================================== -->
+      <!-- SETTINGS (Login Lockout + Account Settings, merged)   -->
+      <!-- ====================================================== -->
+
+      @if (activeMenu === 'settings') {
+
+        <section class="space-y-6">
+
+          <div class="mb-1">
+            <h1 class="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">Settings</h1>
+            <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">Manage security policy and your account.</p>
+          </div>
+
+          <!-- LOGIN LOCKOUT SETTINGS -->
+          <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:bg-slate-900 dark:border-slate-800">
+
+            <h3 class="mb-1 text-lg font-semibold text-slate-900 dark:text-white">Login Lockout Policy</h3>
+            <p class="mb-5 text-sm text-slate-500 dark:text-slate-400">
+              Control how many failed login attempts are allowed before an account is locked out.
+            </p>
+
+            @if (settingsSuccess) {
+              <div class="mb-4 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700 dark:bg-emerald-950">
+                {{ settingsSuccess }}
+              </div>
+            }
+
+            @if (settingsError) {
+              <div class="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700 dark:bg-red-950">
+                {{ settingsError }}
+              </div>
+            }
+
+            @if (settingsLoading) {
+
+              <div class="py-8 text-center text-sm text-slate-500 dark:text-slate-400">Loading settings...</div>
+
+            } @else {
+
+              <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+
+                <div>
+                  <label class="mb-2 block text-sm font-semibold text-slate-800 dark:text-slate-100">Max Failed Attempts</label>
+                  <input
+                    type="number"
+                    min="1"
+                    max="100"
+                    [(ngModel)]="settingMaxAttempts"
+                    class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 dark:bg-slate-900 dark:text-white dark:border-slate-700 dark:focus:ring-indigo-900"
+                  />
+                  <p class="mt-1.5 text-xs text-slate-400">Number of failed attempts allowed before lockout.</p>
+                </div>
+
+                <div>
+                  <label class="mb-2 block text-sm font-semibold text-slate-800 dark:text-slate-100">Lockout Duration (hours)</label>
+                  <input
+                    type="number"
+                    min="1"
+                    max="168"
+                    [(ngModel)]="settingLockoutHours"
+                    class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 dark:bg-slate-900 dark:text-white dark:border-slate-700 dark:focus:ring-indigo-900"
+                  />
+                  <p class="mt-1.5 text-xs text-slate-400">How long an account stays locked before it can retry.</p>
+                </div>
+
+              </div>
+
+              <div class="mt-6 flex justify-end">
+                <button
+                  type="button"
+                  (click)="saveSettings()"
+                  [disabled]="settingsSaving"
+                  class="rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {{ settingsSaving ? 'Saving...' : 'Save Policy' }}
+                </button>
+              </div>
+
+            }
+
+          </div>
+
+
+          <!-- ACCOUNT INFORMATION -->
+          <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:bg-slate-900 dark:border-slate-800">
+
+            <h3 class="mb-5 text-lg font-semibold text-slate-900 dark:text-white">Account Information</h3>
+
+            <div class="divide-y divide-slate-200 dark:divide-slate-700">
+              <div class="py-4 text-sm text-slate-500 dark:text-slate-400">
+                Account information will be loaded from the database.
+              </div>
+            </div>
+
+          </div>
+
+
+          <!-- LOGIN ACTIVITY -->
+          <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:bg-slate-900 dark:border-slate-800">
+
+            <div class="flex items-start justify-between gap-6">
+
+              <div>
+                <h3 class="text-lg font-semibold text-slate-900 dark:text-white">Login Activity</h3>
+                <p class="mt-2 max-w-3xl text-sm leading-6 text-slate-500 dark:text-slate-400">
+                  View the devices currently logged into your account, including device type,
+                  operating system, location, login time and last active time.
+                </p>
+              </div>
+
+              <button
+                type="button"
+                (click)="openLoggedInDevices()"
+                class="shrink-0 rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+              >
+                Show All Devices
+              </button>
+
+            </div>
+
+            <div class="mt-6 rounded-lg bg-slate-50 p-4 dark:bg-slate-950">
+              <div class="flex items-start gap-3">
+                <span class="mt-0.5 text-lg">🔐</span>
+                <div>
+                  <p class="text-sm font-medium text-slate-800 dark:text-slate-100">Logged-in devices</p>
+                  <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                    Check which devices are using the account and review their recent login activity.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </section>
+
       }
 
     </div>
@@ -1718,21 +2220,21 @@
   @if (showUserModal) {
 
     <div
-      class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-sm"
+      class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 p-4 backdrop-blur-sm"
     >
 
       <div
-        class="w-full max-w-lg overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl"
+        class="w-full max-w-lg overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl dark:bg-slate-900 dark:border-slate-800"
       >
 
         <!-- HEADER -->
         <div
-          class="flex items-center justify-between border-b border-slate-200 px-6 py-5"
+          class="flex items-center justify-between border-b border-slate-200 px-6 py-5 dark:border-slate-800"
         >
 
           <div>
 
-            <h3 class="text-lg font-bold text-slate-900">
+            <h3 class="text-lg font-bold text-slate-900 dark:text-white">
 
               @if (editingUser) {
                 Edit User
@@ -1744,7 +2246,7 @@
 
             </h3>
 
-            <p class="mt-1 text-xs text-slate-500">
+            <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">
               Enter the user information below.
             </p>
 
@@ -1754,7 +2256,7 @@
           <button
             type="button"
             (click)="closeUserModal()"
-            class="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition hover:bg-slate-100 hover:text-slate-900"
+            class="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-slate-800 dark:hover:text-white"
           >
             ×
           </button>
@@ -1768,14 +2270,14 @@
           <!-- NAME -->
           <div>
 
-            <label class="mb-2 block text-sm font-semibold text-slate-800">
+            <label class="mb-2 block text-sm font-semibold text-slate-800 dark:text-slate-100">
               Name
             </label>
 
             <input
               type="text"
               [(ngModel)]="userForm.name"
-              class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+              class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 dark:bg-slate-900 dark:text-white dark:border-slate-700 dark:focus:ring-indigo-900"
             />
 
           </div>
@@ -1784,14 +2286,31 @@
           <!-- EMAIL -->
           <div>
 
-            <label class="mb-2 block text-sm font-semibold text-slate-800">
+            <label class="mb-2 block text-sm font-semibold text-slate-800 dark:text-slate-100">
               Email
             </label>
 
             <input
               type="email"
               [(ngModel)]="userForm.email"
-              class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+              class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 dark:bg-slate-900 dark:text-white dark:border-slate-700 dark:focus:ring-indigo-900"
+            />
+
+          </div>
+
+
+          <!-- PHONE NUMBER -->
+          <div>
+
+            <label class="mb-2 block text-sm font-semibold text-slate-800 dark:text-slate-100">
+              Phone Number
+            </label>
+
+            <input
+              type="tel"
+              [(ngModel)]="userForm.phone_number"
+              placeholder="Optional"
+              class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 dark:bg-slate-900 dark:text-white dark:border-slate-700 dark:focus:ring-indigo-900"
             />
 
           </div>
@@ -1800,13 +2319,13 @@
           <!-- ROLE -->
           <div>
 
-            <label class="mb-2 block text-sm font-semibold text-slate-800">
+            <label class="mb-2 block text-sm font-semibold text-slate-800 dark:text-slate-100">
               Role
             </label>
 
             <select
               [(ngModel)]="userForm.role"
-              class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+              class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 dark:bg-slate-900 dark:text-white dark:border-slate-700 dark:focus:ring-indigo-900"
             >
 
               <option value="ADMIN">
@@ -1828,14 +2347,14 @@
 
           <!-- APPROVAL POSITION -->
           <div
-            class="rounded-xl border border-slate-200 bg-slate-50 px-4 py-4"
+            class="rounded-xl border border-slate-200 bg-slate-50 px-4 py-4 dark:bg-slate-950 dark:border-slate-800"
           >
 
-            <p class="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+            <p class="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
               Approval Position
             </p>
 
-            <p class="mt-2 text-sm font-semibold text-slate-900">
+            <p class="mt-2 text-sm font-semibold text-slate-900 dark:text-white">
               {{ getApprovalPosition() || 'NULL' }}
             </p>
 
@@ -1846,13 +2365,13 @@
 
         <!-- FOOTER -->
         <div
-          class="flex justify-end gap-3 border-t border-slate-200 px-6 py-5"
+          class="flex justify-end gap-3 border-t border-slate-200 px-6 py-5 dark:border-slate-800"
         >
 
           <button
             type="button"
             (click)="closeUserModal()"
-            class="rounded-xl border border-slate-300 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-100"
+            class="rounded-xl border border-slate-300 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 dark:bg-slate-900 dark:text-slate-200 dark:border-slate-700 dark:hover:bg-slate-800"
           >
             Cancel
           </button>
@@ -1882,27 +2401,27 @@
   @if (showRoleModal) {
 
     <div
-      class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-sm"
+      class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 p-4 backdrop-blur-sm"
     >
 
       <div
-        class="w-full max-w-md overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl"
+        class="w-full max-w-md overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl dark:bg-slate-900 dark:border-slate-800"
       >
 
         <!-- HEADER -->
         <div
-          class="flex items-center justify-between border-b border-slate-200 px-6 py-5"
+          class="flex items-center justify-between border-b border-slate-200 px-6 py-5 dark:border-slate-800"
         >
 
           <div>
 
-            <h3 class="text-lg font-bold text-slate-900">
+            <h3 class="text-lg font-bold text-slate-900 dark:text-white">
               Change Role
             </h3>
 
             @if (selectedRoleUser) {
 
-              <p class="mt-1 text-sm text-slate-500">
+              <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
                 {{ selectedRoleUser.name }}
               </p>
 
@@ -1914,7 +2433,7 @@
           <button
             type="button"
             (click)="closeRoleModal()"
-            class="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition hover:bg-slate-100 hover:text-slate-900"
+            class="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-slate-800 dark:hover:text-white"
           >
             ×
           </button>
@@ -1925,13 +2444,13 @@
         <!-- FORM -->
         <div class="px-6 py-6">
 
-          <label class="mb-2 block text-sm font-semibold text-slate-800">
+          <label class="mb-2 block text-sm font-semibold text-slate-800 dark:text-slate-100">
             Role
           </label>
 
           <select
             [(ngModel)]="selectedRole"
-            class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-purple-500 focus:ring-2 focus:ring-purple-100"
+            class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-purple-500 focus:ring-2 focus:ring-purple-100 dark:bg-slate-900 dark:text-white dark:border-slate-700"
           >
 
             <option value="EMPLOYEE">
@@ -1949,13 +2468,13 @@
 
         <!-- FOOTER -->
         <div
-          class="flex justify-end gap-3 border-t border-slate-200 px-6 py-5"
+          class="flex justify-end gap-3 border-t border-slate-200 px-6 py-5 dark:border-slate-800"
         >
 
           <button
             type="button"
             (click)="closeRoleModal()"
-            class="rounded-xl border border-slate-300 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-100"
+            class="rounded-xl border border-slate-300 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 dark:bg-slate-900 dark:text-slate-200 dark:border-slate-700 dark:hover:bg-slate-800"
           >
             Cancel
           </button>
