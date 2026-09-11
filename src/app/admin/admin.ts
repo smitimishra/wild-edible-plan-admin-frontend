@@ -29,7 +29,9 @@ type AdminMenu =
   | 'dashboard'
   | 'users'
   | 'roles'
-  | 'health-analysis';
+  | 'health-analysis'
+  | 'hierarchy'
+  | 'settings';
 
 
 type UserStatusFilter =
@@ -122,11 +124,19 @@ export class Admin implements OnInit, OnDestroy {
     employee_code: '',
     name: '',
     email: '',
+    phone_number: '',
     role: ''
   };
 
   // Action menu
   openActionMenuId: number | null = null;
+
+  // Settings dropdown (sidebar)
+  settingsMenuOpen = false;
+  themeMenuOpen = false;
+
+  // Theme
+  currentTheme: 'light' | 'dark' | 'system' = 'system';
 
 
   constructor(
@@ -143,6 +153,8 @@ export class Admin implements OnInit, OnDestroy {
   // ============================================================
 
   ngOnInit(): void {
+  this.loadStoredTheme();
+
   this.route.queryParamMap.subscribe(params => {
     const urlToken = params.get('token');
 
@@ -193,6 +205,11 @@ export class Admin implements OnInit, OnDestroy {
 
     this.clearMessages();
 
+    if (menu !== 'settings') {
+      this.settingsMenuOpen = false;
+      this.themeMenuOpen = false;
+    }
+
     if (menu === 'health-analysis') {
       this.loadHealth();
       this.startHealthRefresh();
@@ -214,7 +231,13 @@ export class Admin implements OnInit, OnDestroy {
 
     }
 
-    if ((menu as string) === 'settings') {
+    if (menu === 'hierarchy') {
+
+      this.loadHierarchy();
+
+    }
+
+    if (menu === 'settings') {
       this.loadSettings();
     }
 
@@ -1043,6 +1066,9 @@ export class Admin implements OnInit, OnDestroy {
       email:
         user.email || '',
 
+      phone_number:
+        user.phone_number || '',
+
       role:
         user.role || ''
 
@@ -1089,6 +1115,8 @@ export class Admin implements OnInit, OnDestroy {
       name: '',
 
       email: '',
+
+      phone_number: '',
 
       role: ''
 
@@ -1172,7 +1200,7 @@ export class Admin implements OnInit, OnDestroy {
 
     /*
      * Current AdminService accepts:
-     * name, email and role.
+     * name, email, phone_number and role.
      *
      * Employee code and approval position
      * are returned by the backend.
@@ -1187,6 +1215,9 @@ export class Admin implements OnInit, OnDestroy {
 
         email:
           this.userForm.email.trim(),
+
+        phone_number:
+          this.userForm.phone_number.trim(),
 
         role
 
@@ -1259,6 +1290,9 @@ export class Admin implements OnInit, OnDestroy {
 
         email:
           this.userForm.email.trim(),
+
+        phone_number:
+          this.userForm.phone_number.trim(),
 
         role
 
@@ -1529,14 +1563,473 @@ export class Admin implements OnInit, OnDestroy {
 
 
   // ============================================================
-  // HIERARCHY
+  // HIERARCHY (rendered inline inside the Admin Panel)
   // ============================================================
 
-  goToHierarchy(): void {
+  hierarchy: HierarchyLevel[] = [];
+
+  hierarchyLoading = false;
+
+  hierarchyLoadError = '';
+
+  showHierarchyModal = false;
+
+  editingHierarchy: HierarchyLevel | null = null;
+
+  hierarchySaving = false;
+
+  hierarchyErrorMessage = '';
+
+  hierarchySuccessMessage = '';
+
+  hierarchyForm = {
+    approval_level: 1,
+    role: ''
+  };
+
+
+  loadHierarchy(): void {
+
+    this.hierarchyLoading = true;
+
+    this.hierarchyLoadError = '';
+
+
+    this.adminService.getHierarchy().subscribe({
+
+      next: (response: any) => {
+
+        this.hierarchy =
+          response.hierarchy || [];
+
+
+        this.hierarchy.sort(
+          (a, b) =>
+            a.approval_level -
+            b.approval_level
+        );
+
+
+        this.hierarchyLoading = false;
+
+        this.cdr.detectChanges();
+
+      },
+
+      error: (error: any) => {
+
+        console.error(
+          'Failed to load approval hierarchy:',
+          error
+        );
+
+        this.hierarchyLoading = false;
+
+        this.hierarchyLoadError =
+          error.error?.message ||
+          'Failed to load approval hierarchy.';
+
+        this.cdr.detectChanges();
+
+      }
+
+    });
+
+  }
+
+
+  openAddHierarchy(): void {
+
+    this.editingHierarchy = null;
+
+    this.resetHierarchyForm();
+
+    this.clearHierarchyMessages();
+
+    this.showHierarchyModal = true;
+
+  }
+
+
+  openEditHierarchy(
+    hierarchy: HierarchyLevel
+  ): void {
+
+    this.editingHierarchy =
+      hierarchy;
+
+    this.clearHierarchyMessages();
+
+
+    this.hierarchyForm = {
+
+      approval_level:
+        hierarchy.approval_level,
+
+      role:
+        hierarchy.role || ''
+
+    };
+
+
+    this.showHierarchyModal = true;
+
+  }
+
+
+  closeHierarchyModal(): void {
+
+    if (this.hierarchySaving) {
+
+      return;
+
+    }
+
+
+    this.showHierarchyModal = false;
+
+    this.editingHierarchy = null;
+
+    this.resetHierarchyForm();
+
+  }
+
+
+  resetHierarchyForm(): void {
+
+    this.hierarchyForm = {
+
+      approval_level:
+        this.hierarchy.length + 1,
+
+      role: ''
+
+    };
+
+  }
+
+
+  saveHierarchy(): void {
+
+    this.clearHierarchyMessages();
+
+
+    const level =
+      Number(
+        this.hierarchyForm.approval_level
+      );
+
+
+    const role =
+      this.hierarchyForm.role
+        .trim()
+        .toUpperCase();
+
+
+    if (
+      !Number.isInteger(level) ||
+      level <= 0
+    ) {
+
+      this.hierarchyErrorMessage =
+        'Approval level must be a positive number';
+
+      return;
+
+    }
+
+
+    if (!role) {
+
+      this.hierarchyErrorMessage =
+        'Role is required';
+
+      return;
+
+    }
+
+
+    if (role === 'EMPLOYEE') {
+
+      this.hierarchyErrorMessage =
+        'EMPLOYEE cannot be an approval position';
+
+      return;
+
+    }
+
+
+    this.hierarchySaving = true;
+
+
+    if (!this.editingHierarchy) {
+
+      this.adminService
+        .addHierarchyLevel({
+
+          approval_level:
+            level,
+
+          role:
+            role
+
+        })
+        .subscribe({
+
+          next: () => {
+
+            this.hierarchySaving = false;
+
+            this.hierarchySuccessMessage =
+              'Approval hierarchy level added successfully';
+
+            this.showHierarchyModal = false;
+
+            this.resetHierarchyForm();
+
+            this.loadHierarchy();
+
+            this.cdr.detectChanges();
+
+          },
+
+          error: (error) => {
+
+            console.error(
+              'Add hierarchy level error:',
+              error
+            );
+
+            this.hierarchySaving = false;
+
+            this.hierarchyErrorMessage =
+              error?.error?.message ||
+              'Unable to add approval hierarchy level';
+
+            this.cdr.detectChanges();
+
+          }
+
+        });
+
+
+      return;
+
+    }
+
+
+    this.adminService
+      .updateHierarchyLevel(
+        this.editingHierarchy.id,
+        {
+
+          approval_level:
+            level,
+
+          role:
+            role
+
+        }
+      )
+      .subscribe({
+
+        next: () => {
+
+          this.hierarchySaving = false;
+
+          this.hierarchySuccessMessage =
+            'Approval hierarchy level updated successfully';
+
+          this.showHierarchyModal = false;
+
+          this.editingHierarchy = null;
+
+          this.resetHierarchyForm();
+
+          this.loadHierarchy();
+
+          this.cdr.detectChanges();
+
+        },
+
+        error: (error) => {
+
+          console.error(
+            'Update hierarchy level error:',
+            error
+          );
+
+          this.hierarchySaving = false;
+
+          this.hierarchyErrorMessage =
+            error?.error?.message ||
+            'Unable to update approval hierarchy level';
+
+          this.cdr.detectChanges();
+
+        }
+
+      });
+
+  }
+
+
+  deleteHierarchy(
+    hierarchy: HierarchyLevel
+  ): void {
+
+    const confirmed =
+      confirm(
+        `Are you sure you want to delete this approval level?\n\n` +
+        `Level: ${hierarchy.approval_level}\n` +
+        `Role: ${hierarchy.role}\n\n` +
+        `This will remove this position from the approval workflow.`
+      );
+
+
+    if (!confirmed) {
+
+      return;
+
+    }
+
+
+    this.clearHierarchyMessages();
+
+
+    this.adminService
+      .deleteHierarchyLevel(
+        hierarchy.id
+      )
+      .subscribe({
+
+        next: () => {
+
+          this.hierarchySuccessMessage =
+            'Approval hierarchy level deleted successfully';
+
+          this.loadHierarchy();
+
+          this.cdr.detectChanges();
+
+        },
+
+        error: (error) => {
+
+          console.error(
+            'Delete hierarchy level error:',
+            error
+          );
+
+          this.hierarchyErrorMessage =
+            error?.error?.message ||
+            'Unable to delete approval hierarchy level';
+
+          this.cdr.detectChanges();
+
+        }
+
+      });
+
+  }
+
+
+  clearHierarchyMessages(): void {
+
+    this.hierarchyErrorMessage = '';
+
+    this.hierarchySuccessMessage = '';
+
+  }
+
+
+  // ============================================================
+  // ACCOUNT SETTINGS (merged in — logged-in devices page)
+  // ============================================================
+
+  openLoggedInDevices(): void {
 
     this.router.navigate([
-      '/admin/hierarchy'
+      '/admin/logged-in-devices'
     ]);
+
+  }
+
+
+  // ============================================================
+  // SETTINGS DROPDOWN (sidebar)
+  // ============================================================
+
+  toggleSettingsMenu(): void {
+
+    this.settingsMenuOpen = !this.settingsMenuOpen;
+
+    if (!this.settingsMenuOpen) {
+      this.themeMenuOpen = false;
+    }
+
+  }
+
+
+  toggleThemeMenu(): void {
+
+    this.themeMenuOpen = !this.themeMenuOpen;
+
+  }
+
+
+  // ============================================================
+  // THEME
+  // ============================================================
+
+  loadStoredTheme(): void {
+
+    const stored =
+      (localStorage.getItem('admin-theme') as
+        'light' | 'dark' | 'system' | null) || 'system';
+
+    this.currentTheme = stored;
+
+    this.applyTheme();
+
+  }
+
+
+  setTheme(
+    theme: 'light' | 'dark' | 'system'
+  ): void {
+
+    this.currentTheme = theme;
+
+    localStorage.setItem('admin-theme', theme);
+
+    this.applyTheme();
+
+  }
+
+
+  applyTheme(): void {
+
+    let isDark = false;
+
+    if (this.currentTheme === 'dark') {
+      isDark = true;
+    } else if (this.currentTheme === 'system') {
+      isDark = window.matchMedia(
+        '(prefers-color-scheme: dark)'
+      ).matches;
+    }
+
+    const root = document.documentElement;
+    const body = document.body;
+
+    root.classList.toggle('dark', isDark);
+    body.classList.toggle('dark', isDark);
+
+    // Keep native browser controls (inputs, selects, scrollbars, etc.)
+    // visually consistent with the selected theme.
+    root.style.colorScheme = isDark ? 'dark' : 'light';
+    body.style.colorScheme = isDark ? 'dark' : 'light';
 
   }
 
