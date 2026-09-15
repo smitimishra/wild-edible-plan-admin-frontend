@@ -1,0 +1,37 @@
+<!-- User avatar button -->
+<div class="user-menu-wrap">
+  <button class="avatar-btn" (click)="toggleMenu()" title="Account">
+    <span class="avatar-initials">{{ initials }}</span>
+    <span class="avatar-name">{{ userName }}</span>
+    <svg class="chevron" width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M7 10l5 5 5-5H7z"/>
+    </svg>
+  </button>
+
+  <!-- Dropdown -->
+  <div class="dropdown" *ngIf="menuOpen">
+    <div class="dropdown-header">
+      <span class="dh-avatar">{{ initials }}</span>
+      <span class="dh-name">{{ userName }}</span>
+    </div>
+
+    <button class="menu-item" (click)="changePassword()">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M18 8h-1V6c0-2.8-2.2-5-5-5S7 3.2 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.7 1.4-3.1 3.1-3.1 1.7 0 3.1 1.4 3.1 3.1v2z"/>
+      </svg>
+      Change Password
+    </button>
+
+    <div class="divider"></div>
+
+    <button class="menu-item logout" (click)="logout()">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M17 7l-1.4 1.4L18.2 11H9v2h9.2l-2.6 2.6L17 17l5-5-5-5zM5 5h7V3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h7v-2H5V5z"/>
+      </svg>
+      Logout
+    </button>
+  </div>
+</div>
+
+<!-- Click outside to close -->
+<div class="backdrop" *ngIf="menuOpen" (click)="closeMenu()"></div>

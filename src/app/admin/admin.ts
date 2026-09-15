@@ -2595,7 +2595,7 @@ export class Admin implements OnInit, OnDestroy {
 
 
     this.authService.logout(
-      'http://192.168.29.51:8200/'
+      'http://192.168.29.216:8200/'
     );
 
   }
