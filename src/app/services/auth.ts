@@ -257,7 +257,7 @@ export class AuthService implements OnDestroy {
         Authorization: `Bearer ${token}`,
       },
 
-      body: JSON.stringify({}),
+      body: JSON.stringify({ token }),
     })
       .then((response) => {
         if (response.status === 401) {

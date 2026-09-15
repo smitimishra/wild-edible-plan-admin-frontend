@@ -1,37 +1,31 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-
-
-// ============================================================
-// DEVICE SESSION MODEL
-// ============================================================
 
 export interface DeviceSession {
   id: number;
 
-  device_name: string;
-  browser: string;
+  user_id?: number;
+  session_id?: string;
 
-  deviceType: string;
-  platform: string;
-
-  os: string;
-  osVersion: string;
-
-  loginTime: string;
-  last_active: string;
+  device_type: string;
 
   location: string;
   ip_address: string;
 
+  created_at?: string;
+  last_activity?: string;
+
+  loginTime: string;
+  last_active: string;
+
   active: boolean;
+  is_active?: boolean;
+
+  expires_at?: string;
+  invalidated_at?: string;
+  invalidation_reason?: string;
 }
-
-
-// ============================================================
-// LOGGED-IN DEVICES RESPONSE
-// ============================================================
 
 export interface LoggedInDevicesResponse {
   success: boolean;
@@ -39,20 +33,15 @@ export interface LoggedInDevicesResponse {
   message?: string;
 }
 
-
-// ============================================================
-// LOGOUT ALL DEVICES RESPONSE
-// ============================================================
-
 export interface LogoutAllDevicesResponse {
   success: boolean;
   message: string;
 }
 
-
-// ============================================================
-// SESSION SERVICE
-// ============================================================
+export interface UpdateLocationResponse {
+  success: boolean;
+  message: string;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -60,21 +49,24 @@ export interface LogoutAllDevicesResponse {
 export class SessionService {
 
   private readonly apiUrl =
-    'http://192.168.29.51:8080/api/sessions';
-
-
-  // ==========================================================
-  // CONSTRUCTOR
-  // ==========================================================
+    'http://192.168.29.51:3001/api/sessions';
 
   constructor(
     private http: HttpClient
   ) {}
 
+  // Get JWT token and attach it to every session request
+  private getHeaders(): HttpHeaders {
+    const token = localStorage.getItem('token');
 
-  // ==========================================================
+    return new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+  }
+
+  // ============================================================
   // GET LOGGED-IN DEVICES
-  // ==========================================================
+  // ============================================================
 
   getLoggedInDevices(): Observable<LoggedInDevicesResponse> {
 
@@ -88,14 +80,45 @@ export class SessionService {
     );
 
     return this.http.get<LoggedInDevicesResponse>(
-      `${this.apiUrl}/logged-in-devices`
+      `${this.apiUrl}/logged-in-devices`,
+      {
+        headers: this.getHeaders()
+      }
     );
   }
 
+  // ============================================================
+  // UPDATE CURRENT SESSION LOCATION
+  // ============================================================
 
-  // ==========================================================
+  updateCurrentSessionLocation(
+    location: string
+  ): Observable<UpdateLocationResponse> {
+
+    console.log(
+      'SessionService: updating current session location:',
+      location
+    );
+
+    console.log(
+      'Session API:',
+      `${this.apiUrl}/update-location`
+    );
+
+    return this.http.post<UpdateLocationResponse>(
+      `${this.apiUrl}/update-location`,
+      {
+        location: location
+      },
+      {
+        headers: this.getHeaders()
+      }
+    );
+  }
+
+  // ============================================================
   // LOGOUT ALL DEVICES
-  // ==========================================================
+  // ============================================================
 
   logoutAllDevices(): Observable<LogoutAllDevicesResponse> {
 
@@ -110,8 +133,10 @@ export class SessionService {
 
     return this.http.post<LogoutAllDevicesResponse>(
       `${this.apiUrl}/logout-all`,
-      {}
+      {},
+      {
+        headers: this.getHeaders()
+      }
     );
   }
-
 }

@@ -1,173 +1,132 @@
-<!-- ============================================================ -->
 <!-- REVIEWER PAGE -->
-<!-- ============================================================ -->
 
 <div
   class="min-h-screen bg-slate-50 text-slate-900 transition-colors duration-300 dark:bg-slate-950 dark:text-white"
 >
-  <!-- ========================================================== -->
   <!-- SIDEBAR -->
-  <!-- ========================================================== -->
 
   <aside
-    class="fixed left-0 top-0 z-50 flex h-screen w-64 flex-col border-r border-slate-200 bg-white transition-colors duration-300 dark:border-slate-800 dark:bg-slate-900"
+    class="fixed left-0 top-0 z-50 flex h-screen flex-col border-r border-slate-200 bg-white shadow-sm transition-all duration-300 dark:border-slate-800 dark:bg-slate-900"
+    [style.width.px]="sidebarCollapsed ? 76 : 290"
   >
 
-    <!-- ======================================================== -->
     <!-- SIDEBAR HEADER -->
-    <!-- ======================================================== -->
+    <div class="border-b border-slate-200 px-4 py-4 dark:border-slate-800">
+      <div class="flex items-center gap-3" [class.justify-center]="sidebarCollapsed">
 
-    <div class="border-b border-slate-200 px-7 py-7 dark:border-slate-800">
-      <p
-        class="text-sm font-bold uppercase tracking-widest text-indigo-600 dark:text-indigo-400"
-      >
-        REVIEWER
-      </p>
+        <div
+          class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-indigo-600 text-sm font-bold text-white shadow-sm"
+        >
+          R
+        </div>
 
-      <h1 class="mt-1 text-xl font-bold text-slate-900 dark:text-white">
-        Approval System
-      </h1>
+        @if (!sidebarCollapsed) {
+          <div class="min-w-0 flex-1">
+            <p
+              class="text-[10px] font-bold uppercase tracking-[0.2em] text-indigo-600 dark:text-indigo-400"
+            >
+              REVIEWER
+            </p>
+            <h1 class="mt-0.5 truncate text-lg font-bold tracking-tight text-slate-900 dark:text-white">
+              Approval System
+            </h1>
+          </div>
+
+          <button
+            type="button"
+            (click)="toggleSidebar()"
+            class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-xl font-medium text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"
+            title="Collapse sidebar"
+          >
+            ‹
+          </button>
+        } @else {
+          <button
+            type="button"
+            (click)="toggleSidebar()"
+            class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-xl font-medium text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"
+            title="Expand sidebar"
+          >
+            ›
+          </button>
+        }
+      </div>
     </div>
 
-
-    <!-- ======================================================== -->
     <!-- SIDEBAR NAVIGATION -->
-    <!-- ======================================================== -->
+    <nav class="flex-1 overflow-y-auto px-3 py-5">
 
-    <nav class="flex-1 overflow-y-auto px-4 py-6">
-
-      <!-- ====================================================== -->
-      <!-- DASHBOARD -->
-      <!-- ====================================================== -->
-
+      <!-- Dashboard -->
       <button
         type="button"
         (click)="selectMenu('dashboard')"
-        [style.background-color]="
-          activeMenu === 'dashboard' ? '#37eb34' : 'transparent'
-        "
-        class="mb-2 flex w-full items-center gap-3 rounded-lg px-4 py-3 text-left text-sm font-medium text-slate-900 transition-colors hover:bg-green-100 dark:text-white dark:hover:bg-slate-800"
+        [style.background-color]="activeMenu === 'dashboard' ? '#37eb34' : 'transparent'"
+        [attr.title]="sidebarCollapsed ? 'Dashboard' : null"
+        [class.justify-center]="sidebarCollapsed"
+        class="mb-2 flex w-full items-center gap-3 rounded-xl px-3 py-3.5 text-left text-sm font-semibold text-slate-900 transition-all duration-200 hover:bg-green-100 dark:text-white dark:hover:bg-slate-800"
       >
-        <span class="flex w-6 justify-center text-lg">
-          ▣
-        </span>
-
-        <span>
-          Dashboard
-        </span>
-      </button>
-
-
-      <!-- ====================================================== -->
-      <!-- PENDING APPROVALS -->
-      <!-- ====================================================== -->
-
-      <button
-        type="button"
-        (click)="selectMenu('pending-approvals')"
-        [style.background-color]="
-          activeMenu === 'pending-approvals' ? '#37eb34' : 'transparent'
-        "
-        class="mb-2 flex w-full items-center gap-3 rounded-lg px-4 py-3 text-left text-sm font-medium text-slate-900 transition-colors hover:bg-green-100 dark:text-white dark:hover:bg-slate-800"
-      >
-        <span class="flex w-6 justify-center text-lg">
-          📥
-        </span>
-
-        <span>
-          Pending Approvals
-        </span>
-
-        @if (pendingCount > 0) {
-          <span
-            class="ml-auto rounded-full bg-amber-100 px-2 py-0.5 text-xs font-bold text-amber-700 dark:bg-amber-950 dark:text-amber-400"
-          >
-            {{ pendingCount }}
-          </span>
+        <span class="flex w-7 shrink-0 justify-center text-lg">▣</span>
+        @if (!sidebarCollapsed) {
+          <span>Dashboard</span>
         }
       </button>
 
+      <!-- Pending Approvals -->
+      <button
+        type="button"
+        (click)="selectMenu('pending-approvals')"
+        [style.background-color]="activeMenu === 'pending-approvals' ? '#37eb34' : 'transparent'"
+        [attr.title]="sidebarCollapsed ? 'Pending Approvals' : null"
+        [class.justify-center]="sidebarCollapsed"
+        class="mb-2 flex w-full items-center gap-3 rounded-xl px-3 py-3.5 text-left text-sm font-semibold text-slate-900 transition-all duration-200 hover:bg-green-100 dark:text-white dark:hover:bg-slate-800"
+      >
+        <span class="flex w-7 shrink-0 justify-center text-lg">📥</span>
+        @if (!sidebarCollapsed) {
+          <span class="min-w-0 truncate">Pending Approvals</span>
+          @if (pendingCount > 0) {
+            <span
+              class="ml-auto rounded-full bg-amber-100 px-2 py-0.5 text-xs font-bold text-amber-700 dark:bg-amber-950 dark:text-amber-400"
+            >
+              {{ pendingCount }}
+            </span>
+          }
+        }
+      </button>
 
-      <!-- ====================================================== -->
-      <!-- SETTINGS -->
-      <!-- ====================================================== -->
-
+      <!-- Settings -->
       <button
         type="button"
         (click)="toggleSettings()"
-        class="mb-2 flex w-full items-center justify-between rounded-lg px-4 py-3 text-left text-sm font-medium text-slate-900 transition-colors hover:bg-green-100 dark:text-white dark:hover:bg-slate-800"
+        [attr.title]="sidebarCollapsed ? 'Settings' : null"
+        [class.justify-center]="sidebarCollapsed"
+        class="mb-2 flex w-full items-center gap-3 rounded-xl px-3 py-3.5 text-left text-sm font-semibold text-slate-900 transition-all duration-200 hover:bg-green-100 dark:text-white dark:hover:bg-slate-800"
       >
-
-        <span class="flex items-center gap-3">
-
-          <span class="flex w-6 justify-center text-lg">
-            ⚙
-          </span>
-
-          <span>
-            Settings
-          </span>
-
-        </span>
-
-        <span class="text-sm">
-          {{ settingsExpanded ? '▲' : '▼' }}
-        </span>
-
+        <span class="flex w-7 shrink-0 justify-center text-lg">⚙</span>
+        @if (!sidebarCollapsed) {
+          <span>Settings</span>
+          <span class="ml-auto text-sm">{{ settingsExpanded ? '▲' : '▼' }}</span>
+        }
       </button>
 
+      <!-- Settings Submenu -->
+      @if (settingsExpanded && !sidebarCollapsed) {
+        <div class="mb-2 ml-4 border-l-2 border-slate-200 pl-3 dark:border-slate-700">
 
-      <!-- ====================================================== -->
-      <!-- SETTINGS SUBMENU -->
-      <!-- ====================================================== -->
-
-      @if (settingsExpanded) {
-
-        <div
-          class="mb-2 ml-4 border-l-2 border-slate-200 pl-3 dark:border-slate-700"
-        >
-
-          <!-- ================================================== -->
-          <!-- THEMES -->
-          <!-- ================================================== -->
-
+          <!-- Themes -->
           <button
             type="button"
             (click)="toggleThemes()"
             class="flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-left text-sm font-medium text-slate-700 transition-colors hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800"
           >
-
             <span class="flex items-center gap-3">
-
-              <span class="text-base">
-                🎨
-              </span>
-
-              <span>
-                Themes
-              </span>
-
+              <span class="text-base">🎨</span>
+              <span>Themes</span>
             </span>
-
-            <span class="text-xs">
-              {{ themesExpanded ? '▲' : '▼' }}
-            </span>
-
+            <span class="text-xs">{{ themesExpanded ? '▲' : '▼' }}</span>
           </button>
 
-
-          <!-- ================================================== -->
-          <!-- THEME OPTIONS -->
-          <!-- ================================================== -->
-
           @if (themesExpanded) {
-
             <div class="mt-1 space-y-1 pl-3">
-
-              <!-- ============================================== -->
-              <!-- LIGHT -->
-              <!-- ============================================== -->
-
               <button
                 type="button"
                 (click)="selectTheme('light')"
@@ -175,21 +134,8 @@
                 [class.bg-green-100]="isThemeSelected('light')"
                 [class.font-semibold]="isThemeSelected('light')"
               >
-
-                <span>
-                  ☀️
-                </span>
-
-                <span>
-                  Light
-                </span>
-
+                <span>☀️</span><span>Light</span>
               </button>
-
-
-              <!-- ============================================== -->
-              <!-- DARK -->
-              <!-- ============================================== -->
 
               <button
                 type="button"
@@ -198,21 +144,8 @@
                 [class.bg-green-100]="isThemeSelected('dark')"
                 [class.font-semibold]="isThemeSelected('dark')"
               >
-
-                <span>
-                  🌙
-                </span>
-
-                <span>
-                  Dark
-                </span>
-
+                <span>🌙</span><span>Dark</span>
               </button>
-
-
-              <!-- ============================================== -->
-              <!-- DEFAULT -->
-              <!-- ============================================== -->
 
               <button
                 type="button"
@@ -221,61 +154,38 @@
                 [class.bg-green-100]="isThemeSelected('default')"
                 [class.font-semibold]="isThemeSelected('default')"
               >
-
-                <span>
-                  🖥️
-                </span>
-
-                <span>
-                  Default
-                </span>
-
+                <span>🖥️</span><span>Default</span>
               </button>
-
             </div>
-
           }
-
         </div>
-
       }
-
     </nav>
 
-
-    <!-- ======================================================== -->
     <!-- SIDEBAR LOGOUT -->
-    <!-- ======================================================== -->
-
-    <div class="border-t border-slate-200 p-4 dark:border-slate-800">
-
+    <div class="border-t border-slate-200 p-3 dark:border-slate-800">
       <button
         type="button"
         (click)="logout()"
-        class="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-left text-sm font-medium text-red-600 transition-colors hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-950"
+        [attr.title]="sidebarCollapsed ? 'Logout' : null"
+        [class.justify-center]="sidebarCollapsed"
+        class="flex w-full items-center gap-3 rounded-xl px-3 py-3.5 text-left text-sm font-semibold text-red-600 transition-all duration-200 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-950"
       >
-
-        <span class="flex w-6 justify-center text-lg">
-          🚪
-        </span>
-
-        <span>
-          Logout
-        </span>
-
+        <span class="flex w-7 shrink-0 justify-center text-lg">🚪</span>
+        @if (!sidebarCollapsed) {
+          <span>Logout</span>
+        }
       </button>
-
     </div>
 
   </aside>
 
 
-  <!-- ========================================================== -->
   <!-- MAIN CONTENT -->
-  <!-- ========================================================== -->
 
   <main
-    class="ml-64 min-h-screen bg-slate-50 transition-colors duration-300 dark:bg-slate-950"
+    class="min-h-screen bg-slate-50 transition-all duration-300 dark:bg-slate-950"
+    [style.margin-left.px]="sidebarCollapsed ? 76 : 290"
   >
 
     <div class="mx-auto max-w-7xl px-6 py-8 lg:px-8 lg:py-10">
@@ -470,7 +380,308 @@
       <!-- DASHBOARD / PENDING CONTENT -->
       <!-- ====================================================== -->
 
-      @if (activeMenu === 'pending-approvals') {
+      <!-- ====================================================== -->
+      <!-- INLINE REQUEST DETAILS -->
+      <!-- ====================================================== -->
+
+      @if (selectedRequest) {
+
+        <section class="mt-8">
+
+          <div class="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p class="text-xs font-bold tracking-[0.18em] text-emerald-700 dark:text-emerald-400">
+                REQUEST DETAILS
+              </p>
+
+              <h3 class="mt-1 text-2xl font-bold text-slate-900 dark:text-white">
+                Request #{{ selectedRequest.id }}
+              </h3>
+
+              <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                Review the complete plant request without leaving the Manager panel.
+              </p>
+            </div>
+
+            <button
+              type="button"
+              (click)="clearSelectedRequest()"
+              class="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:border-emerald-300 hover:text-emerald-700 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:border-emerald-600 dark:hover:text-emerald-400"
+            >
+              ← Back to Requests
+            </button>
+          </div>
+
+          @if (message) {
+            <div class="mb-6 flex items-center gap-3 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-900 dark:bg-red-950/40 dark:text-red-400">
+              <span>⚠</span>
+              <span>{{ message }}</span>
+            </div>
+          }
+
+          <div class="space-y-6">
+
+            <!-- REQUEST SUMMARY -->
+            <article class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
+
+              <div class="border-b border-slate-100 px-6 py-5 dark:border-slate-800">
+                <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <div>
+                    <p class="text-[10px] font-bold tracking-[0.14em] text-slate-400">
+                      PLANT REQUEST
+                    </p>
+                    <h4 class="mt-1 text-xl font-bold text-slate-900 dark:text-white">
+                      {{ getPlantName(selectedRequest) }}
+                    </h4>
+                  </div>
+
+                  <span
+                    class="w-fit rounded-full px-3 py-1.5 text-xs font-bold"
+                    [class.bg-amber-50]="selectedRequest.status === 'PENDING_REVIEWER'"
+                    [class.text-amber-700]="selectedRequest.status === 'PENDING_REVIEWER'"
+                    [class.bg-emerald-50]="selectedRequest.status !== 'PENDING_REVIEWER'"
+                    [class.text-emerald-700]="selectedRequest.status !== 'PENDING_REVIEWER'"
+                  >
+                    {{ selectedRequest.status || 'PENDING_REVIEWER' }}
+                  </span>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 gap-6 px-6 py-6 sm:grid-cols-2 lg:grid-cols-4">
+
+                <div>
+                  <p class="mb-2 text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+                    Submitted By
+                  </p>
+                  <p class="text-sm font-semibold text-slate-700 dark:text-slate-200">
+                    {{ getEmployeeName(selectedRequest) }}
+                  </p>
+                </div>
+
+                <div>
+                  <p class="mb-2 text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+                    Common / Local Name
+                  </p>
+                  <p class="text-sm font-semibold text-slate-700 dark:text-slate-200">
+                    {{ getCommonName(selectedRequest) }}
+                  </p>
+                </div>
+
+                <div>
+                  <p class="mb-2 text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+                    Submitted On
+                  </p>
+                  <p class="text-sm font-semibold text-slate-700 dark:text-slate-200">
+                    {{ getRequestDate(selectedRequest) | date: 'dd MMM yyyy, hh:mm a' }}
+                  </p>
+                </div>
+
+                <div>
+                  <p class="mb-2 text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+                    Request Number
+                  </p>
+                  <p class="text-sm font-semibold text-slate-700 dark:text-slate-200">
+                    {{ getRequestNumber(selectedRequest) }}
+                  </p>
+                </div>
+
+              </div>
+            </article>
+
+            <!-- PLANT INFORMATION -->
+            <article class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+
+              <h4 class="text-base font-bold text-slate-900 dark:text-white">
+                Plant Information
+              </h4>
+
+              <div class="mt-5 grid grid-cols-1 gap-5 lg:grid-cols-2">
+
+                <div>
+                  <label class="mb-2 block text-xs font-semibold uppercase tracking-wide text-slate-400">
+                    Scientific Name
+                  </label>
+
+                  @if (selectedRequest.status === 'PENDING_REVIEWER') {
+                    <input
+                      type="text"
+                      [(ngModel)]="scientificName"
+                      placeholder="Enter scientific name"
+                      class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:focus:border-emerald-400"
+                    />
+                  } @else {
+                    <p class="rounded-xl bg-slate-50 px-4 py-3 text-sm text-slate-700 dark:bg-slate-800 dark:text-slate-200">
+                      {{ scientificName || selectedRequest.scientific_name || '-' }}
+                    </p>
+                  }
+                </div>
+
+                <div>
+                  <label class="mb-2 block text-xs font-semibold uppercase tracking-wide text-slate-400">
+                    Common / Local Name
+                  </label>
+
+                  <p class="rounded-xl bg-slate-50 px-4 py-3 text-sm text-slate-700 dark:bg-slate-800 dark:text-slate-200">
+                    {{ getCommonName(selectedRequest) }}
+                  </p>
+                </div>
+
+              </div>
+
+              <div class="mt-5">
+                <label class="mb-2 block text-xs font-semibold uppercase tracking-wide text-slate-400">
+                  Description
+                </label>
+
+                @if (selectedRequest.status === 'PENDING_REVIEWER') {
+                  <textarea
+                    [(ngModel)]="description"
+                    rows="5"
+                    placeholder="Enter plant description"
+                    class="w-full resize-y rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm leading-6 text-slate-900 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:focus:border-emerald-400"
+                  ></textarea>
+                } @else {
+                  <p class="rounded-xl bg-slate-50 px-4 py-3 text-sm leading-6 text-slate-700 dark:bg-slate-800 dark:text-slate-200">
+                    {{ description || selectedRequest.description || '-' }}
+                  </p>
+                }
+              </div>
+
+            </article>
+
+            <!-- ATTACHMENTS -->
+            <article class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+
+              <div class="flex items-center justify-between gap-3">
+                <div>
+                  <h4 class="text-base font-bold text-slate-900 dark:text-white">
+                    Attachments
+                  </h4>
+                  <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                    {{ getAttachmentCount(selectedRequest) }} attachment(s)
+                  </p>
+                </div>
+              </div>
+
+              @if (getAttachments(selectedRequest).length > 0) {
+
+                <div class="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                  @for (attachment of getAttachments(selectedRequest); track attachment.id || $index) {
+
+                    <div class="overflow-hidden rounded-xl border border-slate-200 dark:border-slate-700">
+
+                      @if (attachment.file_path || attachment.path || attachment.url) {
+                        <img
+                          [src]="getImageUrl(attachment.file_path || attachment.path || attachment.url)"
+                          [alt]="attachment.file_name || attachment.filename || 'Plant attachment'"
+                          class="h-48 w-full object-cover"
+                        />
+                      }
+
+                      <div class="p-4">
+                        <p class="truncate text-sm font-semibold text-slate-700 dark:text-slate-200">
+                          {{ attachment.file_name || attachment.filename || attachment.name || 'Attachment' }}
+                        </p>
+                      </div>
+
+                    </div>
+
+                  }
+                </div>
+
+              } @else {
+
+                <div class="mt-5 rounded-xl bg-slate-50 px-4 py-8 text-center text-sm text-slate-500 dark:bg-slate-800 dark:text-slate-400">
+                  No attachments available for this request.
+                </div>
+
+              }
+
+            </article>
+
+            <!-- REVIEW ACTIONS -->
+            @if (selectedRequest.status === 'PENDING_REVIEWER') {
+
+              <article class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+
+                <h4 class="text-base font-bold text-slate-900 dark:text-white">
+                  Reviewer Decision
+                </h4>
+
+                @if (!rejectingRequest) {
+
+                  <div class="mt-5 flex flex-col gap-3 sm:flex-row sm:justify-end">
+                    <button
+                      type="button"
+                      (click)="startRejecting()"
+                      class="inline-flex items-center justify-center gap-2 rounded-lg border border-red-200 bg-white px-5 py-2.5 text-sm font-semibold text-red-600 transition hover:bg-red-50 dark:border-red-900 dark:bg-slate-900 dark:text-red-400 dark:hover:bg-red-950"
+                    >
+                      ✕ Reject
+                    </button>
+
+                    <button
+                      type="button"
+                      (click)="approveRequest(selectedRequest.id)"
+                      class="inline-flex items-center justify-center gap-2 rounded-lg bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-700"
+                    >
+                      ✓ Approve Request
+                    </button>
+                  </div>
+
+                } @else {
+
+                  <div class="mt-5 rounded-xl border border-red-200 bg-red-50/70 p-4 dark:border-red-900 dark:bg-red-950/20">
+                    <label class="mb-2 block text-xs font-bold uppercase tracking-wide text-red-700 dark:text-red-400">
+                      Reason for Rejection
+                    </label>
+
+                    <textarea
+                      [(ngModel)]="comments"
+                      rows="4"
+                      placeholder="Please write the reason for rejection"
+                      class="w-full resize-y rounded-xl border border-red-200 bg-white px-4 py-3 text-sm leading-6 text-slate-900 outline-none transition focus:border-red-500 focus:ring-2 focus:ring-red-100 dark:border-red-800 dark:bg-slate-900 dark:text-white dark:focus:border-red-400"
+                    ></textarea>
+
+                    <p class="mt-2 text-xs text-red-600 dark:text-red-400">
+                      A rejection reason is required before the request can be rejected.
+                    </p>
+                  </div>
+
+                  <div class="mt-5 flex flex-col gap-3 sm:flex-row sm:justify-end">
+                    <button
+                      type="button"
+                      (click)="cancelRejecting()"
+                      class="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
+                    >
+                      Cancel
+                    </button>
+
+                    <button
+                      type="button"
+                      (click)="rejectRequest(selectedRequest.id)"
+                      class="inline-flex items-center justify-center gap-2 rounded-lg bg-red-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-red-700"
+                    >
+                      ✕ Reject Request
+                    </button>
+                  </div>
+
+                }
+
+              </article>
+
+            }
+
+          </div>
+
+        </section>
+
+      }
+
+      <!-- ====================================================== -->
+      <!-- NORMAL REQUEST LISTS -->
+      <!-- ====================================================== -->
+
+      @if (!selectedRequest && activeMenu === 'pending-approvals') {
 
         <!-- ==================================================== -->
         <!-- PENDING REQUESTS -->
@@ -858,7 +1069,7 @@
 
                         <button
                           type="button"
-                          (click)="selectRequest(request); rejectRequest(request.id)"
+                          (click)="selectRequest(request); startRejecting()"
                           class="flex flex-1 items-center justify-center gap-2 rounded-lg border border-red-200 bg-white px-5 py-2.5 text-sm font-semibold text-red-600 transition hover:bg-red-50 dark:border-red-900 dark:bg-slate-900 dark:text-red-400 dark:hover:bg-red-950 sm:flex-none"
                         >
 
@@ -893,7 +1104,7 @@
       <!-- APPROVED REQUESTS -->
       <!-- ====================================================== -->
 
-      @if (activeMenu === 'approved-requests') {
+      @if (!selectedRequest && activeMenu === 'approved-requests') {
 
         <section class="mt-12">
 
@@ -1116,8 +1327,6 @@
 </div>
 
 
-<!-- ============================================================ -->
 <!-- SESSION INVALIDATED POPUP -->
-<!-- ============================================================ -->
 
 <app-session-popup />

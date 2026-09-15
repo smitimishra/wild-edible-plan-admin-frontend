@@ -11,93 +11,128 @@ import { ResetPassword } from './pages/reset-password/reset-password';
 
 import { Admin } from './admin/admin';
 import { Hierarchy } from './admin/hierarchy/hierarchy';
-
+import { LoggedInDevices } from './admin/logged-in-devices/logged-in-devices';
 
 export const routes: Routes = [
 
+  // =====================================================
   // LOGIN
+  // =====================================================
   {
     path: 'login',
     component: Login
   },
 
+  // =====================================================
   // REGISTER
+  // =====================================================
   {
     path: 'register',
     component: Register
   },
 
+  // =====================================================
   // RESET PASSWORD
+  // =====================================================
   {
     path: 'reset-password',
     component: ResetPassword
   },
 
+  // =====================================================
   // EMPLOYEE
+  // =====================================================
   {
     path: 'employee',
     component: Employee
   },
 
+  // =====================================================
   // EMPLOYEE - NEW REQUEST
+  // =====================================================
   {
     path: 'employee/new-request',
     component: NewRequest
   },
 
+  // =====================================================
   // EMPLOYEE - REQUEST DETAILS
+  // =====================================================
   {
     path: 'employee/request/:id',
     component: RequestDetails
   },
 
+  // =====================================================
   // MANAGER
+  // =====================================================
   {
     path: 'manager',
     component: Manager
   },
 
+  // =====================================================
   // MANAGER - REQUEST DETAILS
+  // =====================================================
   {
     path: 'manager/request/:id',
     component: RequestDetails
   },
 
+  // =====================================================
   // HR
+  // =====================================================
   {
     path: 'hr',
     component: Hr
   },
 
+  // =====================================================
   // HR - REQUEST DETAILS
+  // =====================================================
   {
     path: 'hr/request/:id',
     component: RequestDetails
   },
 
+  // =====================================================
   // ADMIN
+  // =====================================================
   {
     path: 'admin',
     component: Admin
   },
 
+  // =====================================================
   // ADMIN - HIERARCHY
+  // =====================================================
   {
     path: 'admin/hierarchy',
     component: Hierarchy
   },
 
-  // DEFAULT
+  // =====================================================
+  // ADMIN - LOGGED-IN DEVICES
+  // =====================================================
+  {
+    path: 'admin/logged-in-devices',
+    component: LoggedInDevices
+  },
+
+  // =====================================================
+  // DEFAULT ROUTE
+  // =====================================================
   {
     path: '',
     redirectTo: 'login',
     pathMatch: 'full'
   },
 
+  // =====================================================
   // UNKNOWN ROUTE
+  // =====================================================
   {
     path: '**',
     redirectTo: 'login'
   }
-
 ];
