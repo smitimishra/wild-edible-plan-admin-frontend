@@ -13,8 +13,7 @@ const MOUSE_DEBOUNCE_MS = 5_000;
 export class AuthService implements OnDestroy {
   // BACKEND API
 
-  private apiUrl =
-    'http://192.168.29.216:3001/api/auth';
+  private apiUrl = 'http://192.168.29.216:3001/api/auth';
 
   // SESSION STATE
 
@@ -258,7 +257,7 @@ export class AuthService implements OnDestroy {
         Authorization: `Bearer ${token}`,
       },
 
-      body: JSON.stringify({}),
+      body: JSON.stringify({ token }),
     })
       .then((response) => {
         if (response.status === 401) {

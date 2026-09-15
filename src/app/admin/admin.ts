@@ -9,57 +9,84 @@ import {
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
-import {
-  ActivatedRoute,
-  Router
-} from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import {
   AdminService,
   AdminUser,
-  HierarchyLevel,
-  HealthResponse
+  HierarchyLevel
 } from '../services/admin.service';
 
 import { AuthService } from '../services/auth';
 import { SessionPopupComponent } from '../components/session-popup/session-popup';
 
+import {
+  SessionService,
+  DeviceSession
+} from '../services/session';
+
+
+// ============================================================
+// ADMIN MENU
+// ============================================================
 
 type AdminMenu =
   | 'dashboard'
   | 'users'
   | 'roles'
-  | 'health-analysis'
   | 'hierarchy'
+  | 'health-analysis'
   | 'settings';
-
 
 type UserStatusFilter =
   | 'all'
   | 'active'
   | 'inactive';
 
+// ============================================================
+// SETTINGS SUB-VIEW
+// (replaces the separate AccountSettings / LoggedInDevices
+// routed components — both now live inside Admin)
+// ============================================================
+
+type SettingsView =
+  | 'main'
+  | 'logged-in-devices';
+
 
 @Component({
   selector: 'app-admin',
   standalone: true,
-
   imports: [
     CommonModule,
     FormsModule,
     SessionPopupComponent
   ],
-
-  templateUrl: './admin.html'
+  templateUrl: './admin.html',
 })
 export class Admin implements OnInit, OnDestroy {
 
-  // Navigation
+  // ============================================================
+  // NAVIGATION
+  // ============================================================
 
   activeMenu: AdminMenu = 'dashboard';
 
+  // ============================================================
+  // COLLAPSIBLE SIDEBAR
+  // ============================================================
 
-  // Users
+  sidebarCollapsed = false;
+
+  toggleSidebar(): void {
+    this.sidebarCollapsed = !this.sidebarCollapsed;
+  }
+
+
+
+  // ============================================================
+  // USERS
+  // ============================================================
 
   users: AdminUser[] = [];
 
@@ -70,14 +97,18 @@ export class Admin implements OnInit, OnDestroy {
   userStatusFilter: UserStatusFilter = 'all';
 
 
-  // User pagination
+  // ============================================================
+  // USER PAGINATION
+  // ============================================================
 
   readonly pageSize = 5;
 
   currentPage = 1;
 
 
-  // Role management
+  // ============================================================
+  // ROLE MANAGEMENT
+  // ============================================================
 
   roleSearchTerm = '';
 
@@ -88,14 +119,18 @@ export class Admin implements OnInit, OnDestroy {
   selectedRoleUser: AdminUser | null = null;
 
 
-  // Role pagination
+  // ============================================================
+  // ROLE PAGINATION
+  // ============================================================
 
   readonly rolePageSize = 5;
 
   roleCurrentPage = 1;
 
 
+  // ============================================================
   // UI
+  // ============================================================
 
   loading = false;
 
@@ -105,20 +140,19 @@ export class Admin implements OnInit, OnDestroy {
 
   successMessage = '';
 
-  health: HealthResponse | null = null;
-  healthLoading = false;
-  healthError = '';
-  private healthRefreshTimer: ReturnType<typeof setInterval> | null = null;
 
-
-  // User modal
+  // ============================================================
+  // USER MODAL
+  // ============================================================
 
   showUserModal = false;
 
   editingUser: AdminUser | null = null;
 
 
-  // User form
+  // ============================================================
+  // USER FORM
+  // ============================================================
 
   userForm = {
     employee_code: '',
@@ -128,20 +162,147 @@ export class Admin implements OnInit, OnDestroy {
     role: ''
   };
 
-  // Action menu
+
+  // ============================================================
+  // ACTION MENU
+  // ============================================================
+
   openActionMenuId: number | null = null;
 
-  // Settings dropdown (sidebar)
-  settingsMenuOpen = false;
-  themeMenuOpen = false;
 
-  // Theme
-  currentTheme: 'light' | 'dark' | 'system' = 'system';
+  // ============================================================
+  // ADMIN SESSION
+  // ============================================================
 
+  adminSessionRemainingSeconds = 0;
+
+
+  // ============================================================
+  // SETTINGS (merged from AccountSettings component)
+  // ============================================================
+
+  settingsView: SettingsView = 'main';
+
+
+
+  // ============================================================
+  // THEME SETTINGS
+  // Light / Dark / System Default
+  // ============================================================
+
+  selectedTheme: 'light' | 'dark' | 'default' = 'default';
+  settingsThemeMenuOpen = false;
+
+  private systemThemeMediaQuery: MediaQueryList | null = null;
+
+  private readonly systemThemeListener = (
+    event: MediaQueryListEvent
+  ): void => {
+    if (this.selectedTheme === 'default') {
+      this.applySystemTheme(event.matches);
+    }
+  };
+
+  // ============================================================
+  // THEME FUNCTIONS
+  // ============================================================
+
+  toggleSettingsThemeMenu(): void {
+    this.settingsThemeMenuOpen = !this.settingsThemeMenuOpen;
+    this.goToSettings();
+  }
+
+  selectTheme(theme: 'light' | 'dark' | 'default'): void {
+    this.selectedTheme = theme;
+    this.settingsThemeMenuOpen = false;
+
+    // Save Admin Panel theme selection.
+    localStorage.setItem('admin-theme', theme);
+
+    if (theme === 'dark') {
+      this.removeSystemThemeListener();
+      document.documentElement.classList.add('dark');
+    } else if (theme === 'light') {
+      this.removeSystemThemeListener();
+      document.documentElement.classList.remove('dark');
+    } else {
+      this.startSystemThemeListener();
+    }
+  }
+
+  isThemeSelected(
+    theme: 'light' | 'dark' | 'default'
+  ): boolean {
+    return this.selectedTheme === theme;
+  }
+
+  private startSystemThemeListener(): void {
+    this.removeSystemThemeListener();
+
+    this.systemThemeMediaQuery =
+      window.matchMedia('(prefers-color-scheme: dark)');
+
+    this.applySystemTheme(
+      this.systemThemeMediaQuery.matches
+    );
+
+    this.systemThemeMediaQuery.addEventListener(
+      'change',
+      this.systemThemeListener
+    );
+  }
+
+  private removeSystemThemeListener(): void {
+    if (this.systemThemeMediaQuery) {
+      this.systemThemeMediaQuery.removeEventListener(
+        'change',
+        this.systemThemeListener
+      );
+
+      this.systemThemeMediaQuery = null;
+    }
+  }
+
+  private applySystemTheme(isDark: boolean): void {
+    if (this.selectedTheme !== 'default') {
+      return;
+    }
+
+    if (isDark) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }
+
+
+  // ============================================================
+  // LOGGED-IN DEVICES (merged from LoggedInDevices component)
+  // ============================================================
+
+  devices: DeviceSession[] = [];
+
+  devicesLoading = false;
+
+  devicesErrorMessage = '';
+
+  // ============================================================
+  // LOGGED-IN DEVICES PAGINATION
+  // ============================================================
+
+  readonly devicesPageSize = 5;
+
+  devicesCurrentPage = 1;
+
+
+  // ============================================================
+  // CONSTRUCTOR
+  // ============================================================
 
   constructor(
     private adminService: AdminService,
     private authService: AuthService,
+    private sessionService: SessionService,
     private router: Router,
     private route: ActivatedRoute,
     private cdr: ChangeDetectorRef
@@ -153,31 +314,80 @@ export class Admin implements OnInit, OnDestroy {
   // ============================================================
 
   ngOnInit(): void {
-  this.loadStoredTheme();
 
-  this.route.queryParamMap.subscribe(params => {
-    const urlToken = params.get('token');
+    // ----------------------------------------------------------
+    // LOAD SAVED ADMIN THEME
+    // ----------------------------------------------------------
 
-    if (urlToken) {
-      console.log('JWT token received from URL');
-      this.authService.saveToken(urlToken);
+    const savedTheme =
+      localStorage.getItem('admin-theme');
+
+    if (
+      savedTheme === 'light' ||
+      savedTheme === 'dark' ||
+      savedTheme === 'default'
+    ) {
+      this.selectedTheme = savedTheme;
     }
 
-    const token = this.authService.getToken();
+    // ----------------------------------------------------------
+    // APPLY INITIAL ADMIN THEME
+    // ----------------------------------------------------------
 
-    if (!token || this.authService.isTokenExpired(token)) {
-      console.error('No valid authentication token found.');
-      this.authService.logout();
-      return;
+    if (this.selectedTheme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else if (this.selectedTheme === 'light') {
+      document.documentElement.classList.remove('dark');
+    } else {
+      this.startSystemThemeListener();
     }
 
-    console.log('Admin authentication token is available');
+    this.route.queryParamMap.subscribe((params) => {
 
-    this.authService.startSessionPolling();
+      const urlToken = params.get('token');
 
-    this.loadUsers();
-  });
-}
+      if (urlToken) {
+
+        console.log(
+          'JWT token received from URL'
+        );
+
+        this.authService.saveToken(urlToken);
+      }
+
+
+      const token = this.authService.getToken();
+
+      if (
+        !token ||
+        this.authService.isTokenExpired(token)
+      ) {
+
+        console.error(
+          'No valid authentication token found.'
+        );
+
+        this.authService.logout();
+
+        return;
+      }
+
+
+      console.log(
+        'Admin authentication token is available'
+      );
+
+
+      this.authService.startSessionPolling();
+
+      // Theme was initialized before authentication.
+      // Do not reset the selected theme here.
+
+      this.loadUsers();
+
+    });
+
+  }
 
 
   // ============================================================
@@ -197,25 +407,11 @@ export class Admin implements OnInit, OnDestroy {
   // NAVIGATION
   // ============================================================
 
-  setActiveMenu(
-    menu: AdminMenu
-  ): void {
+  setActiveMenu(menu: AdminMenu): void {
 
     this.activeMenu = menu;
 
     this.clearMessages();
-
-    if (menu !== 'settings') {
-      this.settingsMenuOpen = false;
-      this.themeMenuOpen = false;
-    }
-
-    if (menu === 'health-analysis') {
-      this.loadHealth();
-      this.startHealthRefresh();
-    } else {
-      this.stopHealthRefresh();
-    }
 
 
     if (menu === 'users') {
@@ -231,14 +427,18 @@ export class Admin implements OnInit, OnDestroy {
 
     }
 
+
     if (menu === 'hierarchy') {
 
       this.loadHierarchy();
 
     }
 
+
     if (menu === 'settings') {
-      this.loadSettings();
+
+      this.settingsView = 'main';
+
     }
 
   }
@@ -294,7 +494,8 @@ export class Admin implements OnInit, OnDestroy {
   get activeUsers(): AdminUser[] {
 
     return this.users.filter(
-      user => user.is_active === true
+      (user) =>
+        user.is_active === true
     );
 
   }
@@ -303,7 +504,8 @@ export class Admin implements OnInit, OnDestroy {
   get inactiveUsers(): AdminUser[] {
 
     return this.users.filter(
-      user => user.is_active === false
+      (user) =>
+        user.is_active === false
     );
 
   }
@@ -312,7 +514,7 @@ export class Admin implements OnInit, OnDestroy {
   get adminUsers(): AdminUser[] {
 
     return this.users.filter(
-      user =>
+      (user) =>
         (user.role || '')
           .trim()
           .toUpperCase() === 'ADMIN'
@@ -324,7 +526,7 @@ export class Admin implements OnInit, OnDestroy {
   get employeeUsers(): AdminUser[] {
 
     return this.users.filter(
-      user =>
+      (user) =>
         (user.role || '')
           .trim()
           .toUpperCase() === 'EMPLOYEE'
@@ -336,7 +538,7 @@ export class Admin implements OnInit, OnDestroy {
   get reviewerUsers(): AdminUser[] {
 
     return this.users.filter(
-      user =>
+      (user) =>
         (user.role || '')
           .trim()
           .toUpperCase() === 'REVIEWER'
@@ -369,6 +571,7 @@ export class Admin implements OnInit, OnDestroy {
 
         this.loading = false;
 
+
         this.cdr.detectChanges();
 
       },
@@ -388,6 +591,7 @@ export class Admin implements OnInit, OnDestroy {
 
 
         this.loading = false;
+
 
         this.cdr.detectChanges();
 
@@ -425,33 +629,25 @@ export class Admin implements OnInit, OnDestroy {
     } else {
 
       this.filteredUsers =
-        this.users.filter(user => {
+        this.users.filter((user) => {
 
           return (
 
             (user.name || '')
               .toLowerCase()
-              .includes(term)
-
-            ||
+              .includes(term) ||
 
             (user.email || '')
               .toLowerCase()
-              .includes(term)
-
-            ||
+              .includes(term) ||
 
             (user.employee_code || '')
               .toLowerCase()
-              .includes(term)
-
-            ||
+              .includes(term) ||
 
             (user.role || '')
               .toLowerCase()
-              .includes(term)
-
-            ||
+              .includes(term) ||
 
             (user.approval_position || '')
               .toLowerCase()
@@ -491,7 +687,8 @@ export class Admin implements OnInit, OnDestroy {
     ) {
 
       return this.filteredUsers.filter(
-        user => user.is_active === true
+        (user) =>
+          user.is_active === true
       );
 
     }
@@ -502,7 +699,8 @@ export class Admin implements OnInit, OnDestroy {
     ) {
 
       return this.filteredUsers.filter(
-        user => user.is_active === false
+        (user) =>
+          user.is_active === false
       );
 
     }
@@ -551,7 +749,8 @@ export class Admin implements OnInit, OnDestroy {
       {
         length: this.totalPages
       },
-      (_, index) => index + 1
+      (_, index) =>
+        index + 1
     );
 
   }
@@ -579,16 +778,16 @@ export class Admin implements OnInit, OnDestroy {
   get paginationEnd(): number {
 
     return Math.min(
-      this.currentPage * this.pageSize,
+      this.currentPage *
+      this.pageSize,
+
       this.filteredUsersByStatus.length
     );
 
   }
 
 
-  goToPage(
-    page: number
-  ): void {
+  goToPage(page: number): void {
 
     if (
       page < 1 ||
@@ -619,7 +818,8 @@ export class Admin implements OnInit, OnDestroy {
   nextPage(): void {
 
     if (
-      this.currentPage < this.totalPages
+      this.currentPage <
+      this.totalPages
     ) {
 
       this.currentPage++;
@@ -632,7 +832,8 @@ export class Admin implements OnInit, OnDestroy {
   correctUserPage(): void {
 
     if (
-      this.currentPage > this.totalPages
+      this.currentPage >
+      this.totalPages
     ) {
 
       this.currentPage =
@@ -669,27 +870,21 @@ export class Admin implements OnInit, OnDestroy {
     }
 
 
-    return this.users.filter(user => {
+    return this.users.filter((user) => {
 
       return (
 
         (user.name || '')
           .toLowerCase()
-          .includes(term)
-
-        ||
+          .includes(term) ||
 
         (user.email || '')
           .toLowerCase()
-          .includes(term)
-
-        ||
+          .includes(term) ||
 
         (user.employee_code || '')
           .toLowerCase()
-          .includes(term)
-
-        ||
+          .includes(term) ||
 
         (user.role || '')
           .toLowerCase()
@@ -756,9 +951,11 @@ export class Admin implements OnInit, OnDestroy {
 
     return Array.from(
       {
-        length: this.roleTotalPages
+        length:
+          this.roleTotalPages
       },
-      (_, index) => index + 1
+      (_, index) =>
+        index + 1
     );
 
   }
@@ -786,18 +983,18 @@ export class Admin implements OnInit, OnDestroy {
   get rolePaginationEnd(): number {
 
     return Math.min(
+
       this.roleCurrentPage *
       this.rolePageSize,
 
       this.filteredRoleUsers.length
+
     );
 
   }
 
 
-  goToRolePage(
-    page: number
-  ): void {
+  goToRolePage(page: number): void {
 
     if (
       page < 1 ||
@@ -869,9 +1066,7 @@ export class Admin implements OnInit, OnDestroy {
   // ROLE MODAL
   // ============================================================
 
-  openRoleModal(
-    user: AdminUser
-  ): void {
+  openRoleModal(user: AdminUser): void {
 
     if (
       (user.role || '')
@@ -891,7 +1086,6 @@ export class Admin implements OnInit, OnDestroy {
 
     this.selectedRole =
       user.role || '';
-
 
     this.clearMessages();
 
@@ -920,99 +1114,131 @@ export class Admin implements OnInit, OnDestroy {
 
   updateUserRole(): void {
 
-  this.clearMessages();
+    this.clearMessages();
 
-  if (!this.selectedRoleUser) {
-    this.errorMessage = 'Please select a user';
-    return;
-  }
 
-  const role =
-    this.selectedRole
-      .trim()
-      .toUpperCase();
-
-  if (!role) {
-    this.errorMessage = 'Please select a role';
-    return;
-  }
-
-  if (
-    role !== 'EMPLOYEE' &&
-    role !== 'REVIEWER'
-  ) {
-    this.errorMessage =
-      'Only Employee / Field Staff or Reviewer can be assigned';
-    return;
-  }
-
-  if (
-    (this.selectedRoleUser.role || '')
-      .trim()
-      .toUpperCase() === 'ADMIN'
-  ) {
-    this.errorMessage =
-      'The ADMIN account role cannot be changed';
-    return;
-  }
-
-  if (
-    (this.selectedRoleUser.role || '')
-      .trim()
-      .toUpperCase() === role
-  ) {
-    this.errorMessage =
-      'Please select a different role';
-    return;
-  }
-
-  this.saving = true;
-
-  // Update role using the full user payload
-  this.adminService.updateUser(
-    this.selectedRoleUser.id,
-    {
-      name: this.selectedRoleUser.name,
-      email: this.selectedRoleUser.email,
-      role: role
-    }
-  ).subscribe({
-
-    next: () => {
-
-      this.saving = false;
-
-      this.showRoleModal = false;
-
-      this.selectedRoleUser = null;
-
-      this.selectedRole = '';
-
-      this.successMessage =
-        'User role updated successfully';
-
-      this.loadUsers();
-
-    },
-
-    error: (error) => {
-
-      console.error(
-        'Update user role error:',
-        error
-      );
-
-      this.saving = false;
+    if (!this.selectedRoleUser) {
 
       this.errorMessage =
-        error?.error?.message ||
-        'Unable to update user role';
+        'Please select a user';
+
+      return;
 
     }
 
-  });
 
-}
+    const role =
+      this.selectedRole
+        .trim()
+        .toUpperCase();
+
+
+    if (!role) {
+
+      this.errorMessage =
+        'Please select a role';
+
+      return;
+
+    }
+
+
+    if (
+      role !== 'EMPLOYEE' &&
+      role !== 'REVIEWER'
+    ) {
+
+      this.errorMessage =
+        'Only Employee / Field Staff or Reviewer can be assigned';
+
+      return;
+
+    }
+
+
+    if (
+      (this.selectedRoleUser.role || '')
+        .trim()
+        .toUpperCase() === 'ADMIN'
+    ) {
+
+      this.errorMessage =
+        'The ADMIN account role cannot be changed';
+
+      return;
+
+    }
+
+
+    if (
+      (this.selectedRoleUser.role || '')
+        .trim()
+        .toUpperCase() === role
+    ) {
+
+      this.errorMessage =
+        'Please select a different role';
+
+      return;
+
+    }
+
+
+    this.saving = true;
+
+
+    this.adminService
+      .updateUser(
+        this.selectedRoleUser.id,
+        {
+          name:
+            this.selectedRoleUser.name,
+
+          email:
+            this.selectedRoleUser.email,
+
+          role: role
+        }
+      )
+      .subscribe({
+
+        next: () => {
+
+          this.saving = false;
+
+          this.showRoleModal = false;
+
+          this.selectedRoleUser = null;
+
+          this.selectedRole = '';
+
+          this.successMessage =
+            'User role updated successfully';
+
+          this.loadUsers();
+
+        },
+
+
+        error: (error) => {
+
+          console.error(
+            'Update user role error:',
+            error
+          );
+
+          this.saving = false;
+
+          this.errorMessage =
+            error?.error?.message ||
+            'Unable to update user role';
+
+        }
+
+      });
+
+  }
+
 
   // ============================================================
   // ADD USER
@@ -1129,8 +1355,7 @@ export class Admin implements OnInit, OnDestroy {
   // APPROVAL POSITION
   // ============================================================
 
-  getApprovalPosition():
-    string | null {
+  getApprovalPosition(): string | null {
 
     const role =
       this.userForm.role
@@ -1138,9 +1363,7 @@ export class Admin implements OnInit, OnDestroy {
         .toUpperCase();
 
 
-    if (
-      role === 'REVIEWER'
-    ) {
+    if (role === 'REVIEWER') {
 
       return 'REVIEWER';
 
@@ -1198,78 +1421,74 @@ export class Admin implements OnInit, OnDestroy {
     this.saving = true;
 
 
-    /*
-     * Current AdminService accepts:
-     * name, email, phone_number and role.
-     *
-     * Employee code and approval position
-     * are returned by the backend.
-     */
-
     if (!this.editingUser) {
 
-      this.adminService.createUser({
+      this.adminService
+        .createUser({
 
-        name:
-          this.userForm.name.trim(),
+          name:
+            this.userForm.name.trim(),
 
-        email:
-          this.userForm.email.trim(),
+          email:
+            this.userForm.email.trim(),
 
-        phone_number:
-          this.userForm.phone_number.trim(),
+          phone_number:
+            this.userForm.phone_number.trim(),
 
-        role
+          role
 
-      }).subscribe({
+        })
+        .subscribe({
 
-        next: (response) => {
+          next: (response) => {
 
-          this.saving = false;
+            this.saving = false;
 
-          this.showUserModal = false;
+            this.showUserModal = false;
 
-          this.resetForm();
+            this.resetForm();
 
-          this.successMessage =
-            'User created successfully';
+            this.successMessage =
+              'User created successfully';
+
+            this.loadUsers();
 
 
-          this.loadUsers();
+            if (
+              response?.temporaryPassword
+            ) {
+
+              alert(
+
+                `User created successfully.\n\n` +
+
+                `Temporary password:\n` +
+
+                `${response.temporaryPassword}`
+
+              );
+
+            }
+
+          },
 
 
-          if (
-            response?.temporaryPassword
-          ) {
+          error: (error) => {
 
-            alert(
-              `User created successfully.\n\n` +
-              `Temporary password:\n` +
-              `${response.temporaryPassword}`
+            console.error(
+              'Create user error:',
+              error
             );
+
+            this.saving = false;
+
+            this.errorMessage =
+              error?.error?.message ||
+              'Unable to create user';
 
           }
 
-        },
-
-
-        error: (error) => {
-
-          console.error(
-            'Create user error:',
-            error
-          );
-
-
-          this.saving = false;
-
-          this.errorMessage =
-            error?.error?.message ||
-            'Unable to create user';
-
-        }
-
-      });
+        });
 
 
       return;
@@ -1277,65 +1496,67 @@ export class Admin implements OnInit, OnDestroy {
     }
 
 
-    // Update existing user
+    // ==========================================================
+    // UPDATE EXISTING USER
+    // ==========================================================
 
-    this.adminService.updateUser(
+    this.adminService
+      .updateUser(
 
-      this.editingUser.id,
+        this.editingUser.id,
 
-      {
+        {
 
-        name:
-          this.userForm.name.trim(),
+          name:
+            this.userForm.name.trim(),
 
-        email:
-          this.userForm.email.trim(),
+          email:
+            this.userForm.email.trim(),
 
-        phone_number:
-          this.userForm.phone_number.trim(),
+          phone_number:
+            this.userForm.phone_number.trim(),
 
-        role
+          role
 
-      }
+        }
 
-    ).subscribe({
+      )
+      .subscribe({
 
-      next: () => {
+        next: () => {
 
-        this.saving = false;
+          this.saving = false;
 
-        this.showUserModal = false;
+          this.showUserModal = false;
 
-        this.editingUser = null;
+          this.editingUser = null;
 
-        this.resetForm();
+          this.resetForm();
 
-        this.successMessage =
-          'User updated successfully';
+          this.successMessage =
+            'User updated successfully';
 
+          this.loadUsers();
 
-        this.loadUsers();
-
-      },
-
-
-      error: (error) => {
-
-        console.error(
-          'Update user error:',
-          error
-        );
+        },
 
 
-        this.saving = false;
+        error: (error) => {
 
-        this.errorMessage =
-          error?.error?.message ||
-          'Unable to update user';
+          console.error(
+            'Update user error:',
+            error
+          );
 
-      }
+          this.saving = false;
 
-    });
+          this.errorMessage =
+            error?.error?.message ||
+            'Unable to update user';
+
+        }
+
+      });
 
   }
 
@@ -1387,7 +1608,6 @@ export class Admin implements OnInit, OnDestroy {
           this.successMessage =
             'User deactivated successfully';
 
-
           this.loadUsers();
 
         },
@@ -1399,7 +1619,6 @@ export class Admin implements OnInit, OnDestroy {
             'Deactivate user error:',
             error
           );
-
 
           this.errorMessage =
             error?.error?.message ||
@@ -1432,7 +1651,6 @@ export class Admin implements OnInit, OnDestroy {
           this.successMessage =
             'User reactivated successfully';
 
-
           this.loadUsers();
 
         },
@@ -1444,7 +1662,6 @@ export class Admin implements OnInit, OnDestroy {
             'Reactivate user error:',
             error
           );
-
 
           this.errorMessage =
             error?.error?.message ||
@@ -1516,7 +1733,6 @@ export class Admin implements OnInit, OnDestroy {
           this.successMessage =
             'User permanently deleted';
 
-
           this.loadUsers();
 
         },
@@ -1528,7 +1744,6 @@ export class Admin implements OnInit, OnDestroy {
             'Delete user error:',
             error
           );
-
 
           this.errorMessage =
             error?.error?.message ||
@@ -1545,7 +1760,9 @@ export class Admin implements OnInit, OnDestroy {
   // ACTION MENU
   // ============================================================
 
-  toggleActionMenu(userId: number): void {
+  toggleActionMenu(
+    userId: number
+  ): void {
 
     this.openActionMenuId =
       this.openActionMenuId === userId
@@ -1594,7 +1811,6 @@ export class Admin implements OnInit, OnDestroy {
 
     this.hierarchyLoadError = '';
 
-
     this.adminService.getHierarchy().subscribe({
 
       next: (response: any) => {
@@ -1602,13 +1818,11 @@ export class Admin implements OnInit, OnDestroy {
         this.hierarchy =
           response.hierarchy || [];
 
-
         this.hierarchy.sort(
           (a, b) =>
             a.approval_level -
             b.approval_level
         );
-
 
         this.hierarchyLoading = false;
 
@@ -1626,7 +1840,7 @@ export class Admin implements OnInit, OnDestroy {
         this.hierarchyLoading = false;
 
         this.hierarchyLoadError =
-          error.error?.message ||
+          error?.error?.message ||
           'Failed to load approval hierarchy.';
 
         this.cdr.detectChanges();
@@ -1634,6 +1848,17 @@ export class Admin implements OnInit, OnDestroy {
       }
 
     });
+
+  }
+
+
+  goToHierarchy(): void {
+
+    this.activeMenu = 'hierarchy';
+
+    this.clearMessages();
+
+    this.loadHierarchy();
 
   }
 
@@ -1660,7 +1885,6 @@ export class Admin implements OnInit, OnDestroy {
 
     this.clearHierarchyMessages();
 
-
     this.hierarchyForm = {
 
       approval_level:
@@ -1670,7 +1894,6 @@ export class Admin implements OnInit, OnDestroy {
         hierarchy.role || ''
 
     };
-
 
     this.showHierarchyModal = true;
 
@@ -1684,7 +1907,6 @@ export class Admin implements OnInit, OnDestroy {
       return;
 
     }
-
 
     this.showHierarchyModal = false;
 
@@ -1713,18 +1935,15 @@ export class Admin implements OnInit, OnDestroy {
 
     this.clearHierarchyMessages();
 
-
     const level =
       Number(
         this.hierarchyForm.approval_level
       );
 
-
     const role =
       this.hierarchyForm.role
         .trim()
         .toUpperCase();
-
 
     if (
       !Number.isInteger(level) ||
@@ -1738,7 +1957,6 @@ export class Admin implements OnInit, OnDestroy {
 
     }
 
-
     if (!role) {
 
       this.hierarchyErrorMessage =
@@ -1747,7 +1965,6 @@ export class Admin implements OnInit, OnDestroy {
       return;
 
     }
-
 
     if (role === 'EMPLOYEE') {
 
@@ -1758,21 +1975,14 @@ export class Admin implements OnInit, OnDestroy {
 
     }
 
-
     this.hierarchySaving = true;
-
 
     if (!this.editingHierarchy) {
 
       this.adminService
         .addHierarchyLevel({
-
-          approval_level:
-            level,
-
-          role:
-            role
-
+          approval_level: level,
+          role: role
         })
         .subscribe({
 
@@ -1812,23 +2022,16 @@ export class Admin implements OnInit, OnDestroy {
 
         });
 
-
       return;
 
     }
-
 
     this.adminService
       .updateHierarchyLevel(
         this.editingHierarchy.id,
         {
-
-          approval_level:
-            level,
-
-          role:
-            role
-
+          approval_level: level,
+          role: role
         }
       )
       .subscribe({
@@ -1886,21 +2089,14 @@ export class Admin implements OnInit, OnDestroy {
         `This will remove this position from the approval workflow.`
       );
 
-
     if (!confirmed) {
-
       return;
-
     }
-
 
     this.clearHierarchyMessages();
 
-
     this.adminService
-      .deleteHierarchyLevel(
-        hierarchy.id
-      )
+      .deleteHierarchyLevel(hierarchy.id)
       .subscribe({
 
         next: () => {
@@ -1944,107 +2140,439 @@ export class Admin implements OnInit, OnDestroy {
 
 
   // ============================================================
-  // ACCOUNT SETTINGS (merged in — logged-in devices page)
-  // ============================================================
-
-  openLoggedInDevices(): void {
-
-    this.router.navigate([
-      '/admin/logged-in-devices'
-    ]);
-
-  }
-
-
-  // ============================================================
-  // SETTINGS DROPDOWN (sidebar)
-  // ============================================================
-
-  toggleSettingsMenu(): void {
-
-    this.settingsMenuOpen = !this.settingsMenuOpen;
-
-    if (!this.settingsMenuOpen) {
-      this.themeMenuOpen = false;
-    }
-
-  }
-
-
-  toggleThemeMenu(): void {
-
-    this.themeMenuOpen = !this.themeMenuOpen;
-
-  }
-
-
-  // ============================================================
-  // THEME
-  // ============================================================
-
-  loadStoredTheme(): void {
-
-    const stored =
-      (localStorage.getItem('admin-theme') as
-        'light' | 'dark' | 'system' | null) || 'system';
-
-    this.currentTheme = stored;
-
-    this.applyTheme();
-
-  }
-
-
-  setTheme(
-    theme: 'light' | 'dark' | 'system'
-  ): void {
-
-    this.currentTheme = theme;
-
-    localStorage.setItem('admin-theme', theme);
-
-    this.applyTheme();
-
-  }
-
-
-  applyTheme(): void {
-
-    let isDark = false;
-
-    if (this.currentTheme === 'dark') {
-      isDark = true;
-    } else if (this.currentTheme === 'system') {
-      isDark = window.matchMedia(
-        '(prefers-color-scheme: dark)'
-      ).matches;
-    }
-
-    const root = document.documentElement;
-    const body = document.body;
-
-    root.classList.toggle('dark', isDark);
-    body.classList.toggle('dark', isDark);
-
-    // Keep native browser controls (inputs, selects, scrollbars, etc.)
-    // visually consistent with the selected theme.
-    root.style.colorScheme = isDark ? 'dark' : 'light';
-    body.style.colorScheme = isDark ? 'dark' : 'light';
-
-  }
-
-
-  // ============================================================
   // HEALTH ANALYSIS
   // ============================================================
 
   goToHealthAnalysis(): void {
+
+    this.activeMenu =
+      'health-analysis';
+
+    this.clearMessages();
+
 
     this.router.navigate([
       '/admin/health-analysis'
     ]);
 
   }
+
+
+  // ============================================================
+  // SETTINGS
+  // (previously routed to /admin/account-settings, which
+  // rendered the standalone AccountSettings component — that
+  // component's only job, openLoggedInDevices(), is now
+  // showLoggedInDevices() below)
+  // ============================================================
+
+  goToSettings(): void {
+
+    this.activeMenu = 'settings';
+
+    this.settingsView = 'main';
+
+    this.clearMessages();
+
+  }
+
+
+  goToAccountSettings(): void {
+
+    this.goToSettings();
+
+  }
+
+
+  // ============================================================
+  // LOGGED-IN DEVICES
+  // (previously routed to /admin/logged-in-devices, which
+  // rendered the standalone LoggedInDevices component — its
+  // state and methods are merged in below)
+  // ============================================================
+
+  goToLoggedInDevices(): void {
+
+    this.activeMenu = 'settings';
+
+    this.settingsView = 'logged-in-devices';
+
+    this.devicesCurrentPage = 1;
+    this.clearMessages();
+
+    this.loadLoggedInDevices();
+
+  }
+
+
+  backToSettingsMain(): void {
+
+    this.settingsView = 'main';
+
+  }
+
+
+  loadLoggedInDevices(): void {
+
+    console.log(
+      'Calling logged-in-devices API...'
+    );
+
+    this.devicesLoading = true;
+
+    this.devicesErrorMessage = '';
+
+
+    this.sessionService
+      .getLoggedInDevices()
+      .subscribe({
+
+        next: (response) => {
+
+          console.log(
+            'Logged-in devices API response:',
+            response
+          );
+
+          if (response.success) {
+
+            this.devices = Array.isArray(response.data)
+              ? response.data
+              : [];
+
+            this.devicesCurrentPage = 1;
+            this.correctDevicesPage();
+
+            console.log(
+              'Devices assigned to Angular:',
+              this.devices
+            );
+
+          } else {
+
+            this.devicesErrorMessage =
+              'Unable to load logged-in devices.';
+
+          }
+
+          this.devicesLoading = false;
+
+          /*
+           * Force Angular to refresh the UI
+           * after receiving the API response.
+           */
+          this.cdr.detectChanges();
+
+        },
+
+
+        error: (error) => {
+
+          console.error(
+            'Logged-in devices API error:',
+            error
+          );
+
+          this.devicesErrorMessage =
+            'Unable to connect to the backend server.';
+
+          this.devicesCurrentPage = 1;
+          this.devicesLoading = false;
+
+          this.cdr.detectChanges();
+
+        }
+
+      });
+
+  }
+
+
+  get totalDevices(): number {
+
+    return this.devices.length;
+
+  }
+
+
+  get activeDeviceCount(): number {
+
+    return this.devices.filter(
+      (device: DeviceSession) =>
+        this.isDeviceActive(device)
+    ).length;
+
+  }
+
+
+  // ============================================================
+  // LOGGED-IN DEVICES PAGINATION
+  // ============================================================
+
+  get inactiveDeviceCount(): number {
+
+    return this.devices.filter(
+      (device: DeviceSession) => !this.isDeviceActive(device)
+    ).length;
+  }
+
+
+  get paginatedDevices(): DeviceSession[] {
+
+    const start =
+      (this.devicesCurrentPage - 1) *
+      this.devicesPageSize;
+
+    return this.devices.slice(
+      start,
+      start + this.devicesPageSize
+    );
+  }
+
+
+  get devicesTotalPages(): number {
+
+    return Math.max(
+      1,
+      Math.ceil(
+        this.devices.length /
+        this.devicesPageSize
+      )
+    );
+  }
+
+
+  get devicesPageNumbers(): number[] {
+
+    return Array.from(
+      { length: this.devicesTotalPages },
+      (_, index) => index + 1
+    );
+  }
+
+
+  get devicesPaginationStart(): number {
+
+    if (this.devices.length === 0) {
+      return 0;
+    }
+
+    return (
+      (this.devicesCurrentPage - 1) *
+      this.devicesPageSize
+    ) + 1;
+  }
+
+
+  get devicesPaginationEnd(): number {
+
+    return Math.min(
+      this.devicesCurrentPage *
+      this.devicesPageSize,
+      this.devices.length
+    );
+  }
+
+
+  goToDevicesPage(page: number): void {
+
+    if (
+      page < 1 ||
+      page > this.devicesTotalPages
+    ) {
+      return;
+    }
+
+    this.devicesCurrentPage = page;
+  }
+
+
+  previousDevicesPage(): void {
+
+    if (this.devicesCurrentPage > 1) {
+      this.devicesCurrentPage--;
+    }
+  }
+
+
+  nextDevicesPage(): void {
+
+    if (this.devicesCurrentPage < this.devicesTotalPages) {
+      this.devicesCurrentPage++;
+    }
+  }
+
+
+  private correctDevicesPage(): void {
+
+    if (this.devicesCurrentPage > this.devicesTotalPages) {
+      this.devicesCurrentPage = this.devicesTotalPages;
+    }
+
+    if (this.devicesCurrentPage < 1) {
+      this.devicesCurrentPage = 1;
+    }
+  }
+
+
+  isDeviceActive(device: DeviceSession): boolean {
+
+    if (typeof device.active === 'boolean') {
+      return device.active;
+    }
+
+    return device.is_active === true;
+  }
+
+
+  getDeviceType(device: DeviceSession): string {
+
+    const deviceType =
+      (device.device_type || '').trim();
+
+    if (!deviceType) {
+      return 'Unknown Device';
+    }
+
+    switch (deviceType.toLowerCase()) {
+      case 'mobile':
+      case 'phone':
+        return 'Mobile';
+      case 'tablet':
+        return 'Tablet';
+      case 'tv':
+      case 'smart tv':
+        return 'TV';
+      case 'desktop':
+        return 'Desktop';
+      case 'laptop':
+        return 'Laptop';
+      case 'browser':
+        return 'Browser';
+      default:
+        return deviceType;
+    }
+  }
+
+
+  formatDeviceDate(
+    value: string | null | undefined
+  ): string {
+
+    if (!value) {
+      return 'N/A';
+    }
+
+    const date = new Date(value);
+
+    if (Number.isNaN(date.getTime())) {
+      return value;
+    }
+
+    return date.toLocaleString(
+      'en-IN',
+      {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+      }
+    );
+  }
+
+
+  getDeviceLoginTime(device: DeviceSession): string {
+
+    return this.formatDeviceDate(
+      device.loginTime || device.created_at
+    );
+  }
+
+
+  getDeviceLastActive(device: DeviceSession): string {
+
+    return this.formatDeviceDate(
+      device.last_active || device.last_activity
+    );
+  }
+
+
+  logoutAllDevices(): void {
+
+    if (this.devices.length === 0) {
+
+      return;
+
+    }
+
+
+    const confirmed = window.confirm(
+      'Are you sure you want to logout all devices?'
+    );
+
+    if (!confirmed) {
+
+      return;
+
+    }
+
+
+    this.sessionService
+      .logoutAllDevices()
+      .subscribe({
+
+        next: (response) => {
+
+          console.log(
+            'Logout all devices response:',
+            response
+          );
+
+          if (response.success) {
+
+            this.devices = [];
+            this.devicesCurrentPage = 1;
+
+            console.log(
+              response.message
+            );
+
+          } else {
+
+            this.devicesErrorMessage =
+              'Unable to logout all devices.';
+
+          }
+
+          this.cdr.detectChanges();
+
+        },
+
+
+        error: (error) => {
+
+          console.error(
+            'Logout all devices failed:',
+            error
+          );
+
+          this.devicesErrorMessage =
+            'Unable to logout all devices.';
+
+          this.cdr.detectChanges();
+
+        }
+
+      });
+
+  }
+
+
+  // ============================================================
+  // 15-MINUTE ADMIN SESSION TIMER
+  // ============================================================
 
 
   // ============================================================
@@ -2090,15 +2618,22 @@ export class Admin implements OnInit, OnDestroy {
     switch (normalizedRole) {
 
       case 'ADMIN':
+
         return 'Admin';
 
+
       case 'EMPLOYEE':
+
         return 'Employee / Field Staff';
 
+
       case 'REVIEWER':
+
         return 'Reviewer';
 
+
       default:
+
         return role || 'Unknown';
 
     }
@@ -2161,177 +2696,23 @@ export class Admin implements OnInit, OnDestroy {
 
 
   showHealthAnalysisMessage(): void {
-    this.setActiveMenu('health-analysis');
+
+    this.activeMenu =
+      'health-analysis';
+
+    this.clearMessages();
+
   }
 
-  loadHealth(): void {
-    this.healthLoading = true;
-    this.healthError = '';
 
-    this.adminService.getHealth().subscribe({
-      next: (health) => {
-        this.health = health;
-        this.healthLoading = false;
-        this.cdr.detectChanges();
-      },
-      error: (error) => {
-        this.healthLoading = false;
-        this.healthError = error?.error?.message ?? 'Health monitor output is not available yet.';
-        this.cdr.detectChanges();
-      }
-    });
-  }
-
-  startHealthRefresh(): void {
-    this.stopHealthRefresh();
-    this.healthRefreshTimer = setInterval(() => this.loadHealth(), 10000);
-  }
-
-  stopHealthRefresh(): void {
-    if (this.healthRefreshTimer) {
-      clearInterval(this.healthRefreshTimer);
-      this.healthRefreshTimer = null;
-    }
-  }
+  // ============================================================
+  // DESTROY
+  // ============================================================
 
   ngOnDestroy(): void {
-    this.stopHealthRefresh();
-  }
 
-  healthStatusClass(status: string): string {
-    const normalized = status.toUpperCase();
-    if (normalized === 'CRITICAL' || normalized === 'DOWN') return 'text-red-600';
-    if (normalized === 'WARNING') return 'text-amber-600';
-    return 'text-emerald-600';
-  }
+    this.removeSystemThemeListener();
 
-  healthBadgeClass(status: string): string {
-    const normalized = status.toUpperCase();
-    if (normalized === 'CRITICAL' || normalized === 'DOWN') return 'bg-red-100 text-red-700';
-    if (normalized === 'WARNING') return 'bg-amber-100 text-amber-700';
-    return 'bg-emerald-100 text-emerald-700';
-  }
-
-  healthBarClass(status: string): string {
-    const normalized = status.toUpperCase();
-    if (normalized === 'CRITICAL') return 'bg-red-500';
-    if (normalized === 'WARNING') return 'bg-amber-400';
-    return 'bg-emerald-500';
-  }
-
-  healthyServiceCount(health: HealthResponse): number {
-    return this.healthServices(health)
-      .map((item) => item.service)
-      .filter((service) => service.status.toUpperCase() === 'UP')
-      .length;
-  }
-
-  healthServices(health: HealthResponse): Array<{ key: string; label: string; service: import('../services/admin.service').HealthService }> {
-    const services: Array<{ key: string; label: string; service: import('../services/admin.service').HealthService }> = [
-      { key: 'angular', label: 'Angular Frontend', service: health.services.angular },
-      { key: 'backend', label: 'Node API', service: health.services.backend }
-    ];
-
-    if (health.services.database) {
-      services.push({
-        key: 'database',
-        label: 'Postgres Database',
-        service: health.services.database
-      });
-    }
-
-    return services;
-  }
-
-  healthServiceEndpoint(item: { service: import('../services/admin.service').HealthService }): string {
-    const service = item.service;
-    if (service.url) return service.url;
-    if (service.name) return `${service.name} at ${service.host}:${service.port}`;
-    return `${service.host ?? 'Unknown host'}:${service.port ?? ''}`;
-  }
-
-  healthServiceDetails(item: { service: import('../services/admin.service').HealthService }): string {
-    const service = item.service;
-    if (service.error) return service.error;
-    if (service.httpStatus) return `HTTP ${service.httpStatus} OK`;
-    if (service.checkType) return `${service.checkType} check passed`;
-    return `Port ${service.port ?? ''} Open`;
-  }
-
-  // ============================================================
-  // SETTINGS — login lockout
-  // ============================================================
-
-  settingsLoading  = false;
-  settingsSaving   = false;
-  settingsError    = '';
-  settingsSuccess  = '';
-
-  // Form fields (strings for input binding)
-  settingMaxAttempts  = '3';
-  settingLockoutHours = '1';
-
-  loadSettings(): void {
-    this.settingsLoading = true;
-    this.settingsError   = '';
-
-    this.adminService.getSettings().subscribe({
-      next: (res) => {
-        const s = res.settings ?? {};
-        this.settingMaxAttempts  = s['login_max_attempts']?.value  ?? '3';
-        this.settingLockoutHours = s['login_lockout_hours']?.value ?? '1';
-        this.settingsLoading = false;
-        this.cdr.detectChanges();
-      },
-      error: (err) => {
-        this.settingsError   = err?.error?.message ?? 'Unable to load settings';
-        this.settingsLoading = false;
-        this.cdr.detectChanges();
-      }
-    });
-  }
-
-  saveSettings(): void {
-    this.settingsError   = '';
-    this.settingsSuccess = '';
-
-    const maxAttempts  = Number(this.settingMaxAttempts);
-    const lockoutHours = Number(this.settingLockoutHours);
-
-    if (!Number.isInteger(maxAttempts) || maxAttempts < 1 || maxAttempts > 100) {
-      this.settingsError = 'Max attempts must be a whole number between 1 and 100';
-      return;
-    }
-
-    if (!Number.isInteger(lockoutHours) || lockoutHours < 1 || lockoutHours > 168) {
-      this.settingsError = 'Lockout hours must be a whole number between 1 and 168';
-      return;
-    }
-
-    this.settingsSaving = true;
-
-    // Save both settings sequentially
-    this.adminService.updateSetting('login_max_attempts', maxAttempts).subscribe({
-      next: () => {
-        this.adminService.updateSetting('login_lockout_hours', lockoutHours).subscribe({
-          next: () => {
-            this.settingsSaving  = false;
-            this.settingsSuccess = 'Settings saved successfully';
-            this.cdr.detectChanges();
-          },
-          error: (err) => {
-            this.settingsSaving = false;
-            this.settingsError  = err?.error?.message ?? 'Unable to save lockout hours';
-            this.cdr.detectChanges();
-          }
-        });
-      },
-      error: (err) => {
-        this.settingsSaving = false;
-        this.settingsError  = err?.error?.message ?? 'Unable to save max attempts';
-        this.cdr.detectChanges();
-      }
-    });
   }
 
 }
