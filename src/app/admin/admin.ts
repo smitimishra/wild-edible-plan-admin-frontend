@@ -192,6 +192,7 @@ export class Admin implements OnInit, OnDestroy {
 
   selectedTheme: 'light' | 'dark' | 'default' = 'default';
   settingsThemeMenuOpen = false;
+  themeOptionsOpen = false;
 
   private systemThemeMediaQuery: MediaQueryList | null = null;
 
@@ -209,12 +210,20 @@ export class Admin implements OnInit, OnDestroy {
 
   toggleSettingsThemeMenu(): void {
     this.settingsThemeMenuOpen = !this.settingsThemeMenuOpen;
-    this.goToSettings();
+
+    if (!this.settingsThemeMenuOpen) {
+      this.themeOptionsOpen = false;
+    }
+  }
+
+  toggleThemeOptions(): void {
+    this.themeOptionsOpen = !this.themeOptionsOpen;
   }
 
   selectTheme(theme: 'light' | 'dark' | 'default'): void {
     this.selectedTheme = theme;
     this.settingsThemeMenuOpen = false;
+    this.themeOptionsOpen = false;
 
     // Save Admin Panel theme selection.
     localStorage.setItem('admin-theme', theme);
@@ -2179,6 +2188,8 @@ export class Admin implements OnInit, OnDestroy {
 
   goToAccountSettings(): void {
 
+    this.settingsThemeMenuOpen = false;
+    this.themeOptionsOpen = false;
     this.goToSettings();
 
   }
@@ -2595,7 +2606,7 @@ export class Admin implements OnInit, OnDestroy {
 
 
     this.authService.logout(
-      'http://192.168.29.216:8200/'
+      'http://192.168.29.51:8200/'
     );
 
   }

@@ -1121,6 +1121,143 @@ export class Manager implements OnInit, OnDestroy {
     );
   }
 
+  // GET DISPLAY VALUE
+  getDisplayValue(value: any, fallback: string = 'N/A'): string {
+    if (value === null || value === undefined || value === '') {
+      return fallback;
+    }
+
+    if (typeof value === 'object') {
+      try {
+        return JSON.stringify(value);
+      } catch {
+        return fallback;
+      }
+    }
+
+    return String(value);
+  }
+
+  // GET EMPLOYEE ID
+  getEmployeeId(request: any): any {
+    const data = this.getRequestData(request);
+
+    return request?.employee_id ??
+      request?.employeeId ??
+      data?.employee_id ??
+      data?.employeeId ??
+      null;
+  }
+
+  // GET EMPLOYEE EMAIL
+  getEmployeeEmail(request: any): string {
+    const data = this.getRequestData(request);
+
+    return request?.employee_email ||
+      request?.employeeEmail ||
+      data?.employee_email ||
+      data?.employeeEmail ||
+      data?.email ||
+      'N/A';
+  }
+
+  // GET REQUEST TYPE
+  getRequestType(request: any): string {
+    const data = this.getRequestData(request);
+
+    return request?.request_type ||
+      request?.requestType ||
+      data?.request_type ||
+      data?.requestType ||
+      'N/A';
+  }
+
+  // GET APPROVAL LEVEL
+  getApprovalLevel(request: any): any {
+    return request?.current_approval_level ??
+      request?.currentApprovalLevel ??
+      this.getRequestData(request)?.current_approval_level ??
+      null;
+  }
+
+  // GET FAMILY
+  getFamily(request: any): string {
+    const data = this.getRequestData(request);
+
+    return request?.family || data?.family || 'N/A';
+  }
+
+  // GET HABITAT
+  getHabitat(request: any): string {
+    const data = this.getRequestData(request);
+
+    return request?.habitat || data?.habitat || 'N/A';
+  }
+
+  // GET LATITUDE
+  getLatitude(request: any): any {
+    const data = this.getRequestData(request);
+
+    return request?.latitude ?? data?.latitude ?? null;
+  }
+
+  // GET LONGITUDE
+  getLongitude(request: any): any {
+    const data = this.getRequestData(request);
+
+    return request?.longitude ?? data?.longitude ?? null;
+  }
+
+  // GET PLANT IMAGE
+  getPlantImage(request: any): string {
+    const data = this.getRequestData(request);
+
+    return request?.image_url ||
+      request?.imageUrl ||
+      data?.image_url ||
+      data?.imageUrl ||
+      '';
+  }
+
+  // GET COMMENTS
+  getRequestComments(request: any): string {
+    return request?.comments ||
+      request?.comment ||
+      this.getRequestData(request)?.comments ||
+      '';
+  }
+
+  // GET APPROVAL HISTORY
+  getApprovalHistory(request: any): any[] {
+    if (!request) {
+      return [];
+    }
+
+    if (Array.isArray(request.approval_history)) {
+      return request.approval_history;
+    }
+
+    if (Array.isArray(request.approvalHistory)) {
+      return request.approvalHistory;
+    }
+
+    return [];
+  }
+
+  // GET PLANT DETAILS
+  getPlantDetails(request: any): any {
+    return request?.plant_details ||
+      request?.plantDetails ||
+      null;
+  }
+
+  // GET COMPLETED DATE
+  getCompletedDate(request: any): any {
+    return request?.completed_at ||
+      request?.completedAt ||
+      null;
+  }
+
   // LOGOUT
 
   logout(): void {

@@ -60,10 +60,15 @@
       <button
         type="button"
         (click)="selectMenu('dashboard')"
-        [style.background-color]="activeMenu === 'dashboard' ? '#37eb34' : 'transparent'"
+        [class.bg-emerald-100]="activeMenu === 'dashboard'"
+        [class.dark:bg-emerald-950]="activeMenu === 'dashboard'"
+        [class.text-emerald-700]="activeMenu === 'dashboard'"
+        [class.dark:text-emerald-400]="activeMenu === 'dashboard'"
+        [class.text-slate-900]="activeMenu !== 'dashboard'"
+        [class.dark:text-white]="activeMenu !== 'dashboard'"
         [attr.title]="sidebarCollapsed ? 'Dashboard' : null"
         [class.justify-center]="sidebarCollapsed"
-        class="mb-2 flex w-full items-center gap-3 rounded-xl px-3 py-3.5 text-left text-sm font-semibold text-slate-900 transition-all duration-200 hover:bg-green-100 dark:text-white dark:hover:bg-slate-800"
+        class="mb-2 flex w-full items-center gap-3 rounded-xl px-3 py-3.5 text-left text-sm font-semibold transition-all duration-200 hover:bg-emerald-50 dark:hover:bg-slate-800"
       >
         <span class="flex w-7 shrink-0 justify-center text-lg">▣</span>
         @if (!sidebarCollapsed) {
@@ -75,10 +80,15 @@
       <button
         type="button"
         (click)="selectMenu('pending-approvals')"
-        [style.background-color]="activeMenu === 'pending-approvals' ? '#37eb34' : 'transparent'"
+        [class.bg-emerald-100]="activeMenu === 'pending-approvals'"
+        [class.dark:bg-emerald-950]="activeMenu === 'pending-approvals'"
+        [class.text-emerald-700]="activeMenu === 'pending-approvals'"
+        [class.dark:text-emerald-400]="activeMenu === 'pending-approvals'"
+        [class.text-slate-900]="activeMenu !== 'pending-approvals'"
+        [class.dark:text-white]="activeMenu !== 'pending-approvals'"
         [attr.title]="sidebarCollapsed ? 'Pending Approvals' : null"
         [class.justify-center]="sidebarCollapsed"
-        class="mb-2 flex w-full items-center gap-3 rounded-xl px-3 py-3.5 text-left text-sm font-semibold text-slate-900 transition-all duration-200 hover:bg-green-100 dark:text-white dark:hover:bg-slate-800"
+        class="mb-2 flex w-full items-center gap-3 rounded-xl px-3 py-3.5 text-left text-sm font-semibold transition-all duration-200 hover:bg-emerald-50 dark:hover:bg-slate-800"
       >
         <span class="flex w-7 shrink-0 justify-center text-lg">📥</span>
         @if (!sidebarCollapsed) {
@@ -99,7 +109,7 @@
         (click)="toggleSettings()"
         [attr.title]="sidebarCollapsed ? 'Settings' : null"
         [class.justify-center]="sidebarCollapsed"
-        class="mb-2 flex w-full items-center gap-3 rounded-xl px-3 py-3.5 text-left text-sm font-semibold text-slate-900 transition-all duration-200 hover:bg-green-100 dark:text-white dark:hover:bg-slate-800"
+        class="mb-2 flex w-full items-center gap-3 rounded-xl px-3 py-3.5 text-left text-sm font-semibold text-slate-900 transition-all duration-200 hover:bg-emerald-50 dark:text-white dark:hover:bg-slate-800"
       >
         <span class="flex w-7 shrink-0 justify-center text-lg">⚙</span>
         @if (!sidebarCollapsed) {
@@ -131,7 +141,10 @@
                 type="button"
                 (click)="selectTheme('light')"
                 class="flex w-full items-center gap-3 rounded-md px-3 py-2 text-left text-sm text-slate-700 transition-colors hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800"
-                [class.bg-green-100]="isThemeSelected('light')"
+                [class.bg-emerald-100]="isThemeSelected('light')"
+                [class.dark:bg-emerald-950]="isThemeSelected('light')"
+                [class.text-emerald-700]="isThemeSelected('light')"
+                [class.dark:text-emerald-400]="isThemeSelected('light')"
                 [class.font-semibold]="isThemeSelected('light')"
               >
                 <span>☀️</span><span>Light</span>
@@ -141,7 +154,10 @@
                 type="button"
                 (click)="selectTheme('dark')"
                 class="flex w-full items-center gap-3 rounded-md px-3 py-2 text-left text-sm text-slate-700 transition-colors hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800"
-                [class.bg-green-100]="isThemeSelected('dark')"
+                [class.bg-emerald-100]="isThemeSelected('dark')"
+                [class.dark:bg-emerald-950]="isThemeSelected('dark')"
+                [class.text-emerald-700]="isThemeSelected('dark')"
+                [class.dark:text-emerald-400]="isThemeSelected('dark')"
                 [class.font-semibold]="isThemeSelected('dark')"
               >
                 <span>🌙</span><span>Dark</span>
@@ -151,7 +167,10 @@
                 type="button"
                 (click)="selectTheme('default')"
                 class="flex w-full items-center gap-3 rounded-md px-3 py-2 text-left text-sm text-slate-700 transition-colors hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800"
-                [class.bg-green-100]="isThemeSelected('default')"
+                [class.bg-emerald-100]="isThemeSelected('default')"
+                [class.dark:bg-emerald-950]="isThemeSelected('default')"
+                [class.text-emerald-700]="isThemeSelected('default')"
+                [class.dark:text-emerald-400]="isThemeSelected('default')"
                 [class.font-semibold]="isThemeSelected('default')"
               >
                 <span>🖥️</span><span>Default</span>
@@ -399,7 +418,7 @@
               </h3>
 
               <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
-                Review the complete plant request without leaving the Manager panel.
+                Review the complete plant request without leaving the Reviewer panel.
               </p>
             </div>
 
@@ -544,6 +563,277 @@
                   <p class="rounded-xl bg-slate-50 px-4 py-3 text-sm leading-6 text-slate-700 dark:bg-slate-800 dark:text-slate-200">
                     {{ description || selectedRequest.description || '-' }}
                   </p>
+                }
+              </div>
+
+            </article>
+
+            <!-- COMPLETE REQUEST DETAILS -->
+            <article class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+
+              <div class="flex items-center justify-between gap-3">
+                <div>
+                  <h4 class="text-base font-bold text-slate-900 dark:text-white">
+                    Complete Request Details
+                  </h4>
+                  <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                    All available information submitted with this request.
+                  </p>
+                </div>
+              </div>
+
+              <!-- REQUEST / WORKFLOW DETAILS -->
+              <div class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+
+                <div>
+                  <p class="mb-2 text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+                    Request ID
+                  </p>
+                  <p class="text-sm font-semibold text-slate-700 dark:text-slate-200">
+                    {{ getDisplayValue(selectedRequest.id) }}
+                  </p>
+                </div>
+
+                <div>
+                  <p class="mb-2 text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+                    Request Number
+                  </p>
+                  <p class="text-sm font-semibold text-slate-700 dark:text-slate-200 break-all">
+                    {{ getRequestNumber(selectedRequest) }}
+                  </p>
+                </div>
+
+                <div>
+                  <p class="mb-2 text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+                    Request Type
+                  </p>
+                  <p class="text-sm font-semibold text-slate-700 dark:text-slate-200">
+                    {{ getRequestType(selectedRequest) }}
+                  </p>
+                </div>
+
+                <div>
+                  <p class="mb-2 text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+                    Status
+                  </p>
+                  <p class="text-sm font-semibold text-slate-700 dark:text-slate-200">
+                    {{ getDisplayValue(selectedRequest.status) }}
+                  </p>
+                </div>
+
+                <div>
+                  <p class="mb-2 text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+                    Current Approval Level
+                  </p>
+                  <p class="text-sm font-semibold text-slate-700 dark:text-slate-200">
+                    {{ getDisplayValue(getApprovalLevel(selectedRequest)) }}
+                  </p>
+                </div>
+
+                <div>
+                  <p class="mb-2 text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+                    Submitted At
+                  </p>
+                  <p class="text-sm font-semibold text-slate-700 dark:text-slate-200">
+                    {{ getRequestDate(selectedRequest) ? (getRequestDate(selectedRequest) | date: 'dd MMM yyyy, hh:mm a') : 'N/A' }}
+                  </p>
+                </div>
+
+                <div>
+                  <p class="mb-2 text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+                    Completed At
+                  </p>
+                  <p class="text-sm font-semibold text-slate-700 dark:text-slate-200">
+                    {{ getCompletedDate(selectedRequest) ? (getCompletedDate(selectedRequest) | date: 'dd MMM yyyy, hh:mm a') : 'N/A' }}
+                  </p>
+                </div>
+
+              </div>
+
+              <!-- EMPLOYEE DETAILS -->
+              <div class="mt-7 border-t border-slate-100 pt-6 dark:border-slate-800">
+                <h5 class="text-sm font-bold text-slate-900 dark:text-white">
+                  Employee Details
+                </h5>
+
+                <div class="mt-4 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+
+                  <div>
+                    <p class="mb-2 text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+                      Employee Name
+                    </p>
+                    <p class="text-sm font-semibold text-slate-700 dark:text-slate-200">
+                      {{ getEmployeeName(selectedRequest) }}
+                    </p>
+                  </div>
+
+                  <div>
+                    <p class="mb-2 text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+                      Employee ID
+                    </p>
+                    <p class="text-sm font-semibold text-slate-700 dark:text-slate-200">
+                      {{ getDisplayValue(getEmployeeId(selectedRequest)) }}
+                    </p>
+                  </div>
+
+                  <div>
+                    <p class="mb-2 text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+                      Employee Email
+                    </p>
+                    <p class="text-sm font-semibold text-slate-700 dark:text-slate-200 break-all">
+                      {{ getEmployeeEmail(selectedRequest) }}
+                    </p>
+                  </div>
+
+                </div>
+              </div>
+
+              <!-- BOTANICAL DETAILS -->
+              <div class="mt-7 border-t border-slate-100 pt-6 dark:border-slate-800">
+                <h5 class="text-sm font-bold text-slate-900 dark:text-white">
+                  Botanical Details
+                </h5>
+
+                <div class="mt-4 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+
+                  <div>
+                    <p class="mb-2 text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+                      Common Name
+                    </p>
+                    <p class="text-sm font-semibold text-slate-700 dark:text-slate-200">
+                      {{ getCommonName(selectedRequest) }}
+                    </p>
+                  </div>
+
+                  <div>
+                    <p class="mb-2 text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+                      Scientific Name
+                    </p>
+                    <p class="text-sm font-semibold text-slate-700 dark:text-slate-200">
+                      {{ scientificName || selectedRequest.scientific_name || getRequestData(selectedRequest)?.scientific_name || 'N/A' }}
+                    </p>
+                  </div>
+
+                  <div>
+                    <p class="mb-2 text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+                      Family
+                    </p>
+                    <p class="text-sm font-semibold text-slate-700 dark:text-slate-200">
+                      {{ getFamily(selectedRequest) }}
+                    </p>
+                  </div>
+
+                  <div>
+                    <p class="mb-2 text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+                      Habitat
+                    </p>
+                    <p class="text-sm font-semibold text-slate-700 dark:text-slate-200">
+                      {{ getHabitat(selectedRequest) }}
+                    </p>
+                  </div>
+
+                  <div>
+                    <p class="mb-2 text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+                      Latitude
+                    </p>
+                    <p class="text-sm font-semibold text-slate-700 dark:text-slate-200">
+                      {{ getDisplayValue(getLatitude(selectedRequest)) }}
+                    </p>
+                  </div>
+
+                  <div>
+                    <p class="mb-2 text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+                      Longitude
+                    </p>
+                    <p class="text-sm font-semibold text-slate-700 dark:text-slate-200">
+                      {{ getDisplayValue(getLongitude(selectedRequest)) }}
+                    </p>
+                  </div>
+
+                  <div>
+                    <p class="mb-2 text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+                      Plant Name
+                    </p>
+                    <p class="text-sm font-semibold text-slate-700 dark:text-slate-200">
+                      {{ getPlantName(selectedRequest) }}
+                    </p>
+                  </div>
+
+                </div>
+              </div>
+
+              <!-- DESCRIPTION -->
+              <div class="mt-7 border-t border-slate-100 pt-6 dark:border-slate-800">
+                <p class="mb-2 text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+                  Description
+                </p>
+                <div class="rounded-xl bg-slate-50 px-4 py-4 text-sm leading-6 text-slate-700 dark:bg-slate-800 dark:text-slate-200 whitespace-pre-wrap">
+                  {{ description || selectedRequest.description || getRequestData(selectedRequest)?.description || 'N/A' }}
+                </div>
+              </div>
+
+              <!-- PLANT IMAGE FROM request_data.image_url -->
+              @if (getPlantImage(selectedRequest)) {
+                <div class="mt-7 border-t border-slate-100 pt-6 dark:border-slate-800">
+                  <p class="mb-3 text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+                    Submitted Plant Image
+                  </p>
+
+                  <div class="overflow-hidden rounded-xl border border-slate-200 dark:border-slate-700">
+                    <img
+                      [src]="getImageUrl(getPlantImage(selectedRequest))"
+                      alt="Submitted plant"
+                      class="max-h-[420px] w-full object-contain bg-slate-50 dark:bg-slate-800"
+                    />
+                  </div>
+                </div>
+              }
+
+              <!-- COMMENTS -->
+              <div class="mt-7 border-t border-slate-100 pt-6 dark:border-slate-800">
+                <p class="mb-2 text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+                  Comments
+                </p>
+
+                <div class="rounded-xl bg-slate-50 px-4 py-4 text-sm leading-6 text-slate-700 dark:bg-slate-800 dark:text-slate-200 whitespace-pre-wrap">
+                  {{ getRequestComments(selectedRequest) || 'N/A' }}
+                </div>
+              </div>
+
+              <!-- PLANT DETAILS OBJECT -->
+              @if (getPlantDetails(selectedRequest)) {
+                <div class="mt-7 border-t border-slate-100 pt-6 dark:border-slate-800">
+                  <p class="mb-2 text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+                    Plant Details
+                  </p>
+
+                  <pre class="overflow-x-auto rounded-xl bg-slate-50 px-4 py-4 text-xs leading-5 text-slate-700 dark:bg-slate-800 dark:text-slate-200">{{ getDisplayValue(getPlantDetails(selectedRequest)) }}</pre>
+                </div>
+              }
+
+              <!-- APPROVAL HISTORY -->
+              <div class="mt-7 border-t border-slate-100 pt-6 dark:border-slate-800">
+                <div class="flex items-center justify-between gap-3">
+                  <p class="text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+                    Approval History
+                  </p>
+                  <span class="text-xs font-semibold text-slate-500 dark:text-slate-400">
+                    {{ getApprovalHistory(selectedRequest).length }} record(s)
+                  </span>
+                </div>
+
+                @if (getApprovalHistory(selectedRequest).length > 0) {
+                  <div class="mt-4 space-y-3">
+                    @for (history of getApprovalHistory(selectedRequest); track $index) {
+                      <div class="rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800">
+                        <pre class="overflow-x-auto whitespace-pre-wrap text-xs leading-5 text-slate-700 dark:text-slate-200">{{ getDisplayValue(history) }}</pre>
+                      </div>
+                    }
+                  </div>
+                } @else {
+                  <div class="mt-4 rounded-xl bg-slate-50 px-4 py-4 text-sm text-slate-500 dark:bg-slate-800 dark:text-slate-400">
+                    No approval history available.
+                  </div>
                 }
               </div>
 
