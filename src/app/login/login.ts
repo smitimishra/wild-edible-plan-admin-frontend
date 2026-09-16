@@ -5,7 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { UserSessionService } from '../services/user-session.service';
 
-const API = 'http://192.168.29.51:8080/api';
+const API = 'http://192.168.29.216:8080/api';
 
 @Component({
   selector: 'app-login',

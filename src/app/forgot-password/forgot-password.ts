@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 
-const API = 'http://192.168.29.51:8080/api';
+const API = 'http://192.168.29.216:8080/api';
 
 type Step = 'email' | 'otp' | 'reset' | 'done';
 
