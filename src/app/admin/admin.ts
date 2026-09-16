@@ -14,7 +14,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import {
   AdminService,
   AdminUser,
-  HierarchyLevel
+  HierarchyLevel,
+  HealthResponse
 } from '../services/admin.service';
 
 import { AuthService } from '../services/auth';
@@ -326,6 +327,16 @@ export class Admin implements OnInit, OnDestroy {
 
   devicesCurrentPage = 1;
 
+  // ============================================================
+  // HEALTH ANALYSIS
+  // ============================================================
+
+  healthData: HealthResponse | null = null;
+  healthLoading = false;
+  healthError = '';
+  private healthRequestInFlight = false;
+  private healthRefreshTimer: ReturnType<typeof setInterval> | null = null;
+
 
   // ============================================================
   // CONSTRUCTOR
@@ -465,6 +476,12 @@ export class Admin implements OnInit, OnDestroy {
     this.activeMenu = menu;
 
     this.clearMessages();
+
+    if (menu === 'health-analysis') {
+      this.startHealthRefresh();
+    } else {
+      this.stopHealthRefresh();
+    }
 
 
     if (menu === 'users') {
@@ -2202,6 +2219,7 @@ export class Admin implements OnInit, OnDestroy {
       'health-analysis';
 
     this.clearMessages();
+    this.startHealthRefresh();
 
 
     this.router.navigate([
@@ -2758,7 +2776,52 @@ export class Admin implements OnInit, OnDestroy {
       'health-analysis';
 
     this.clearMessages();
+    this.startHealthRefresh();
 
+  }
+
+  private startHealthRefresh(): void {
+    this.stopHealthRefresh();
+    this.loadHealth();
+    this.healthRefreshTimer = setInterval(() => {
+      if (this.activeMenu === 'health-analysis') {
+        this.loadHealth();
+      }
+    }, 5000);
+  }
+
+  private stopHealthRefresh(): void {
+    if (this.healthRefreshTimer !== null) {
+      clearInterval(this.healthRefreshTimer);
+      this.healthRefreshTimer = null;
+    }
+  }
+
+  loadHealth(): void {
+    if (this.healthRequestInFlight) {
+      return;
+    }
+
+    this.healthRequestInFlight = true;
+    this.healthLoading = true;
+    this.healthError = '';
+
+    this.adminService.getHealth().subscribe({
+      next: (health) => {
+        this.healthRequestInFlight = false;
+        this.healthData = health;
+        this.healthLoading = false;
+        this.cdr.markForCheck();
+      },
+      error: (error) => {
+        this.healthRequestInFlight = false;
+        this.healthLoading = false;
+        this.healthError =
+          error?.error?.message ||
+          'Unable to load health monitor output.';
+        this.cdr.markForCheck();
+      }
+    });
   }
 
 
@@ -2768,6 +2831,7 @@ export class Admin implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
 
+    this.stopHealthRefresh();
     this.removeSystemThemeListener();
 
   }
