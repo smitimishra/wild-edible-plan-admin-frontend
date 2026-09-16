@@ -12,7 +12,7 @@ export interface UserSession {
   token?:      string;    // JWT — used for single-device validation; may be empty before auth completes
 }
 
-const API             = 'http://192.168.29.51:8080/api';
+const API             = 'http://192.168.29.216:8080/api';
 const POLL_INTERVAL   = 30_000;   // check every 30 seconds
 
 @Injectable({ providedIn: 'root' })
