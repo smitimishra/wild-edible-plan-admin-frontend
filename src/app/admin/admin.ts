@@ -194,6 +194,15 @@ export class Admin implements OnInit, OnDestroy {
   settingsThemeMenuOpen = false;
   themeOptionsOpen = false;
 
+  // ============================================================
+  // TOP-RIGHT PROFILE DROPDOWN
+  // (Account Settings / Theme / Logout, opened from the
+  // top-right avatar — mirrors the sidebar Settings menu)
+  // ============================================================
+
+  profileMenuOpen = false;
+  profileThemeOptionsOpen = false;
+
   private systemThemeMediaQuery: MediaQueryList | null = null;
 
   private readonly systemThemeListener = (
@@ -220,10 +229,24 @@ export class Admin implements OnInit, OnDestroy {
     this.themeOptionsOpen = !this.themeOptionsOpen;
   }
 
+  toggleProfileMenu(): void {
+    this.profileMenuOpen = !this.profileMenuOpen;
+
+    if (!this.profileMenuOpen) {
+      this.profileThemeOptionsOpen = false;
+    }
+  }
+
+  toggleProfileThemeOptions(): void {
+    this.profileThemeOptionsOpen = !this.profileThemeOptionsOpen;
+  }
+
   selectTheme(theme: 'light' | 'dark' | 'default'): void {
     this.selectedTheme = theme;
     this.settingsThemeMenuOpen = false;
     this.themeOptionsOpen = false;
+    this.profileMenuOpen = false;
+    this.profileThemeOptionsOpen = false;
 
     // Save Admin Panel theme selection.
     localStorage.setItem('admin-theme', theme);
@@ -408,6 +431,27 @@ export class Admin implements OnInit, OnDestroy {
   onUserActivity(): void {
 
     this.authService.checkSessionOnActivity();
+
+  }
+
+
+  // ============================================================
+  // PROFILE DROPDOWN — CLOSE ON OUTSIDE CLICK
+  // ============================================================
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClickForProfileMenu(event: MouseEvent): void {
+
+    if (!this.profileMenuOpen) {
+      return;
+    }
+
+    const target = event.target as HTMLElement;
+
+    if (!target.closest('#admin-profile-menu')) {
+      this.profileMenuOpen = false;
+      this.profileThemeOptionsOpen = false;
+    }
 
   }
 
@@ -2190,6 +2234,8 @@ export class Admin implements OnInit, OnDestroy {
 
     this.settingsThemeMenuOpen = false;
     this.themeOptionsOpen = false;
+    this.profileMenuOpen = false;
+    this.profileThemeOptionsOpen = false;
     this.goToSettings();
 
   }

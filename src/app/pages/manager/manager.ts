@@ -32,9 +32,9 @@ export class Manager implements OnInit, OnDestroy {
 
   sidebarCollapsed = false;
 
-  settingsExpanded = false;
-
-  themesExpanded = false;
+  // PROFILE DROPDOWN
+  profileMenuOpen = false;
+  profileThemeExpanded = false;
 
   // THEME
 
@@ -239,24 +239,50 @@ export class Manager implements OnInit, OnDestroy {
 
   toggleSidebar(): void {
     this.sidebarCollapsed = !this.sidebarCollapsed;
+  }
 
-    // Keep the expanded settings menus closed while the sidebar is collapsed.
-    if (this.sidebarCollapsed) {
-      this.settingsExpanded = false;
-      this.themesExpanded = false;
+  // TOGGLE PROFILE MENU
+
+  toggleProfileMenu(): void {
+    this.profileMenuOpen = !this.profileMenuOpen;
+
+    if (!this.profileMenuOpen) {
+      this.profileThemeExpanded = false;
     }
   }
 
-  // TOGGLE SETTINGS
+  // TOGGLE PROFILE THEME
 
-  toggleSettings(): void {
-    this.settingsExpanded = !this.settingsExpanded;
+  toggleProfileTheme(): void {
+    if (!this.profileMenuOpen) {
+      return;
+    }
+
+    this.profileThemeExpanded = !this.profileThemeExpanded;
   }
 
-  // TOGGLE THEMES
+  // ACCOUNT SETTINGS
 
-  toggleThemes(): void {
-    this.themesExpanded = !this.themesExpanded;
+  selectAccountSettings(): void {
+    this.profileMenuOpen = false;
+    this.profileThemeExpanded = false;
+
+    // Use the existing Account Settings page.
+    this.router.navigate(['/admin/account-settings']);
+  }
+
+  // PROFILE DISPLAY NAME
+
+  getProfileName(): string {
+    return this.user?.user_name || this.user?.name || this.user?.email || 'Reviewer';
+  }
+
+  // PROFILE INITIAL
+
+  getProfileInitial(): string {
+    const name = this.getProfileName().trim();
+
+    return name ? name.charAt(0).toUpperCase() : 'R';
   }
 
   // SELECT THEME
@@ -267,6 +293,8 @@ export class Manager implements OnInit, OnDestroy {
     }
 
     this.selectedTheme = theme;
+    this.profileMenuOpen = false;
+    this.profileThemeExpanded = false;
 
     localStorage.setItem('reviewer-theme', theme);
 
@@ -1261,6 +1289,9 @@ export class Manager implements OnInit, OnDestroy {
   // LOGOUT
 
   logout(): void {
+    this.profileMenuOpen = false;
+    this.profileThemeExpanded = false;
+
     const confirmed = window.confirm('Are you sure you want to logout?');
 
     if (!confirmed) {
