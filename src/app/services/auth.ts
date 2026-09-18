@@ -94,21 +94,94 @@ export class AuthService implements OnDestroy {
 
   // GET USER
 
-  getUser(): any {
-    const user = localStorage.getItem('user');
+  // GET USER
 
-    if (!user) {
-      return null;
-    }
+getUser(): any {
+  const storedUser = localStorage.getItem('user');
+  const token = this.getToken();
 
+  let user: any = null;
+
+  // ----------------------------------------------------
+  // LOAD STORED USER
+  // ----------------------------------------------------
+
+  if (storedUser) {
     try {
-      return JSON.parse(user);
+      user = JSON.parse(storedUser);
     } catch (error) {
       console.error('Failed to parse stored user:', error);
-
-      return null;
+      user = null;
     }
   }
+
+  // ----------------------------------------------------
+  // LOAD USER NAME FROM JWT IF AVAILABLE
+  // ----------------------------------------------------
+
+  if (token) {
+    try {
+      const parts = token.split('.');
+
+      if (parts.length === 3) {
+        let base64Payload = parts[1]
+          .replace(/-/g, '+')
+          .replace(/_/g, '/');
+
+        base64Payload += '='.repeat(
+          (4 - (base64Payload.length % 4)) % 4
+        );
+
+        const payload = JSON.parse(atob(base64Payload));
+
+        // If JWT contains name, use it
+        if (payload.name) {
+          user = {
+            ...(user || {}),
+            name: payload.name,
+          };
+        }
+
+        // Keep other useful JWT values available
+        if (payload.id && !user?.id) {
+          user = {
+            ...(user || {}),
+            id: payload.id,
+          };
+        }
+
+        if (payload.email && !user?.email) {
+          user = {
+            ...(user || {}),
+            email: payload.email,
+          };
+        }
+
+        if (payload.role && !user?.role) {
+          user = {
+            ...(user || {}),
+            role: payload.role,
+          };
+        }
+
+        if (payload.session_id && !user?.session_id) {
+          user = {
+            ...(user || {}),
+            session_id: payload.session_id,
+          };
+        }
+      }
+    } catch (error) {
+      console.error('Failed to decode JWT user data:', error);
+    }
+  }
+
+  // ----------------------------------------------------
+  // RETURN USER
+  // ----------------------------------------------------
+
+  return user;
+}
 
   // GET ROLE FROM JWT
 

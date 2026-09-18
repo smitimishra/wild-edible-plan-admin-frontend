@@ -1,24 +1,19 @@
 import { Component, HostListener, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 
-import { HttpErrorResponse } from '@angular/common/http';
-
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
-
 import { FormsModule } from '@angular/forms';
-
 import { DatePipe, DecimalPipe } from '@angular/common';
 
 import { AuthService } from '../../services/auth';
-
 import { RequestService } from '../../services/request';
-
 import { SessionPopupComponent } from '../../components/session-popup/session-popup';
+
+const API = 'http://192.168.29.51:3001/api';
 
 @Component({
   selector: 'app-manager',
-
   imports: [FormsModule, DatePipe, SessionPopupComponent],
-
   templateUrl: './manager.html',
 })
 export class Manager implements OnInit, OnDestroy {
@@ -32,9 +27,11 @@ export class Manager implements OnInit, OnDestroy {
 
   sidebarCollapsed = false;
 
-  settingsExpanded = false;
+  // PROFILE DROPDOWN
 
-  themesExpanded = false;
+  profileMenuOpen = false;
+
+  profileThemeExpanded = false;
 
   // THEME
 
@@ -95,6 +92,7 @@ export class Manager implements OnInit, OnDestroy {
   constructor(
     private authService: AuthService,
     private requestService: RequestService,
+    private http: HttpClient,
     private router: Router,
     private route: ActivatedRoute,
     private cdr: ChangeDetectorRef,
@@ -140,15 +138,15 @@ export class Manager implements OnInit, OnDestroy {
     this.route.queryParamMap.subscribe((params) => {
       const urlToken = params.get('token')?.trim() || null;
 
-      // ------------------------------------------------------
       // REVIEWER ROLE
-      // ------------------------------------------------------
 
       const reviewerRoles = ['REVIEWER'];
 
-      // ------------------------------------------------------
+      // Keep this variable because the existing Reviewer
+      // authentication flow uses this Manager component.
+      void reviewerRoles;
+
       // TOKEN FOUND IN URL
-      // ------------------------------------------------------
 
       if (urlToken) {
         console.log('JWT token received from Reviewer URL');
@@ -156,27 +154,20 @@ export class Manager implements OnInit, OnDestroy {
         this.authService.saveToken(urlToken);
       }
 
-      // ------------------------------------------------------
       // AUTHENTICATED
-      // ------------------------------------------------------
 
       console.log('Reviewer authentication token is available');
 
-      // ------------------------------------------------------
       // START SESSION POLLING
-      // ------------------------------------------------------
 
       this.authService.startSessionPolling();
 
-      // ------------------------------------------------------
       // LOAD USER
-      // ------------------------------------------------------
 
       this.loadUser();
+      this.loadProfileName();
 
-      // ------------------------------------------------------
       // LOAD REVIEWER REQUESTS
-      // ------------------------------------------------------
 
       this.loadPendingRequests();
 
@@ -196,6 +187,7 @@ export class Manager implements OnInit, OnDestroy {
 
   selectMenu(menu: string): void {
     this.clearSelectedRequest();
+
     this.activeMenu = menu;
 
     // DASHBOARD
@@ -239,24 +231,127 @@ export class Manager implements OnInit, OnDestroy {
 
   toggleSidebar(): void {
     this.sidebarCollapsed = !this.sidebarCollapsed;
+  }
 
-    // Keep the expanded settings menus closed while the sidebar is collapsed.
-    if (this.sidebarCollapsed) {
-      this.settingsExpanded = false;
-      this.themesExpanded = false;
+  // TOGGLE PROFILE MENU
+
+  toggleProfileMenu(): void {
+    this.profileMenuOpen = !this.profileMenuOpen;
+
+    if (!this.profileMenuOpen) {
+      this.profileThemeExpanded = false;
     }
   }
 
-  // TOGGLE SETTINGS
+  // TOGGLE PROFILE THEME
 
-  toggleSettings(): void {
-    this.settingsExpanded = !this.settingsExpanded;
+  toggleProfileTheme(): void {
+    if (!this.profileMenuOpen) {
+      return;
+    }
+
+    this.profileThemeExpanded = !this.profileThemeExpanded;
   }
 
-  // TOGGLE THEMES
+  // ACCOUNT SETTINGS
 
-  toggleThemes(): void {
-    this.themesExpanded = !this.themesExpanded;
+  selectAccountSettings(): void {
+    this.profileMenuOpen = false;
+
+    this.profileThemeExpanded = false;
+
+    // Use the existing Account Settings page.
+    this.router.navigate(['/admin/account-settings']);
+  }
+
+  // PROFILE DISPLAY NAME
+
+  getProfileName(): string {
+    /*
+     * IMPORTANT:
+     *
+     * The Reviewer JWT should contain:
+     *
+     * {
+     *   id,
+     *   name,
+     *   email,
+     *   role,
+     *   session_id
+     * }
+     *
+     * We deliberately do NOT use name as a login credential.
+     *
+     * The name is only read from authenticated user data.
+     */
+
+    return (
+      this.user?.name ||
+      this.user?.user_name ||
+      this.user?.username ||
+      this.user?.email ||
+      'Reviewer'
+    );
+  }
+
+  // LOAD PROFILE NAME FROM MAIN DATABASE
+
+  loadProfileName(): void {
+    const token = this.authService.getToken();
+
+    if (!token) {
+      console.error('Reviewer - Cannot load profile name because JWT is missing.');
+      return;
+    }
+
+    this.http
+      .get<any>(`${API}/profile/me`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .subscribe({
+        next: (response: any) => {
+          console.log('Reviewer profile response:', response);
+
+          const userName =
+            response?.user_name || response?.user?.user_name || response?.data?.user_name || '';
+
+          if (userName) {
+            this.user = {
+              ...(this.user || {}),
+              user_name: userName,
+            };
+
+            // Keep name available to the existing profile display logic.
+            this.user.name = userName;
+
+            console.log('Reviewer authenticated user_name:', userName);
+            this.cdr.detectChanges();
+          } else {
+            console.warn('Reviewer profile API returned no user_name.');
+          }
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error('Failed to load reviewer profile:', error);
+          console.error('Profile backend response:', error.error);
+
+          if (error.status === 401) {
+            console.error('Reviewer profile authentication failed.');
+            this.authService.logout();
+            this.router.navigate(['/login']);
+            return;
+          }
+        },
+      });
+  }
+
+  // PROFILE INITIAL
+
+  getProfileInitial(): string {
+    const name = this.getProfileName().trim();
+
+    return name ? name.charAt(0).toUpperCase() : 'R';
   }
 
   // SELECT THEME
@@ -267,6 +362,10 @@ export class Manager implements OnInit, OnDestroy {
     }
 
     this.selectedTheme = theme;
+
+    this.profileMenuOpen = false;
+
+    this.profileThemeExpanded = false;
 
     localStorage.setItem('reviewer-theme', theme);
 
@@ -313,41 +412,77 @@ export class Manager implements OnInit, OnDestroy {
     return this.selectedTheme === theme;
   }
 
-  // LOAD CURRENT USER
+  // LOAD USER
 
   loadUser(): void {
-    // FIRST TRY AUTH SERVICE
+    const token = this.authService.getToken();
 
-    this.user = this.authService.getUser();
+    // JWT EXISTS
 
-    // FALLBACK → JWT PAYLOAD
+    if (token) {
+      try {
+        const tokenParts = token.split('.');
 
-    if (!this.user) {
-      const token = this.authService.getToken();
+        if (tokenParts.length >= 2) {
+          const payloadPart = tokenParts[1];
 
-      if (token) {
-        try {
-          const tokenParts = token.split('.');
+          // ----------------------------------------------------
+          // NORMALIZE BASE64URL
+          // ----------------------------------------------------
 
-          if (tokenParts.length >= 2) {
-            const payloadPart = tokenParts[1];
+          const normalizedPayload = payloadPart
+            .replace(/-/g, '+')
+            .replace(/_/g, '/')
+            .padEnd(payloadPart.length + ((4 - (payloadPart.length % 4)) % 4), '=');
 
-            const normalizedPayload = payloadPart
-              .replace(/-/g, '+')
-              .replace(/_/g, '/')
-              .padEnd(payloadPart.length + ((4 - (payloadPart.length % 4)) % 4), '=');
+          // ----------------------------------------------------
+          // DECODE JWT
+          // ----------------------------------------------------
 
-            const payload = JSON.parse(atob(normalizedPayload));
+          const payload = JSON.parse(atob(normalizedPayload));
 
-            this.user = payload;
-          }
-        } catch (error) {
-          console.error('Reviewer - Failed to decode JWT:', error);
+          console.log('Manager JWT payload:', payload);
+
+          // ----------------------------------------------------
+          // STORED USER
+          // ----------------------------------------------------
+
+          const storedUser = this.authService.getUser();
+
+          // ----------------------------------------------------
+          // MERGE USER DATA
+          // ----------------------------------------------------
+
+          this.user = {
+            ...(storedUser || {}),
+            ...payload,
+          };
+
+          console.log('Manager authenticated user:', this.user);
+
+          console.log('Manager authenticated name:', this.user?.name);
+
+          console.log('Manager authenticated user_name:', this.user?.user_name);
+
+          // ----------------------------------------------------
+          // FORCE UI UPDATE
+          // ----------------------------------------------------
+
+          this.cdr.detectChanges();
         }
-      }
-    }
+      } catch (error) {
+        console.error('Manager - Failed to decode JWT:', error);
 
-    console.log('Reviewer user:', this.user);
+        // Preserve existing behavior as fallback
+        this.user = this.authService.getUser();
+
+        this.cdr.detectChanges();
+      }
+    } else {
+      this.user = this.authService.getUser();
+
+      this.cdr.detectChanges();
+    }
   }
 
   // LOAD PENDING REVIEWER REQUESTS
@@ -372,7 +507,9 @@ export class Manager implements OnInit, OnDestroy {
     // CALL REVIEWER API
 
     this.requestService.getPendingReviewerRequests().subscribe({
+      // ------------------------------------------------------
       // SUCCESS
+      // ------------------------------------------------------
 
       next: (response: any) => {
         console.log('Pending reviewer requests:', response);
@@ -404,7 +541,9 @@ export class Manager implements OnInit, OnDestroy {
         });
       },
 
+      // ------------------------------------------------------
       // ERROR
+      // ------------------------------------------------------
 
       error: (error: HttpErrorResponse) => {
         console.error('Failed to load reviewer requests:', error);
@@ -446,7 +585,9 @@ export class Manager implements OnInit, OnDestroy {
     this.loadingApproved = true;
 
     this.requestService.getApprovedRequests().subscribe({
+      // ------------------------------------------------------
       // SUCCESS
+      // ------------------------------------------------------
 
       next: (response: any) => {
         console.log('Approved requests:', response);
@@ -464,7 +605,9 @@ export class Manager implements OnInit, OnDestroy {
         this.cdr.detectChanges();
       },
 
+      // ------------------------------------------------------
       // ERROR
+      // ------------------------------------------------------
 
       error: (error: HttpErrorResponse) => {
         console.error('Failed to load approved requests:', error);
@@ -504,7 +647,9 @@ export class Manager implements OnInit, OnDestroy {
     }
 
     this.requestService.getRequestById(requestId).subscribe({
+      // ------------------------------------------------------
       // SUCCESS
+      // ------------------------------------------------------
 
       next: (response: any) => {
         console.log('Reviewer request details:', response);
@@ -586,7 +731,9 @@ export class Manager implements OnInit, OnDestroy {
         console.log('Attachments loaded for request', requestId);
       },
 
+      // ------------------------------------------------------
       // ERROR
+      // ------------------------------------------------------
 
       error: (error: HttpErrorResponse) => {
         console.error(`Failed to load request ${requestId}:`, error);
@@ -599,13 +746,16 @@ export class Manager implements OnInit, OnDestroy {
   // VIEW REQUEST DETAILS
 
   viewRequest(id: number): void {
-    const request = this.requests.find((item: any) => item?.id === id)
-      || this.pendingRequests.find((item: any) => item?.id === id)
-      || this.approvedRequests.find((item: any) => item?.id === id);
+    const request =
+      this.requests.find((item: any) => item?.id === id) ||
+      this.pendingRequests.find((item: any) => item?.id === id) ||
+      this.approvedRequests.find((item: any) => item?.id === id);
 
     if (!request) {
       console.error(`Request ${id} was not found in the loaded request lists.`);
+
       this.message = 'Unable to open the request details.';
+
       return;
     }
 
@@ -649,20 +799,18 @@ export class Manager implements OnInit, OnDestroy {
 
   // REVIEWER APPROVE REQUEST
 
-  approveRequest(id: number): void {
-    // VALIDATE SCIENTIFIC NAME
+  // REVIEWER APPROVE REQUEST
 
+  approveRequest(id: number): void {
+    // Validate scientific name
     if (!this.scientificName.trim()) {
       this.message = 'Scientific name is required.';
-
       return;
     }
 
-    // VALIDATE DESCRIPTION
-
+    // Validate description
     if (!this.description.trim()) {
       this.message = 'Description is required.';
-
       return;
     }
 
@@ -670,41 +818,37 @@ export class Manager implements OnInit, OnDestroy {
 
     const data = {
       scientific_name: this.scientificName.trim(),
-
       description: this.description.trim(),
-
       comments: this.comments.trim(),
     };
 
-    // REVIEWER APPROVAL API
-
     this.requestService.reviewerApprove(id, data).subscribe({
-      // SUCCESS
-
       next: (response: any) => {
         console.log('Reviewer approval successful:', response);
 
-        this.message = 'Request approved successfully and sent to HR.';
+        this.message = 'Request approved successfully.';
 
+        // Clear the currently selected request
         this.clearSelectedRequest();
 
+        // Refresh pending requests
         this.loadPendingRequests();
-      },
 
-      // ERROR
+        // IMPORTANT:
+        // Refresh approved requests so the counter changes
+        // from 0 -> 1 immediately after approval.
+        this.loadApprovedRequests();
+      },
 
       error: (error: HttpErrorResponse) => {
         console.error('Reviewer approval failed:', error);
-
         console.error('Backend response:', error.error);
 
         this.message = error.error?.message || 'Failed to approve request.';
 
         if (error.status === 401) {
           this.authService.logout();
-
           this.router.navigate(['/login']);
-
           return;
         }
 
@@ -712,12 +856,15 @@ export class Manager implements OnInit, OnDestroy {
       },
     });
   }
+  //###################################################33333
 
   // START REJECTION
 
   startRejecting(): void {
     this.rejectingRequest = true;
+
     this.comments = '';
+
     this.message = '';
   }
 
@@ -725,7 +872,9 @@ export class Manager implements OnInit, OnDestroy {
 
   cancelRejecting(): void {
     this.rejectingRequest = false;
+
     this.comments = '';
+
     this.message = '';
   }
 
@@ -751,7 +900,9 @@ export class Manager implements OnInit, OnDestroy {
     // REJECTION API
 
     this.requestService.reject(id, data).subscribe({
+      // ------------------------------------------------------
       // SUCCESS
+      // ------------------------------------------------------
 
       next: (response: any) => {
         console.log('Reviewer request rejected:', response);
@@ -763,7 +914,9 @@ export class Manager implements OnInit, OnDestroy {
         this.loadPendingRequests();
       },
 
+      // ------------------------------------------------------
       // ERROR
+      // ------------------------------------------------------
 
       error: (error: HttpErrorResponse) => {
         console.error('Request rejection failed:', error);
@@ -851,7 +1004,9 @@ export class Manager implements OnInit, OnDestroy {
     this.message = '';
 
     this.requestService.addAttachment(requestId, this.selectedImageFile).subscribe({
+      // ------------------------------------------------------
       // SUCCESS
+      // ------------------------------------------------------
 
       next: (response: any) => {
         console.log('Image uploaded successfully:', response);
@@ -871,7 +1026,9 @@ export class Manager implements OnInit, OnDestroy {
         this.loadPendingRequests();
       },
 
+      // ------------------------------------------------------
       // ERROR
+      // ------------------------------------------------------
 
       error: (error: HttpErrorResponse) => {
         console.error('Image upload failed:', error);
@@ -909,7 +1066,9 @@ export class Manager implements OnInit, OnDestroy {
     this.message = '';
 
     this.requestService.deleteAttachment(attachmentId).subscribe({
+      // ------------------------------------------------------
       // SUCCESS
+      // ------------------------------------------------------
 
       next: (response: any) => {
         console.log('Image deleted successfully:', response);
@@ -925,7 +1084,9 @@ export class Manager implements OnInit, OnDestroy {
         this.loadPendingRequests();
       },
 
+      // ------------------------------------------------------
       // ERROR
+      // ------------------------------------------------------
 
       error: (error: HttpErrorResponse) => {
         console.error('Image deletion failed:', error);
@@ -977,7 +1138,9 @@ export class Manager implements OnInit, OnDestroy {
     this.message = '';
 
     this.requestService.downloadAttachment(attachmentId).subscribe({
+      // ------------------------------------------------------
       // SUCCESS
+      // ------------------------------------------------------
 
       next: (blob: Blob) => {
         console.log('Image downloaded successfully.');
@@ -1003,7 +1166,9 @@ export class Manager implements OnInit, OnDestroy {
         this.cdr.detectChanges();
       },
 
+      // ------------------------------------------------------
       // ERROR
+      // ------------------------------------------------------
 
       error: (error: HttpErrorResponse) => {
         console.error('Image download failed:', error);
@@ -1122,6 +1287,7 @@ export class Manager implements OnInit, OnDestroy {
   }
 
   // GET DISPLAY VALUE
+
   getDisplayValue(value: any, fallback: string = 'N/A'): string {
     if (value === null || value === undefined || value === '') {
       return fallback;
@@ -1139,48 +1305,57 @@ export class Manager implements OnInit, OnDestroy {
   }
 
   // GET EMPLOYEE ID
+
   getEmployeeId(request: any): any {
     const data = this.getRequestData(request);
 
-    return request?.employee_id ??
-      request?.employeeId ??
-      data?.employee_id ??
-      data?.employeeId ??
-      null;
+    return (
+      request?.employee_id ?? request?.employeeId ?? data?.employee_id ?? data?.employeeId ?? null
+    );
   }
 
   // GET EMPLOYEE EMAIL
+
   getEmployeeEmail(request: any): string {
     const data = this.getRequestData(request);
 
-    return request?.employee_email ||
+    return (
+      request?.employee_email ||
       request?.employeeEmail ||
       data?.employee_email ||
       data?.employeeEmail ||
       data?.email ||
-      'N/A';
+      'N/A'
+    );
   }
 
   // GET REQUEST TYPE
+
   getRequestType(request: any): string {
     const data = this.getRequestData(request);
 
-    return request?.request_type ||
+    return (
+      request?.request_type ||
       request?.requestType ||
       data?.request_type ||
       data?.requestType ||
-      'N/A';
+      'N/A'
+    );
   }
 
   // GET APPROVAL LEVEL
+
   getApprovalLevel(request: any): any {
-    return request?.current_approval_level ??
+    return (
+      request?.current_approval_level ??
       request?.currentApprovalLevel ??
       this.getRequestData(request)?.current_approval_level ??
-      null;
+      null
+    );
   }
 
   // GET FAMILY
+
   getFamily(request: any): string {
     const data = this.getRequestData(request);
 
@@ -1188,6 +1363,7 @@ export class Manager implements OnInit, OnDestroy {
   }
 
   // GET HABITAT
+
   getHabitat(request: any): string {
     const data = this.getRequestData(request);
 
@@ -1195,6 +1371,7 @@ export class Manager implements OnInit, OnDestroy {
   }
 
   // GET LATITUDE
+
   getLatitude(request: any): any {
     const data = this.getRequestData(request);
 
@@ -1202,6 +1379,7 @@ export class Manager implements OnInit, OnDestroy {
   }
 
   // GET LONGITUDE
+
   getLongitude(request: any): any {
     const data = this.getRequestData(request);
 
@@ -1209,25 +1387,21 @@ export class Manager implements OnInit, OnDestroy {
   }
 
   // GET PLANT IMAGE
+
   getPlantImage(request: any): string {
     const data = this.getRequestData(request);
 
-    return request?.image_url ||
-      request?.imageUrl ||
-      data?.image_url ||
-      data?.imageUrl ||
-      '';
+    return request?.image_url || request?.imageUrl || data?.image_url || data?.imageUrl || '';
   }
 
   // GET COMMENTS
+
   getRequestComments(request: any): string {
-    return request?.comments ||
-      request?.comment ||
-      this.getRequestData(request)?.comments ||
-      '';
+    return request?.comments || request?.comment || this.getRequestData(request)?.comments || '';
   }
 
   // GET APPROVAL HISTORY
+
   getApprovalHistory(request: any): any[] {
     if (!request) {
       return [];
@@ -1245,22 +1419,24 @@ export class Manager implements OnInit, OnDestroy {
   }
 
   // GET PLANT DETAILS
+
   getPlantDetails(request: any): any {
-    return request?.plant_details ||
-      request?.plantDetails ||
-      null;
+    return request?.plant_details || request?.plantDetails || null;
   }
 
   // GET COMPLETED DATE
+
   getCompletedDate(request: any): any {
-    return request?.completed_at ||
-      request?.completedAt ||
-      null;
+    return request?.completed_at || request?.completedAt || null;
   }
 
   // LOGOUT
 
   logout(): void {
+    this.profileMenuOpen = false;
+
+    this.profileThemeExpanded = false;
+
     const confirmed = window.confirm('Are you sure you want to logout?');
 
     if (!confirmed) {

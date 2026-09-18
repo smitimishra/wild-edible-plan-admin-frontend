@@ -7,6 +7,7 @@ import {
 } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 
 import { ActivatedRoute, Router } from '@angular/router';
@@ -14,7 +15,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import {
   AdminService,
   AdminUser,
-  HierarchyLevel
+  HierarchyLevel,
+  HealthResponse
 } from '../services/admin.service';
 
 import { AuthService } from '../services/auth';
@@ -194,6 +196,26 @@ export class Admin implements OnInit, OnDestroy {
   settingsThemeMenuOpen = false;
   themeOptionsOpen = false;
 
+  // ============================================================
+  // TOP-RIGHT PROFILE DROPDOWN
+  // (Account Settings / Theme / Logout, opened from the
+  // top-right avatar — mirrors the sidebar Settings menu)
+  // ============================================================
+
+  profileMenuOpen = false;
+  profileThemeOptionsOpen = false;
+
+  // ============================================================
+  // ADMIN PROFILE
+  // Name is loaded from the main user_table using the
+  // authenticated user's email.
+  // ============================================================
+
+  profileName = '';
+
+  private readonly profileApiUrl =
+    'http://192.168.29.51:3001/api/profile/me';
+
   private systemThemeMediaQuery: MediaQueryList | null = null;
 
   private readonly systemThemeListener = (
@@ -220,10 +242,24 @@ export class Admin implements OnInit, OnDestroy {
     this.themeOptionsOpen = !this.themeOptionsOpen;
   }
 
+  toggleProfileMenu(): void {
+    this.profileMenuOpen = !this.profileMenuOpen;
+
+    if (!this.profileMenuOpen) {
+      this.profileThemeOptionsOpen = false;
+    }
+  }
+
+  toggleProfileThemeOptions(): void {
+    this.profileThemeOptionsOpen = !this.profileThemeOptionsOpen;
+  }
+
   selectTheme(theme: 'light' | 'dark' | 'default'): void {
     this.selectedTheme = theme;
     this.settingsThemeMenuOpen = false;
     this.themeOptionsOpen = false;
+    this.profileMenuOpen = false;
+    this.profileThemeOptionsOpen = false;
 
     // Save Admin Panel theme selection.
     localStorage.setItem('admin-theme', theme);
@@ -303,6 +339,16 @@ export class Admin implements OnInit, OnDestroy {
 
   devicesCurrentPage = 1;
 
+  // ============================================================
+  // HEALTH ANALYSIS
+  // ============================================================
+
+  healthData: HealthResponse | null = null;
+  healthLoading = false;
+  healthError = '';
+  private healthRequestInFlight = false;
+  private healthRefreshTimer: ReturnType<typeof setInterval> | null = null;
+
 
   // ============================================================
   // CONSTRUCTOR
@@ -314,7 +360,8 @@ export class Admin implements OnInit, OnDestroy {
     private sessionService: SessionService,
     private router: Router,
     private route: ActivatedRoute,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private http: HttpClient
   ) {}
 
 
@@ -389,6 +436,10 @@ export class Admin implements OnInit, OnDestroy {
 
       this.authService.startSessionPolling();
 
+      // Load the logged-in Admin's display name from the
+      // main user_table using the email from the authenticated JWT.
+      this.loadProfileName();
+
       // Theme was initialized before authentication.
       // Do not reset the selected theme here.
 
@@ -398,6 +449,61 @@ export class Admin implements OnInit, OnDestroy {
 
   }
 
+
+
+  // ============================================================
+  // ADMIN PROFILE
+  // ============================================================
+
+  loadProfileName(): void {
+    const token = this.authService.getToken();
+
+    if (!token) {
+      console.warn('Cannot load admin profile: no authentication token.');
+      return;
+    }
+
+    this.http
+      .get<{ user_name?: string }>(this.profileApiUrl)
+      .subscribe({
+        next: (response) => {
+          this.profileName =
+            response?.user_name?.trim() || 'Administrator';
+
+          console.log(
+            'Admin profile name loaded:',
+            this.profileName
+          );
+
+          this.cdr.detectChanges();
+        },
+
+        error: (error) => {
+          console.error(
+            'Failed to load admin profile:',
+            error
+          );
+
+          // Keep the existing Admin fallback if the profile
+          // request fails. This does not affect authentication.
+          this.profileName = 'Administrator';
+
+          this.cdr.detectChanges();
+        }
+      });
+  }
+
+  getProfileName(): string {
+    return this.profileName || 'Administrator';
+  }
+
+  getProfileInitial(): string {
+    const name = this.getProfileName().trim();
+
+    return name
+      ? name.charAt(0).toUpperCase()
+      : 'A';
+  }
 
   // ============================================================
   // SESSION ACTIVITY
@@ -413,6 +519,27 @@ export class Admin implements OnInit, OnDestroy {
 
 
   // ============================================================
+  // PROFILE DROPDOWN — CLOSE ON OUTSIDE CLICK
+  // ============================================================
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClickForProfileMenu(event: MouseEvent): void {
+
+    if (!this.profileMenuOpen) {
+      return;
+    }
+
+    const target = event.target as HTMLElement;
+
+    if (!target.closest('#admin-profile-menu')) {
+      this.profileMenuOpen = false;
+      this.profileThemeOptionsOpen = false;
+    }
+
+  }
+
+
+  // ============================================================
   // NAVIGATION
   // ============================================================
 
@@ -421,6 +548,12 @@ export class Admin implements OnInit, OnDestroy {
     this.activeMenu = menu;
 
     this.clearMessages();
+
+    if (menu === 'health-analysis') {
+      this.startHealthRefresh();
+    } else {
+      this.stopHealthRefresh();
+    }
 
 
     if (menu === 'users') {
@@ -2158,6 +2291,7 @@ export class Admin implements OnInit, OnDestroy {
       'health-analysis';
 
     this.clearMessages();
+    this.startHealthRefresh();
 
 
     this.router.navigate([
@@ -2190,6 +2324,8 @@ export class Admin implements OnInit, OnDestroy {
 
     this.settingsThemeMenuOpen = false;
     this.themeOptionsOpen = false;
+    this.profileMenuOpen = false;
+    this.profileThemeOptionsOpen = false;
     this.goToSettings();
 
   }
@@ -2712,7 +2848,52 @@ export class Admin implements OnInit, OnDestroy {
       'health-analysis';
 
     this.clearMessages();
+    this.startHealthRefresh();
 
+  }
+
+  private startHealthRefresh(): void {
+    this.stopHealthRefresh();
+    this.loadHealth();
+    this.healthRefreshTimer = setInterval(() => {
+      if (this.activeMenu === 'health-analysis') {
+        this.loadHealth();
+      }
+    }, 5000);
+  }
+
+  private stopHealthRefresh(): void {
+    if (this.healthRefreshTimer !== null) {
+      clearInterval(this.healthRefreshTimer);
+      this.healthRefreshTimer = null;
+    }
+  }
+
+  loadHealth(): void {
+    if (this.healthRequestInFlight) {
+      return;
+    }
+
+    this.healthRequestInFlight = true;
+    this.healthLoading = true;
+    this.healthError = '';
+
+    this.adminService.getHealth().subscribe({
+      next: (health) => {
+        this.healthRequestInFlight = false;
+        this.healthData = health;
+        this.healthLoading = false;
+        this.cdr.markForCheck();
+      },
+      error: (error) => {
+        this.healthRequestInFlight = false;
+        this.healthLoading = false;
+        this.healthError =
+          error?.error?.message ||
+          'Unable to load health monitor output.';
+        this.cdr.markForCheck();
+      }
+    });
   }
 
 
@@ -2722,6 +2903,7 @@ export class Admin implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
 
+    this.stopHealthRefresh();
     this.removeSystemThemeListener();
 
   }
