@@ -49,7 +49,7 @@ export interface UpdateLocationResponse {
 export class SessionService {
 
   private readonly apiUrl =
-    'http://192.168.29.216:3001/api/sessions';
+    'http://192.168.29.51:3001/api/sessions';
 
   constructor(
     private http: HttpClient

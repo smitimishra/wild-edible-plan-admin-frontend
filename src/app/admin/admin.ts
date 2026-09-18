@@ -7,6 +7,7 @@ import {
 } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 
 import { ActivatedRoute, Router } from '@angular/router';
@@ -204,6 +205,17 @@ export class Admin implements OnInit, OnDestroy {
   profileMenuOpen = false;
   profileThemeOptionsOpen = false;
 
+  // ============================================================
+  // ADMIN PROFILE
+  // Name is loaded from the main user_table using the
+  // authenticated user's email.
+  // ============================================================
+
+  profileName = '';
+
+  private readonly profileApiUrl =
+    'http://192.168.29.51:3001/api/profile/me';
+
   private systemThemeMediaQuery: MediaQueryList | null = null;
 
   private readonly systemThemeListener = (
@@ -348,7 +360,8 @@ export class Admin implements OnInit, OnDestroy {
     private sessionService: SessionService,
     private router: Router,
     private route: ActivatedRoute,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private http: HttpClient
   ) {}
 
 
@@ -423,6 +436,10 @@ export class Admin implements OnInit, OnDestroy {
 
       this.authService.startSessionPolling();
 
+      // Load the logged-in Admin's display name from the
+      // main user_table using the email from the authenticated JWT.
+      this.loadProfileName();
+
       // Theme was initialized before authentication.
       // Do not reset the selected theme here.
 
@@ -432,6 +449,61 @@ export class Admin implements OnInit, OnDestroy {
 
   }
 
+
+
+  // ============================================================
+  // ADMIN PROFILE
+  // ============================================================
+
+  loadProfileName(): void {
+    const token = this.authService.getToken();
+
+    if (!token) {
+      console.warn('Cannot load admin profile: no authentication token.');
+      return;
+    }
+
+    this.http
+      .get<{ user_name?: string }>(this.profileApiUrl)
+      .subscribe({
+        next: (response) => {
+          this.profileName =
+            response?.user_name?.trim() || 'Administrator';
+
+          console.log(
+            'Admin profile name loaded:',
+            this.profileName
+          );
+
+          this.cdr.detectChanges();
+        },
+
+        error: (error) => {
+          console.error(
+            'Failed to load admin profile:',
+            error
+          );
+
+          // Keep the existing Admin fallback if the profile
+          // request fails. This does not affect authentication.
+          this.profileName = 'Administrator';
+
+          this.cdr.detectChanges();
+        }
+      });
+  }
+
+  getProfileName(): string {
+    return this.profileName || 'Administrator';
+  }
+
+  getProfileInitial(): string {
+    const name = this.getProfileName().trim();
+
+    return name
+      ? name.charAt(0).toUpperCase()
+      : 'A';
+  }
 
   // ============================================================
   // SESSION ACTIVITY
@@ -2670,7 +2742,7 @@ export class Admin implements OnInit, OnDestroy {
 
 
     this.authService.logout(
-      'http://192.168.29.216:8200/'
+      'http://192.168.29.51:8200/'
     );
 
   }

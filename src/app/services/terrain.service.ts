@@ -11,7 +11,7 @@ import {
 import { CryptoService } from './crypto.service';
 
 // ── All APIs go to Node.js backend ────────────────────────
-const API = 'http://192.168.29.216:8080/api';
+const API = 'http://192.168.29.51:8080/api';
 
 @Injectable({ providedIn: 'root' })
 export class TerrainService {
@@ -65,7 +65,7 @@ export class TerrainService {
 
   /** Build URL to the generated PNG served by Node.js */
   getPngUrl(fileName: string): string {
-    return `http://192.168.29.216:8080/gdal_output/${fileName}`;
+    return `http://192.168.29.51:8080/gdal_output/${fileName}`;
   }
 
   // ── Plants ────────────────────────────────────────────────

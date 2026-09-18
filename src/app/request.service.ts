@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class RequestService {
 
-  private apiUrl = 'http://192.168.29.216:3001/api/requests';
+  private apiUrl = 'http://192.168.29.51:3001/api/requests';
 
   constructor(private http: HttpClient) {}
 
@@ -50,13 +50,37 @@ export class RequestService {
 
 
   // ============================================================
-  // MANAGER - GET PENDING REQUESTS
+  // REVIEWER - GET PENDING REQUESTS
   // ============================================================
 
   getPendingManagerRequests(): Observable<any> {
 
     return this.http.get(
-      `${this.apiUrl}/pending-manager`
+      `${this.apiUrl}/pending-reviewer`
+    );
+  }
+
+
+  // ============================================================
+  // REVIEWER - GET PENDING REQUESTS
+  // ============================================================
+
+  getPendingReviewerRequests(): Observable<any> {
+
+    return this.http.get(
+      `${this.apiUrl}/pending-reviewer`
+    );
+  }
+
+
+  // ============================================================
+  // GET APPROVED REQUESTS
+  // ============================================================
+
+  getApprovedRequests(): Observable<any> {
+
+    return this.http.get(
+      `${this.apiUrl}/approved`
     );
   }
 
@@ -86,13 +110,35 @@ export class RequestService {
 
 
   // ============================================================
-  // MANAGER - APPROVE REQUEST
+  // REVIEWER - APPROVE REQUEST
   //
   // data should contain:
   //
   // scientific_name
   // description
   // comments
+  // ============================================================
+
+  reviewerApprove(
+    id: number,
+    data: {
+      scientific_name: string;
+      description: string;
+      comments?: string;
+    }
+  ): Observable<any> {
+
+    return this.http.put(
+      `${this.apiUrl}/${id}/reviewer-approve`,
+      data
+    );
+  }
+
+
+  // ============================================================
+  // MANAGER - APPROVE REQUEST
+  //
+  // Kept for compatibility with existing code.
   // ============================================================
 
   managerApprove(
@@ -134,7 +180,7 @@ export class RequestService {
 
 
   // ============================================================
-  // MANAGER / HR - REJECT REQUEST
+  // REVIEWER / HR - REJECT REQUEST
   //
   // data should contain:
   //
@@ -192,6 +238,6 @@ export class RequestService {
         ? filePath
         : `/${filePath}`;
 
-    return `http://192.168.29.216:3001${normalizedPath}`;
+    return `http://192.168.29.51:3001${normalizedPath}`;
   }
 }

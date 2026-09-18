@@ -11,7 +11,7 @@ import { FormsModule } from '@angular/forms';
 })
 export class ConfigComponent {
   settings = {
-    apiBase:       'http://192.168.29.216:8080/api',
+    apiBase:       'http://192.168.29.51:8080/api',
     gisServerUrl:  'https://192.24.10.56:8080/IGIST',
     sessionTimeout: 30,
     maxUploadMb:   10,
