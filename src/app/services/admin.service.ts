@@ -123,7 +123,7 @@ export interface HealthResponse {
 })
 export class AdminService {
   private apiUrl =
-    'http://192.168.29.216:3001/api/admin';
+    'http://192.168.29.217:3001/api/admin';
 
   constructor(
     private http: HttpClient
@@ -300,6 +300,13 @@ export class AdminService {
   getHealth(): Observable<HealthResponse> {
     return this.http.get<HealthResponse>(
       `${this.apiUrl}/health`,
+      { headers: this.getHeaders() }
+    );
+  }
+
+  getCurrentProfile(): Observable<{ user_name: string; email: string }> {
+    return this.http.get<{ user_name: string; email: string }>(
+      `${this.apiUrl}/profile`,
       { headers: this.getHeaders() }
     );
   }

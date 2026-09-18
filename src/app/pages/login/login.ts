@@ -180,6 +180,14 @@ export class Login {
           // Save user
           if (response.user) {
             this.authService.saveUser(response.user);
+            const userName =
+              response.user.user_name ||
+              response.user.userName ||
+              response.user.name;
+
+            if (typeof userName === 'string' && userName.trim()) {
+              this.authService.saveUsername(userName);
+            }
             console.log('LOGIN USER:', response.user);
           } else {
             console.warn('LOGIN WARNING: Backend response does not contain user.');

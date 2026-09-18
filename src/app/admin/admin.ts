@@ -177,6 +177,8 @@ export class Admin implements OnInit, OnDestroy {
 
   adminSessionRemainingSeconds = 0;
 
+  currentUserName = 'Administrator';
+
 
   // ============================================================
   // SETTINGS (merged from AccountSettings component)
@@ -414,6 +416,30 @@ export class Admin implements OnInit, OnDestroy {
 
         return;
       }
+
+      const currentUser = this.authService.getUser();
+      const storedName =
+        localStorage.getItem('username') ||
+        currentUser?.user_name ||
+        currentUser?.name ||
+        currentUser?.userName ||
+        currentUser?.user_name;
+
+      if (typeof storedName === 'string' && storedName.trim()) {
+        this.currentUserName = storedName.trim();
+      }
+
+      this.adminService.getCurrentProfile().subscribe({
+        next: (profile) => {
+          if (profile.user_name?.trim()) {
+            this.currentUserName = profile.user_name.trim();
+            this.cdr.markForCheck();
+          }
+        },
+        error: (error) => {
+          console.error('Unable to load user_table profile:', error);
+        }
+      });
 
 
       console.log(
@@ -2670,7 +2696,7 @@ export class Admin implements OnInit, OnDestroy {
 
 
     this.authService.logout(
-      'http://192.168.29.216:8200/'
+      'http://192.168.29.217:8200/'
     );
 
   }

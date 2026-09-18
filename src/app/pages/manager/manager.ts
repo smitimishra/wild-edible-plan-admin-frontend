@@ -1298,6 +1298,6 @@ export class Manager implements OnInit, OnDestroy {
       return;
     }
 
-    this.authService.logout('http://192.168.29.216:8200/');
+    this.authService.logout('http://192.168.29.217:8200/');
   }
 }
