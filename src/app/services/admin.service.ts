@@ -123,7 +123,7 @@ export interface HealthResponse {
 })
 export class AdminService {
   private apiUrl =
-    'http://192.168.29.216:3001/api/admin';
+    'http://192.168.29.217:3001/api/admin';
 
   constructor(
     private http: HttpClient

@@ -2,7 +2,7 @@ import { Injectable, NgZone, OnDestroy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 
-const LOGIN_PORTAL_URL = 'http://192.168.29.216:8200/welcome';
+const LOGIN_PORTAL_URL = 'http://192.168.29.217:8200/welcome';
 
 const POLL_INTERVAL_MS = 15_000;
 const MOUSE_DEBOUNCE_MS = 5_000;
@@ -13,7 +13,7 @@ const MOUSE_DEBOUNCE_MS = 5_000;
 export class AuthService implements OnDestroy {
   // BACKEND API
 
-  private apiUrl = 'http://192.168.29.216:3001/api/auth';
+  private apiUrl = 'http://192.168.29.217:3001/api/auth';
 
   // SESSION STATE
 
