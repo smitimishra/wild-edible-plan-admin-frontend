@@ -9,7 +9,7 @@ import { AuthService } from '../../services/auth';
 import { RequestService } from '../../services/request';
 import { SessionPopupComponent } from '../../components/session-popup/session-popup';
 
-const API = 'http://192.168.29.51:3001/api';
+const API = 'http://192.168.29.217:3001/api';
 
 @Component({
   selector: 'app-manager',

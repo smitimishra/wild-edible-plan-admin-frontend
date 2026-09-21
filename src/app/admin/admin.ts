@@ -214,7 +214,7 @@ export class Admin implements OnInit, OnDestroy {
   profileName = '';
 
   private readonly profileApiUrl =
-    'http://192.168.29.51:3001/api/profile/me';
+    'http://192.168.29.217:3001/api/profile/me';
 
   private systemThemeMediaQuery: MediaQueryList | null = null;
 
