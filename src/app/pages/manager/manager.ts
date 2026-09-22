@@ -3,17 +3,18 @@ import { Component, HostListener, OnInit, OnDestroy, ChangeDetectorRef } from '@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { DatePipe, DecimalPipe } from '@angular/common';
+import { DatePipe, DecimalPipe, TitleCasePipe } from '@angular/common';
 
 import { AuthService } from '../../services/auth';
 import { RequestService } from '../../services/request';
 import { SessionPopupComponent } from '../../components/session-popup/session-popup';
 
 const API = 'http://192.168.29.217:3001/api';
+const PLANT_IMAGE_BASE_URL = 'http://192.168.29.98:8080/';
 
 @Component({
   selector: 'app-manager',
-  imports: [FormsModule, DatePipe, SessionPopupComponent],
+  imports: [FormsModule, DatePipe, TitleCasePipe, SessionPopupComponent],
   templateUrl: './manager.html',
 })
 export class Manager implements OnInit, OnDestroy {
@@ -72,6 +73,10 @@ export class Manager implements OnInit, OnDestroy {
   description = '';
 
   comments = '';
+  duplicateConflict: any = null;
+  compareRecord: any = null;
+  compareNewRecord: any = null;
+  showCompare = false;
 
   // REJECTION UI
 
@@ -844,6 +849,11 @@ export class Manager implements OnInit, OnDestroy {
         console.error('Reviewer approval failed:', error);
         console.error('Backend response:', error.error);
 
+        if (error.status === 409 && error.error?.code === 'DUPLICATE_PLANT') {
+          this.duplicateConflict = error.error.existing_record;
+          this.compareRecord = null;
+          return;
+        }
         this.message = error.error?.message || 'Failed to approve request.';
 
         if (error.status === 401) {
@@ -853,6 +863,51 @@ export class Manager implements OnInit, OnDestroy {
         }
 
         this.cdr.detectChanges();
+      },
+    });
+  }
+
+  chooseNewVersion(): void {
+    if (!this.selectedRequest?.id) return;
+    this.duplicateConflict = null;
+    this.approveWithDuplicateAction(this.selectedRequest.id, 'new');
+  }
+
+  openExistingComparison(): void {
+    this.compareRecord = this.duplicateConflict;
+    this.compareNewRecord = this.selectedRequest;
+    this.showCompare = true;
+  }
+
+  closeDuplicateDialog(): void {
+    this.duplicateConflict = null;
+    this.compareRecord = null;
+    this.compareNewRecord = null;
+    this.showCompare = false;
+  }
+
+  saveNewRecordReplacingExisting(): void {
+    if (!this.selectedRequest?.id) return;
+    this.closeDuplicateDialog();
+    this.approveWithDuplicateAction(this.selectedRequest.id, 'replace');
+  }
+
+  private approveWithDuplicateAction(id: number, action: 'new' | 'replace'): void {
+    const data = {
+      scientific_name: this.scientificName.trim(),
+      description: this.description.trim(),
+      comments: this.comments.trim(),
+      duplicate_action: action,
+    };
+    this.requestService.reviewerApprove(id, data).subscribe({
+      next: () => {
+        this.message = 'Request approved successfully.';
+        this.clearSelectedRequest();
+        this.loadPendingRequests();
+        this.loadApprovedRequests();
+      },
+      error: (error: HttpErrorResponse) => {
+        this.message = error.error?.message || 'Failed to approve request.';
       },
     });
   }
@@ -1391,7 +1446,56 @@ export class Manager implements OnInit, OnDestroy {
   getPlantImage(request: any): string {
     const data = this.getRequestData(request);
 
-    return request?.image_url || request?.imageUrl || data?.image_url || data?.imageUrl || '';
+    const imagePath =
+      request?.image_url ||
+      request?.imageUrl ||
+      data?.image_url ||
+      data?.imageUrl ||
+      '';
+
+    if (!imagePath) {
+      return '';
+    }
+
+    if (
+      imagePath.startsWith('http://') ||
+      imagePath.startsWith('https://')
+    ) {
+      return imagePath;
+    }
+
+    return `${PLANT_IMAGE_BASE_URL}${imagePath.replace(/^[/\\]+/, '')}`;
+  }
+
+  getCompareValue(record: any, field: string, isNew = false): string {
+    if (isNew && field === 'scientific_name') {
+      return this.scientificName || this.getRequestData(record)?.scientific_name || 'N/A';
+    }
+
+    if (field === 'common_name') return this.getCommonName(record);
+    if (field === 'family') return this.getFamily(record);
+    if (field === 'habitat') return this.getHabitat(record);
+    if (field === 'latitude') return this.getDisplayValue(this.getLatitude(record));
+    if (field === 'longitude') return this.getDisplayValue(this.getLongitude(record));
+    if (field === 'plant_name') return this.getPlantName(record);
+
+    return this.getDisplayValue(record?.[field] ?? this.getRequestData(record)?.[field]);
+  }
+
+  getComparisonImages(record: any, isNew = false): string[] {
+    const paths: string[] = [];
+
+    if (isNew) {
+      this.getAttachments(record).forEach((attachment: any) => {
+        const path = attachment?.file_path || attachment?.filePath;
+        if (path) paths.push(path);
+      });
+    }
+
+    const image = this.getPlantImage(record);
+    if (image && !paths.includes(image)) paths.push(image);
+
+    return paths;
   }
 
   // GET COMMENTS

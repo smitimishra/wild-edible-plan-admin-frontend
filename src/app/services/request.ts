@@ -224,6 +224,7 @@ export class RequestService {
       scientific_name: string;
       description: string;
       comments?: string;
+      duplicate_action?: 'new' | 'replace';
     }
   ): Observable<any> {
 
@@ -391,6 +392,13 @@ export class RequestService {
 
       return '';
 
+    }
+
+    if (
+      filePath.startsWith('http://') ||
+      filePath.startsWith('https://')
+    ) {
+      return filePath;
     }
 
 
