@@ -9,7 +9,7 @@ import { AuthService } from '../../services/auth';
 import { RequestService } from '../../services/request';
 import { SessionPopupComponent } from '../../components/session-popup/session-popup';
 
-const API = 'http://192.168.29.217:3001/api';
+const API = 'http://192.168.29.71:3001/api';
 const PLANT_IMAGE_BASE_URL = 'http://192.168.29.98:8080/';
 
 @Component({
@@ -1547,6 +1547,6 @@ export class Manager implements OnInit, OnDestroy {
       return;
     }
 
-    this.authService.logout('http://192.168.29.217:8200/');
+    this.authService.logout('http://192.168.29.71:8200/');
   }
 }

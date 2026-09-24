@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class RequestService {
 
-  private apiUrl = 'http://192.168.29.217:3001/api/requests';
+  private apiUrl = 'http://192.168.29.71:3001/api/requests';
 
   constructor(private http: HttpClient) {}
 
@@ -238,6 +238,6 @@ export class RequestService {
         ? filePath
         : `/${filePath}`;
 
-    return `http://192.168.29.217:3001${normalizedPath}`;
+    return `http://192.168.29.71:3001${normalizedPath}`;
   }
 }

@@ -13,8 +13,8 @@ import { Router } from '@angular/router';
 
 import { UserSessionService } from '../services/user-session.service';
 
-const API = 'http://192.168.29.217:8080/api';
-const DESTINATION_APP = 'http://192.168.29.217:4200';
+const API = 'http://192.168.29.71:8080/api';
+const DESTINATION_APP = 'http://192.168.29.71:4200';
 
 @Component({
   selector: 'app-verify-otp',
@@ -184,7 +184,7 @@ export class VerifyOtpComponent implements OnInit {
           setTimeout(() => {
 
             window.location.href =
-              'http://192.168.29.217:8200/welcome';
+              'http://192.168.29.71:8200/welcome';
 
           }, 100);
 
