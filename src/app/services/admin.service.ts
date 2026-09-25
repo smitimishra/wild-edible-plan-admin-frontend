@@ -32,6 +32,18 @@ export interface GetUsersResponse {
   users: AdminUser[];
 }
 
+export interface BlockedUser {
+  user_id: number;
+  user_name: string;
+  email_id: string;
+  blocked_at: string;
+}
+
+export interface GetBlockedUsersResponse {
+  count: number;
+  blocked_users: BlockedUser[];
+}
+
 export interface CreateUserResponse {
   message: string;
   user: AdminUser;
@@ -143,6 +155,20 @@ export class AdminService {
       {
         headers: this.getHeaders()
       }
+    );
+  }
+
+  getBlockedUsers(): Observable<GetBlockedUsersResponse> {
+    return this.http.get<GetBlockedUsersResponse>(
+      `${this.apiUrl}/blocked-users`,
+      { headers: this.getHeaders() }
+    );
+  }
+
+  unblockUser(id: number): Observable<{ message: string; user_id: number }> {
+    return this.http.delete<{ message: string; user_id: number }>(
+      `${this.apiUrl}/blocked-users/${id}`,
+      { headers: this.getHeaders() }
     );
   }
 

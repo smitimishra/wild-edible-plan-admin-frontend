@@ -15,6 +15,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import {
   AdminService,
   AdminUser,
+  BlockedUser,
   HierarchyLevel,
   HealthResponse
 } from '../services/admin.service';
@@ -91,6 +92,10 @@ export class Admin implements OnInit, OnDestroy {
   // ============================================================
 
   users: AdminUser[] = [];
+
+  blockedUsers: BlockedUser[] = [];
+
+  blockedUsersLoading = false;
 
   filteredUsers: AdminUser[] = [];
 
@@ -444,6 +449,7 @@ export class Admin implements OnInit, OnDestroy {
       // Do not reset the selected theme here.
 
       this.loadUsers();
+      this.loadBlockedUsers();
 
     });
 
@@ -741,6 +747,42 @@ export class Admin implements OnInit, OnDestroy {
 
     });
 
+  }
+
+  loadBlockedUsers(): void {
+    this.blockedUsersLoading = true;
+
+    this.adminService.getBlockedUsers().subscribe({
+      next: (response) => {
+        this.blockedUsers = response.blocked_users || [];
+        this.blockedUsersLoading = false;
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        console.error('Failed to load blocked users:', error);
+        this.errorMessage = error?.error?.message || 'Unable to load blocked users';
+        this.blockedUsersLoading = false;
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  unblockUser(user: BlockedUser): void {
+    if (!confirm(`Are you sure you want to unblock ${user.user_name}?`)) {
+      return;
+    }
+
+    this.clearMessages();
+    this.adminService.unblockUser(user.user_id).subscribe({
+      next: () => {
+        this.successMessage = 'User unblocked successfully';
+        this.loadBlockedUsers();
+      },
+      error: (error) => {
+        console.error('Unblock user error:', error);
+        this.errorMessage = error?.error?.message || 'Unable to unblock user';
+      }
+    });
   }
 
 
