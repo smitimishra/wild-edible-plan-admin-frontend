@@ -219,7 +219,7 @@ export class Admin implements OnInit, OnDestroy {
   profileName = '';
 
   private readonly profileApiUrl =
-    'http://192.168.29.71:3001/api/profile/me';
+    'http://192.168.29.69:3001/api/profile/me';
 
   private systemThemeMediaQuery: MediaQueryList | null = null;
 
@@ -2784,7 +2784,7 @@ export class Admin implements OnInit, OnDestroy {
 
 
     this.authService.logout(
-      'http://192.168.29.71:8200/'
+      'http://192.168.29.69:8200/'
     );
 
   }

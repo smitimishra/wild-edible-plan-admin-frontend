@@ -10,7 +10,7 @@ import { catchError, throwError } from 'rxjs';
 // back to the login portal.
 // ============================================================
 
-const LOGIN_PORTAL_URL = 'http://192.168.29.71:8200/';
+const LOGIN_PORTAL_URL = 'http://192.168.29.69:8200/';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
 

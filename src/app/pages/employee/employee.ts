@@ -318,6 +318,6 @@ export class Employee implements OnInit {
   // LOGOUT
 
   logout(): void {
-    this.authService.logout('http://192.168.29.71:8200/');
+    this.authService.logout('http://192.168.29.69:8200/');
   }
 }

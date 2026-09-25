@@ -58,7 +58,7 @@ if (isMainModule(import.meta.url) || process.env['pm_id']) {
       throw error;
     }
 
-    console.log(`Node Express server listening on http://192.168.29.71:${port}`);
+    console.log(`Node Express server listening on http://192.168.29.69:${port}`);
   });
 }
 
