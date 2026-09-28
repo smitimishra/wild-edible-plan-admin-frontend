@@ -8,13 +8,15 @@ import { DatePipe, DecimalPipe, TitleCasePipe } from '@angular/common';
 import { AuthService } from '../../services/auth';
 import { RequestService } from '../../services/request';
 import { SessionPopupComponent } from '../../components/session-popup/session-popup';
+import { AppLanguageService } from '../../services/app-language';
+import { LanguageTextPipe } from '../../pipes/language-text.pipe';
 
-const API = 'http://192.168.29.69:3001/api';
+const API = 'http://192.168.29.68:3001/api';
 const PLANT_IMAGE_BASE_URL = 'http://192.168.29.98:8080/';
 
 @Component({
   selector: 'app-manager',
-  imports: [FormsModule, DatePipe, TitleCasePipe, SessionPopupComponent],
+  imports: [FormsModule, DatePipe, TitleCasePipe, SessionPopupComponent, LanguageTextPipe],
   templateUrl: './manager.html',
 })
 export class Manager implements OnInit, OnDestroy {
@@ -101,6 +103,7 @@ export class Manager implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private cdr: ChangeDetectorRef,
+    private language: AppLanguageService,
   ) {}
 
   // MOUSE ACTIVITY → SESSION CHECK
@@ -141,6 +144,7 @@ export class Manager implements OnInit, OnDestroy {
     // JWT FROM URL
 
     this.route.queryParamMap.subscribe((params) => {
+      this.language.setLanguage(params.get('lang'));
       const urlToken = params.get('token')?.trim() || null;
 
       // REVIEWER ROLE
@@ -1547,6 +1551,6 @@ export class Manager implements OnInit, OnDestroy {
       return;
     }
 
-    this.authService.logout('http://192.168.29.69:8200/');
+    this.authService.logout('http://192.168.29.68:8200/');
   }
 }

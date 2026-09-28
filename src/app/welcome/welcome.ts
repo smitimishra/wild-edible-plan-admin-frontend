@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Router, RouterLink } from '@angular/router';
 
-const API = 'http://192.168.29.69:8080/api';
+const API = 'http://192.168.29.68:8080/api';
 
 // Icon map for role names
 const ROLE_ICONS: Record<string, string> = {
@@ -110,8 +110,10 @@ export class WelcomeComponent implements OnInit, OnDestroy {
       if (this.lockoutSeconds === 0) {
         this.stopLockoutTimer();
         this.errorMsg = '';
+        this.lockedEmail = '';
+        this.password = '';
         if (typeof window !== 'undefined') {
-          window.alert(`${this.lockedUserName} can login now. The 1-hour block has ended.`);
+          window.alert('This account has been unblocked. You can login now.');
         }
       }
       this.cdr.markForCheck();
@@ -126,6 +128,13 @@ export class WelcomeComponent implements OnInit, OnDestroy {
       clearInterval(this.lockoutTimer);
       this.lockoutTimer = undefined;
     }
+  }
+
+  private isAccountLockedError(err: any): boolean {
+    const response = err?.error;
+    return response?.error === 'account_locked'
+      || response?.message === 'account_locked'
+      || err?.status === 429 && response?.error === 'account_locked';
   }
 
   login(): void {
@@ -150,13 +159,13 @@ export class WelcomeComponent implements OnInit, OnDestroy {
         this.router.navigate(['/verify-otp']);
       },
       error: err => {
-        if (err.status === 429 && err.error?.error === 'account_locked') {
+        if (this.isAccountLockedError(err)) {
           const lockedUserName = err.error.userName ?? this.emailId.trim();
           this.lockedEmail = this.emailId.trim().toLowerCase();
           this.lockedUserName = lockedUserName;
           this.errorMsg = 'This user is blocked for 1 hour. Please try again after 1 hour.';
           if (typeof window !== 'undefined') {
-            window.alert(`${lockedUserName} is blocked for 1 hour after 3 failed attempts.`);
+            window.alert('This user is blocked for 1 hour. Please try again after 1 hour.');
           }
           this.startLockoutTimer(err.error.lockedUntil, err.error.minutesLeft ?? 60);
         } else {

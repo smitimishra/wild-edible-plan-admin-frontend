@@ -27,11 +27,11 @@
         @if (!sidebarCollapsed) {
           <div class="min-w-0 pr-9">
             <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-indigo-600 dark:text-indigo-400">
-              Admin
+              {{ 'Admin' | languageText }}
             </p>
 
             <h1 class="mt-0.5 text-lg font-bold tracking-tight text-slate-900 dark:text-white whitespace-nowrap">
-              Approval System
+              {{ 'Approval System' | languageText }}
             </h1>
           </div>
         }
@@ -40,8 +40,8 @@
         <button
           type="button"
           (click)="toggleSidebar()"
-          [attr.aria-label]="sidebarCollapsed ? 'Open sidebar' : 'Close sidebar'"
-          [attr.title]="sidebarCollapsed ? 'Open sidebar' : 'Close sidebar'"
+          [attr.aria-label]="sidebarCollapsed ? ('Open sidebar' | languageText) : ('Close sidebar' | languageText)"
+          [attr.title]="sidebarCollapsed ? ('Open sidebar' | languageText) : ('Close sidebar' | languageText)"
           class="absolute right-0 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-lg text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"
           [class.hidden]="sidebarCollapsed"
         >
@@ -62,8 +62,8 @@
         <button
           type="button"
           (click)="toggleSidebar()"
-          [attr.aria-label]="'Open sidebar'"
-          [attr.title]="'Open sidebar'"
+          [attr.aria-label]="'Open sidebar' | languageText"
+          [attr.title]="'Open sidebar' | languageText"
           class="mx-auto mt-2 flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"
         >
           <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -88,7 +88,7 @@
         class="group flex w-full items-center gap-3 rounded-xl px-3 py-3.5 text-left text-sm font-semibold text-slate-700 dark:text-slate-200 transition-all duration-200 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white"
         [class.justify-center]="sidebarCollapsed"
       
-        [attr.title]="sidebarCollapsed ? 'Dashboard' : null">
+        [attr.title]="sidebarCollapsed ? ('Dashboard' | languageText) : null">
 
         <svg
           class="h-5 w-5 shrink-0"
@@ -104,7 +104,7 @@
         </svg>
 
         @if (!sidebarCollapsed) {
-          <span>Dashboard</span>
+          <span>{{ 'Dashboard' | languageText }}</span>
         }
 
       </button>
@@ -120,7 +120,7 @@
         class="group flex w-full items-center gap-3 rounded-xl px-3 py-3.5 text-left text-sm font-semibold text-slate-700 dark:text-slate-200 transition-all duration-200 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white"
         [class.justify-center]="sidebarCollapsed"
       
-        [attr.title]="sidebarCollapsed ? 'User Management' : null">
+        [attr.title]="sidebarCollapsed ? ('User Management' | languageText) : null">
 
         <svg
           class="h-5 w-5 shrink-0"
@@ -136,7 +136,7 @@
         </svg>
 
         @if (!sidebarCollapsed) {
-          <span>User Management</span>
+          <span>{{ 'User Management' | languageText }}</span>
         }
 
       </button>
@@ -152,7 +152,7 @@
         class="group flex w-full items-center gap-3 rounded-xl px-3 py-3.5 text-left text-sm font-semibold text-slate-700 dark:text-slate-200 transition-all duration-200 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white"
         [class.justify-center]="sidebarCollapsed"
       
-        [attr.title]="sidebarCollapsed ? 'Role Management' : null">
+        [attr.title]="sidebarCollapsed ? ('Role Management' | languageText) : null">
 
         <svg
           class="h-5 w-5 shrink-0"
@@ -166,7 +166,7 @@
         </svg>
 
         @if (!sidebarCollapsed) {
-          <span>Role Management</span>
+          <span>{{ 'Role Management' | languageText }}</span>
         }
 
       </button>
@@ -182,7 +182,7 @@
         class="group flex w-full items-center gap-3 rounded-xl px-3 py-3.5 text-left text-sm font-semibold text-slate-700 dark:text-slate-200 transition-all duration-200 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white"
         [class.justify-center]="sidebarCollapsed"
       
-        [attr.title]="sidebarCollapsed ? 'Hierarchy Management' : null">
+        [attr.title]="sidebarCollapsed ? ('Hierarchy Management' | languageText) : null">
 
         <svg
           class="h-5 w-5 shrink-0"
@@ -199,7 +199,7 @@
         </svg>
 
         @if (!sidebarCollapsed) {
-          <span>Hierarchy Management</span>
+          <span>{{ 'Hierarchy Management' | languageText }}</span>
         }
 
       </button>
@@ -215,7 +215,7 @@
         class="group flex w-full items-center gap-3 rounded-xl px-3 py-3.5 text-left text-sm font-semibold text-slate-700 dark:text-slate-200 transition-all duration-200 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white"
         [class.justify-center]="sidebarCollapsed"
 
-        [attr.title]="sidebarCollapsed ? 'Health Analysis' : null">
+        [attr.title]="sidebarCollapsed ? ('Health Analysis' | languageText) : null">
         <svg
           class="h-5 w-5 shrink-0"
           fill="none"
@@ -228,7 +228,7 @@
         </svg>
 
         @if (!sidebarCollapsed) {
-          <span>Health Analysis</span>
+          <span>{{ 'Health Analysis' | languageText }}</span>
         }
       </button>
 
@@ -253,41 +253,41 @@
         <div>
 
           <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 dark:text-slate-500">
-            Administration
+            {{ 'Administration' | languageText }}
           </p>
 
           <h2 class="mt-1 text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
 
             @if (activeMenu === 'dashboard') {
-              Dashboard
+              {{ 'Dashboard' | languageText }}
             }
 
             @else if (activeMenu === 'users') {
-              User Management
+              {{ 'User Management' | languageText }}
             }
 
             @else if (activeMenu === 'roles') {
-              Role Management
+              {{ 'Role Management' | languageText }}
             }
 
             @else if (activeMenu === 'hierarchy') {
-              Hierarchy Management
+              {{ 'Hierarchy Management' | languageText }}
             }
 
             @else if (activeMenu === 'health-analysis') {
-              Health Analysis
+              {{ 'Health Analysis' | languageText }}
             }
 
             @else if (activeMenu === 'settings' && settingsView === 'logged-in-devices') {
-              Logged-in Devices
+              {{ 'Logged-in Devices' | languageText }}
             }
 
             @else if (activeMenu === 'settings') {
-              Settings
+              {{ 'Settings' | languageText }}
             }
 
             @else {
-              Administration
+              {{ 'Administration' | languageText }}
             }
 
           </h2>
@@ -307,7 +307,7 @@
             </p>
 
             <p class="text-xs text-slate-500 dark:text-slate-400">
-              Admin Panel
+              {{ 'Admin Panel' | languageText }}
             </p>
           </div>
 
@@ -316,8 +316,8 @@
           <button
             type="button"
             (click)="toggleProfileMenu()"
-            aria-label="Open account menu"
-            title="Account menu"
+            [attr.aria-label]="'Open account menu' | languageText"
+            [attr.title]="'Account menu' | languageText"
             class="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-600 text-xs font-bold text-white shadow-sm transition hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-slate-900"
           >
             {{ getProfileInitial() }}
@@ -346,7 +346,7 @@
                   <circle cx="12" cy="8" r="4"></circle>
                   <path d="M4 21a8 8 0 0 1 16 0"></path>
                 </svg>
-                <span>Account Settings</span>
+                <span>{{ 'Account Settings' | languageText }}</span>
               </button>
 
 
@@ -367,7 +367,7 @@
                     <circle cx="12" cy="12" r="4"></circle>
                     <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path>
                   </svg>
-                  <span>Theme</span>
+                  <span>{{ 'Theme' | languageText }}</span>
                 </span>
 
                 <svg
@@ -396,7 +396,7 @@
                   >
                     <span class="flex items-center gap-2">
                       <span>☀</span>
-                      <span>Light</span>
+                      <span>{{ 'Light' | languageText }}</span>
                     </span>
                     @if (isThemeSelected('light')) {
                       <span class="text-indigo-600 dark:text-indigo-400">✓</span>
@@ -411,7 +411,7 @@
                   >
                     <span class="flex items-center gap-2">
                       <span>☾</span>
-                      <span>Dark</span>
+                      <span>{{ 'Dark' | languageText }}</span>
                     </span>
                     @if (isThemeSelected('dark')) {
                       <span class="text-indigo-600 dark:text-indigo-400">✓</span>
@@ -426,7 +426,7 @@
                   >
                     <span class="flex items-center gap-2">
                       <span>▣</span>
-                      <span>System Default</span>
+                      <span>{{ 'System Default' | languageText }}</span>
                     </span>
                     @if (isThemeSelected('default')) {
                       <span class="text-indigo-600 dark:text-indigo-400">✓</span>
@@ -457,7 +457,7 @@
                   <path d="M15 12H3"></path>
                   <path d="M21 3v18"></path>
                 </svg>
-                <span>Logout</span>
+                <span>{{ 'Logout' | languageText }}</span>
               </button>
 
             </div>
@@ -541,7 +541,7 @@
                 <div>
 
                   <p class="text-sm font-medium text-slate-500 dark:text-slate-400">
-                    Total Users
+                    {{ 'Total Users' | languageText }}
                   </p>
 
                   <p class="mt-3 text-4xl font-bold tracking-tight text-slate-900 dark:text-white">
@@ -549,7 +549,7 @@
                   </p>
 
                   <p class="mt-3 text-xs text-slate-400 dark:text-slate-500">
-                    Click to view all users
+                    {{ 'Click to view all users' | languageText }}
                   </p>
 
                 </div>
@@ -591,7 +591,7 @@
                 <div>
 
                   <p class="text-sm font-medium text-slate-500 dark:text-slate-400">
-                    Active Users
+                    {{ 'Active Users' | languageText }}
                   </p>
 
                   <p class="mt-3 text-4xl font-bold tracking-tight text-emerald-600">
@@ -599,7 +599,7 @@
                   </p>
 
                   <p class="mt-3 text-xs text-slate-400 dark:text-slate-500">
-                    Click to view active users
+                    {{ 'Click to view active users' | languageText }}
                   </p>
 
                 </div>
@@ -630,7 +630,7 @@
                 <div>
 
                   <p class="text-sm font-medium text-slate-500 dark:text-slate-400">
-                    Inactive Users
+                    {{ 'Inactive Users' | languageText }}
                   </p>
 
                   <p class="mt-3 text-4xl font-bold tracking-tight text-red-600 dark:text-red-400">
@@ -638,7 +638,7 @@
                   </p>
 
                   <p class="mt-3 text-xs text-slate-400 dark:text-slate-500">
-                    Click to view inactive users
+                    {{ 'Click to view inactive users' | languageText }}
                   </p>
 
                 </div>
@@ -675,7 +675,7 @@
                 <div>
 
                   <p class="text-sm font-medium text-slate-500 dark:text-slate-400">
-                    Administrators
+                    {{ 'Administrators' | languageText }}
                   </p>
 
                   <p class="mt-3 text-3xl font-bold text-slate-900 dark:text-white">
@@ -683,7 +683,7 @@
                   </p>
 
                   <p class="mt-2 text-xs text-slate-400 dark:text-slate-500">
-                    System administration accounts
+                    {{ 'System administration accounts' | languageText }}
                   </p>
 
                 </div>
@@ -710,7 +710,7 @@
                 <div>
 
                   <p class="text-sm font-medium text-slate-500 dark:text-slate-400">
-                    Employee / Field Staff
+                    {{ 'Employee / Field Staff' | languageText }}
                   </p>
 
                   <p class="mt-3 text-3xl font-bold text-blue-600">
@@ -718,7 +718,7 @@
                   </p>
 
                   <p class="mt-2 text-xs text-slate-400 dark:text-slate-500">
-                    Users who submit requests
+                    {{ 'Users who submit requests' | languageText }}
                   </p>
 
                 </div>
@@ -745,7 +745,7 @@
                 <div>
 
                   <p class="text-sm font-medium text-slate-500 dark:text-slate-400">
-                    Reviewers
+                    {{ 'Reviewers' | languageText }}
                   </p>
 
                   <p class="mt-3 text-3xl font-bold text-purple-600">
@@ -786,7 +786,7 @@
 
             <div>
               <p class="text-sm text-slate-500 dark:text-slate-400">
-                Manage Admin, Employee / Field Staff and Reviewer accounts.
+                {{ 'Manage Admin, Employee / Field Staff and Reviewer accounts.' | languageText }}
               </p>
             </div>
 
@@ -827,7 +827,7 @@
                 (click)="openAddUser()"
                 class="rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white shadow-sm transition-all hover:bg-indigo-700 hover:shadow-md"
               >
-                Add User
+                {{ 'Add User' | languageText }}
               </button>
             </div>
 
@@ -838,7 +838,7 @@
                     Blocked Users ({{ blockedUsers.length }})
                   </h3>
                   <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
-                    Users blocked after repeated failed login attempts.
+                    {{ 'Users blocked after repeated failed login attempts.' | languageText }}
                   </p>
                 </div>
                 <button
@@ -846,23 +846,23 @@
                   (click)="loadBlockedUsers()"
                   class="rounded-lg border border-slate-300 dark:border-slate-700 px-3 py-2 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"
                 >
-                  Refresh
+                  {{ 'Refresh' | languageText }}
                 </button>
               </div>
 
               @if (blockedUsersLoading) {
-                <p class="mt-5 text-sm text-slate-500 dark:text-slate-400">Loading blocked users...</p>
+                <p class="mt-5 text-sm text-slate-500 dark:text-slate-400">{{ 'Loading blocked users...' | languageText }}</p>
               } @else if (blockedUsers.length === 0) {
-                <p class="mt-5 text-sm text-slate-500 dark:text-slate-400">No blocked users.</p>
+                <p class="mt-5 text-sm text-slate-500 dark:text-slate-400">{{ 'No blocked users.' | languageText }}</p>
               } @else {
                 <div class="mt-5 overflow-x-auto">
                   <table class="w-full text-left text-sm">
                     <thead class="text-xs uppercase text-slate-500 dark:text-slate-400">
                       <tr>
-                        <th class="pb-3 pr-4">Name</th>
-                        <th class="pb-3 pr-4">Email</th>
-                        <th class="pb-3 pr-4">Blocked At</th>
-                        <th class="pb-3 text-right">Action</th>
+                        <th class="pb-3 pr-4">{{ 'Name' | languageText }}</th>
+                        <th class="pb-3 pr-4">{{ 'Email' | languageText }}</th>
+                        <th class="pb-3 pr-4">{{ 'Blocked At' | languageText }}</th>
+                        <th class="pb-3 text-right">{{ 'Action' | languageText }}</th>
                       </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
@@ -877,7 +877,7 @@
                               (click)="unblockUser(blockedUser)"
                               class="rounded-lg bg-emerald-600 px-3 py-2 text-xs font-semibold text-white hover:bg-emerald-700"
                             >
-                              Unblock
+                              {{ 'Unblock' | languageText }}
                             </button>
                           </td>
                         </tr>
@@ -904,7 +904,7 @@
                 [class.dark:text-slate-200]="userStatusFilter !== 'all'"
                 class="rounded-lg px-4 py-2 text-xs font-semibold transition-all hover:bg-indigo-50 dark:hover:bg-indigo-950/40"
               >
-                All Users
+                {{ 'All Users' | languageText }}
               </button>
 
 
@@ -920,7 +920,7 @@
                 [class.dark:text-emerald-400]="userStatusFilter !== 'active'"
                 class="rounded-lg px-4 py-2 text-xs font-semibold transition-all hover:bg-emerald-100 dark:hover:bg-emerald-900/40"
               >
-                Active
+                {{ 'Active' | languageText }}
               </button>
 
 
@@ -936,7 +936,7 @@
                 [class.dark:text-red-400]="userStatusFilter !== 'inactive'"
                 class="rounded-lg px-4 py-2 text-xs font-semibold transition-all hover:bg-red-100 dark:hover:bg-red-900/40"
               >
-                Inactive
+                {{ 'Inactive' | languageText }}
               </button>
 
             </div>
@@ -954,7 +954,7 @@
               ></div>
 
               <p class="mt-4 text-sm text-slate-500 dark:text-slate-400">
-                Loading users...
+                {{ 'Loading users...' | languageText }}
               </p>
 
             </div>
@@ -976,37 +976,37 @@
                     <th
                       class="px-6 py-4 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400"
                     >
-                      User
+                      {{ 'User' | languageText }}
                     </th>
 
                     <th
                       class="px-6 py-4 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400"
                     >
-                      Employee Code
+                      {{ 'Employee Code' | languageText }}
                     </th>
 
                     <th
                       class="px-6 py-4 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400"
                     >
-                      Role
+                      {{ 'Role' | languageText }}
                     </th>
 
                     <th
                       class="px-6 py-4 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400"
                     >
-                      Approval Position
+                      {{ 'Approval Position' | languageText }}
                     </th>
 
                     <th
                       class="px-6 py-4 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400"
                     >
-                      Status
+                      {{ 'Status' | languageText }}
                     </th>
 
                     <th
                       class="px-6 py-4 text-right text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400"
                     >
-                      Actions
+                      {{ 'Actions' | languageText }}
                     </th>
 
                   </tr>
@@ -1061,7 +1061,7 @@
                           <span
                             class="inline-flex rounded-full bg-indigo-50 dark:bg-indigo-950/40 px-3 py-1.5 text-xs font-semibold text-indigo-700 dark:text-indigo-300"
                           >
-                            Admin
+                            {{ 'Admin' | languageText }}
                           </span>
 
                         }
@@ -1071,7 +1071,7 @@
                           <span
                             class="inline-flex rounded-full bg-blue-50 dark:bg-blue-950/40 px-3 py-1.5 text-xs font-semibold text-blue-700 dark:text-blue-300"
                           >
-                            Employee / Field Staff
+                            {{ 'Employee / Field Staff' | languageText }}
                           </span>
 
                         }
@@ -1081,7 +1081,7 @@
                           <span
                             class="inline-flex rounded-full bg-purple-50 dark:bg-purple-950/40 px-3 py-1.5 text-xs font-semibold text-purple-700 dark:text-purple-300"
                           >
-                            Reviewer
+                            {{ 'Reviewer' | languageText }}
                           </span>
 
                         }
@@ -1105,7 +1105,7 @@
                         @else {
 
                           <span class="text-sm text-slate-400 dark:text-slate-500">
-                            N/A
+                            {{ 'N/A' | languageText }}
                           </span>
 
                         }
@@ -1126,7 +1126,7 @@
                               class="h-1.5 w-1.5 rounded-full bg-emerald-600"
                             ></span>
 
-                            Active
+                            {{ 'Active' | languageText }}
 
                           </span>
 
@@ -1142,7 +1142,7 @@
                               class="h-1.5 w-1.5 rounded-full bg-red-600"
                             ></span>
 
-                            Inactive
+                            {{ 'Inactive' | languageText }}
 
                           </span>
 
@@ -1188,7 +1188,7 @@
                                   <path d="M12 20h9"></path>
                                   <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path>
                                 </svg>
-                                <span>Edit</span>
+                                <span>{{ 'Edit' | languageText }}</span>
                               </button>
 
                               @if (user.is_active) {
@@ -1209,7 +1209,7 @@
                                     <circle cx="12" cy="12" r="9"></circle>
                                     <path d="M8 12h8"></path>
                                   </svg>
-                                  <span>Deactivate</span>
+                                  <span>{{ 'Deactivate' | languageText }}</span>
                                 </button>
 
                               }
@@ -1231,7 +1231,7 @@
                                   >
                                     <path d="M20 6 9 17l-5-5"></path>
                                   </svg>
-                                  <span>Activate</span>
+                                  <span>{{ 'Activate' | languageText }}</span>
                                 </button>
 
                               }
@@ -1254,7 +1254,7 @@
                                   <path d="M19 6l-1 14H6L5 6"></path>
                                   <path d="M10 11v5M14 11v5"></path>
                                 </svg>
-                                <span>Delete</span>
+                                <span>{{ 'Delete' | languageText }}</span>
                               </button>
 
                             </div>
@@ -1286,11 +1286,11 @@
                         </div>
 
                         <p class="mt-4 text-sm font-semibold text-slate-700 dark:text-slate-200">
-                          No users found.
+                          {{ 'No users found.' | languageText }}
                         </p>
 
                         <p class="mt-1 text-xs text-slate-400 dark:text-slate-500">
-                          Try changing your search or filter.
+                          {{ 'Try changing your search or filter.' | languageText }}
                         </p>
 
                       </td>
@@ -1313,7 +1313,7 @@
 
               <p class="text-sm text-slate-500 dark:text-slate-400">
 
-                Showing
+                {{ 'Showing' | languageText }}
 
                 <span class="font-semibold text-slate-900 dark:text-white">
                   {{ paginationStart }}
@@ -1325,13 +1325,13 @@
                   {{ paginationEnd }}
                 </span>
 
-                of
+                {{ 'of' | languageText }}
 
                 <span class="font-semibold text-slate-900 dark:text-white">
                   {{ filteredUsersByStatus.length }}
                 </span>
 
-                users
+                {{ 'users' | languageText }}
 
               </p>
 
@@ -1344,7 +1344,7 @@
                   [disabled]="currentPage === 1"
                   class="rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-2 text-xs font-semibold text-slate-700 dark:text-slate-200 transition hover:bg-slate-100 dark:hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-40"
                 >
-                  Previous
+                  {{ 'Previous' | languageText }}
                 </button>
 
 
@@ -1361,7 +1361,7 @@
                   [disabled]="currentPage === totalPages"
                   class="rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-2 text-xs font-semibold text-slate-700 dark:text-slate-200 transition hover:bg-slate-100 dark:hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-40"
                 >
-                  Next
+                  {{ 'Next' | languageText }}
                 </button>
 
               </div>
@@ -1385,7 +1385,7 @@
 
           <!-- DESCRIPTION -->
           <p class="mb-7 text-sm text-slate-500 dark:text-slate-400">
-            Manage roles assigned to system users.
+            {{ 'Manage roles assigned to system users.' | languageText }}
           </p>
 
 
@@ -1403,7 +1403,7 @@
                 <div>
 
                   <p class="text-sm font-medium text-slate-500 dark:text-slate-400">
-                    Administrators
+                    {{ 'Administrators' | languageText }}
                   </p>
 
                   <p class="mt-3 text-3xl font-bold text-indigo-600 dark:text-indigo-400">
@@ -1433,7 +1433,7 @@
                 <div>
 
                   <p class="text-sm font-medium text-slate-500 dark:text-slate-400">
-                    Employee / Field Staff
+                    {{ 'Employee / Field Staff' | languageText }}
                   </p>
 
                   <p class="mt-3 text-3xl font-bold text-blue-600">
@@ -1463,7 +1463,7 @@
                 <div>
 
                   <p class="text-sm font-medium text-slate-500 dark:text-slate-400">
-                    Reviewers
+                    {{ 'Reviewers' | languageText }}
                   </p>
 
                   <p class="mt-3 text-3xl font-bold text-purple-600">
@@ -1531,25 +1531,25 @@
                     <th
                       class="px-6 py-4 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400"
                     >
-                      User
+                      {{ 'User' | languageText }}
                     </th>
 
                     <th
                       class="px-6 py-4 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400"
                     >
-                      Employee Code
+                      {{ 'Employee Code' | languageText }}
                     </th>
 
                     <th
                       class="px-6 py-4 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400"
                     >
-                      Current Role
+                      {{ 'Current Role' | languageText }}
                     </th>
 
                     <th
                       class="px-6 py-4 text-right text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400"
                     >
-                      Action
+                      {{ 'Action' | languageText }}
                     </th>
 
                   </tr>
@@ -1600,7 +1600,7 @@
                           <span
                             class="inline-flex rounded-full bg-indigo-50 dark:bg-indigo-950/40 px-3 py-1.5 text-xs font-semibold text-indigo-700 dark:text-indigo-300"
                           >
-                            Admin
+                            {{ 'Admin' | languageText }}
                           </span>
 
                         }
@@ -1610,7 +1610,7 @@
                           <span
                             class="inline-flex rounded-full bg-blue-50 dark:bg-blue-950/40 px-3 py-1.5 text-xs font-semibold text-blue-700 dark:text-blue-300"
                           >
-                            Employee / Field Staff
+                            {{ 'Employee / Field Staff' | languageText }}
                           </span>
 
                         }
@@ -1620,7 +1620,7 @@
                           <span
                             class="inline-flex rounded-full bg-purple-50 dark:bg-purple-950/40 px-3 py-1.5 text-xs font-semibold text-purple-700 dark:text-purple-300"
                           >
-                            Reviewer
+                            {{ 'Reviewer' | languageText }}
                           </span>
 
                         }
@@ -1640,7 +1640,7 @@
                             (click)="openRoleModal(user)"
                             class="rounded-lg border border-purple-200 dark:border-purple-800 bg-purple-50 dark:bg-purple-950/40 px-4 py-2 text-xs font-semibold text-purple-700 dark:text-purple-300 transition-all hover:bg-purple-600 hover:text-white dark:hover:bg-purple-600 dark:hover:text-white"
                           >
-                            Change Role
+                            {{ 'Change Role' | languageText }}
                           </button>
 
                         }
@@ -1650,7 +1650,7 @@
                           <span
                             class="inline-flex rounded-lg bg-slate-100 dark:bg-slate-800 px-3 py-2 text-xs font-semibold text-slate-400 dark:text-slate-500"
                           >
-                            Protected
+                            {{ 'Protected' | languageText }}
                           </span>
 
                         }
@@ -1672,11 +1672,11 @@
                       >
 
                         <p class="text-sm font-semibold text-slate-700 dark:text-slate-200">
-                          No users found.
+                          {{ 'No users found.' | languageText }}
                         </p>
 
                         <p class="mt-1 text-xs text-slate-400 dark:text-slate-500">
-                          Try changing your search.
+                          {{ 'Try changing your search.' | languageText }}
                         </p>
 
                       </td>
@@ -1699,7 +1699,7 @@
 
               <p class="text-sm text-slate-500 dark:text-slate-400">
 
-                Showing
+                {{ 'Showing' | languageText }}
 
                 <span class="font-semibold text-slate-900 dark:text-white">
                   {{ rolePaginationStart }}
@@ -1711,13 +1711,13 @@
                   {{ rolePaginationEnd }}
                 </span>
 
-                of
+                {{ 'of' | languageText }}
 
                 <span class="font-semibold text-slate-900 dark:text-white">
                   {{ filteredRoleUsers.length }}
                 </span>
 
-                users
+                {{ 'users' | languageText }}
 
               </p>
 
@@ -1730,7 +1730,7 @@
                   [disabled]="roleCurrentPage === 1"
                   class="rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-2 text-xs font-semibold text-slate-700 dark:text-slate-200 transition hover:bg-slate-100 dark:hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-40"
                 >
-                  Previous
+                  {{ 'Previous' | languageText }}
                 </button>
 
 
@@ -1747,7 +1747,7 @@
                   [disabled]="roleCurrentPage === roleTotalPages"
                   class="rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-2 text-xs font-semibold text-slate-700 dark:text-slate-200 transition hover:bg-slate-100 dark:hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-40"
                 >
-                  Next
+                  {{ 'Next' | languageText }}
                 </button>
 
               </div>
@@ -1766,7 +1766,7 @@
   <section class="space-y-5">
     <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
       <div>
-        <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Live system and service health from the server monitor.</p>
+        <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">{{ "Live system and service health from the server monitor." | languageText }}</p>
       </div>
       <div class="flex items-center gap-3">
         @if (healthData) {
@@ -1787,8 +1787,8 @@
     @if (healthLoading && !healthData) {
       <div class="flex min-h-[360px] flex-col items-center justify-center rounded-2xl border border-slate-200 bg-white p-10 text-center shadow-sm dark:border-slate-800 dark:bg-slate-900">
         <div class="h-12 w-12 animate-spin rounded-full border-4 border-indigo-100 border-t-indigo-600 dark:border-indigo-950 dark:border-t-indigo-400"></div>
-        <p class="mt-5 text-sm font-semibold text-slate-700 dark:text-slate-200">Loading health analysis...</p>
-        <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Starting the monitor and collecting the latest result.</p>
+        <p class="mt-5 text-sm font-semibold text-slate-700 dark:text-slate-200">{{ "Loading health analysis..." | languageText }}</p>
+        <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">{{ "Starting the monitor and collecting the latest result." | languageText }}</p>
       </div>
     } @else if (healthError && !healthData) {
       <div class="rounded-2xl border border-red-200 bg-red-50 p-5 text-sm text-red-700 dark:border-red-800 dark:bg-red-950 dark:text-red-300">
@@ -1799,33 +1799,33 @@
         <div class="flex items-center gap-4 rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
           <div class="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 text-2xl dark:bg-emerald-950">♥</div>
           <div>
-            <p class="text-xs font-semibold text-slate-500 dark:text-slate-400">Overall Status</p>
+            <p class="text-xs font-semibold text-slate-500 dark:text-slate-400">{{ "Overall Status" | languageText }}</p>
             <p class="text-lg font-bold text-emerald-600">{{ healthData.overallStatus }}</p>
-            <p class="text-xs text-slate-500 dark:text-slate-400">All systems monitored</p>
+            <p class="text-xs text-slate-500 dark:text-slate-400">{{ "All systems monitored" | languageText }}</p>
           </div>
         </div>
         <div class="flex items-center gap-4 rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
           <div class="flex h-12 w-12 items-center justify-center rounded-full bg-blue-100 text-2xl dark:bg-blue-950">▣</div>
           <div>
-            <p class="text-xs font-semibold text-slate-500 dark:text-slate-400">Services</p>
+            <p class="text-xs font-semibold text-slate-500 dark:text-slate-400">{{ "Services" | languageText }}</p>
             <p class="text-lg font-bold text-slate-900 dark:text-white">{{ healthData.services.database ? '3 / 3' : '2 / 2' }}</p>
-            <p class="text-xs text-slate-500 dark:text-slate-400">Application checks</p>
+            <p class="text-xs text-slate-500 dark:text-slate-400">{{ "Application checks" | languageText }}</p>
           </div>
         </div>
         <div class="flex items-center gap-4 rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
           <div class="flex h-12 w-12 items-center justify-center rounded-full bg-amber-100 text-2xl dark:bg-amber-950">!</div>
           <div>
-            <p class="text-xs font-semibold text-slate-500 dark:text-slate-400">Warnings</p>
+            <p class="text-xs font-semibold text-slate-500 dark:text-slate-400">{{ "Warnings" | languageText }}</p>
             <p class="text-lg font-bold text-amber-600">{{ healthData.alerts.warnings.length }}</p>
-            <p class="text-xs text-slate-500 dark:text-slate-400">Needs attention</p>
+            <p class="text-xs text-slate-500 dark:text-slate-400">{{ "Needs attention" | languageText }}</p>
           </div>
         </div>
         <div class="flex items-center gap-4 rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
           <div class="flex h-12 w-12 items-center justify-center rounded-full bg-red-100 text-2xl dark:bg-red-950">♧</div>
           <div>
-            <p class="text-xs font-semibold text-slate-500 dark:text-slate-400">Critical Alerts</p>
+            <p class="text-xs font-semibold text-slate-500 dark:text-slate-400">{{ "Critical Alerts" | languageText }}</p>
             <p class="text-lg font-bold text-red-600">{{ healthData.alerts.critical.length }}</p>
-            <p class="text-xs text-slate-500 dark:text-slate-400">Immediate attention</p>
+            <p class="text-xs text-slate-500 dark:text-slate-400">{{ "Immediate attention" | languageText }}</p>
           </div>
         </div>
       </div>
@@ -1854,7 +1854,7 @@
 
       <div class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
         <div class="border-b border-slate-100 px-4 py-3 dark:border-slate-800">
-          <h2 class="text-sm font-bold text-indigo-600">Application &amp; Services</h2>
+          <h2 class="text-sm font-bold text-indigo-600">{{ "Application &amp; Services" | languageText }}</h2>
         </div>
         <div class="divide-y divide-slate-100 dark:divide-slate-800">
           @for (service of [
@@ -1879,9 +1879,9 @@
 
       <div class="grid grid-cols-1 gap-5 lg:grid-cols-2">
         <div class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-          <h2 class="text-sm font-bold text-indigo-600">Recent Alerts</h2>
+          <h2 class="text-sm font-bold text-indigo-600">{{ "Recent Alerts" | languageText }}</h2>
           @if (!healthData.alerts.warnings.length && !healthData.alerts.critical.length) {
-            <p class="mt-5 text-sm text-slate-500 dark:text-slate-400">All services are running normally.</p>
+            <p class="mt-5 text-sm text-slate-500 dark:text-slate-400">{{ "All services are running normally." | languageText }}</p>
           } @else {
             <ul class="mt-3 space-y-2 text-sm">
               @for (alert of healthData.alerts.critical; track alert) { <li class="rounded-lg bg-red-50 p-3 text-red-700 dark:bg-red-950 dark:text-red-300">{{ alert }}</li> }
@@ -1890,13 +1890,13 @@
           }
         </div>
         <div class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-          <h2 class="text-sm font-bold text-indigo-600">Overall Health History <span class="font-normal text-slate-500">(Current Snapshot)</span></h2>
+          <h2 class="text-sm font-bold text-indigo-600">{{ "Overall Health History" | languageText }} <span class="font-normal text-slate-500">{{ "(Current Snapshot)" | languageText }}</span></h2>
           <div class="mt-5 flex items-center gap-6">
             <div class="h-28 w-28 rounded-full bg-emerald-500 p-5">
-              <div class="flex h-full w-full items-center justify-center rounded-full bg-white text-xs font-bold text-slate-700 dark:bg-slate-900 dark:text-white">LIVE</div>
+              <div class="flex h-full w-full items-center justify-center rounded-full bg-white text-xs font-bold text-slate-700 dark:bg-slate-900 dark:text-white">{{ "LIVE" | languageText }}</div>
             </div>
             <div class="space-y-2 text-sm text-slate-600 dark:text-slate-300">
-              <p><span class="mr-2 inline-block h-3 w-3 rounded-sm bg-emerald-500"></span>Healthy status</p>
+              <p><span class="mr-2 inline-block h-3 w-3 rounded-sm bg-emerald-500"></span>{{ "Healthy status" | languageText }}</p>
               <p><span class="mr-2 inline-block h-3 w-3 rounded-sm bg-amber-500"></span>Warnings: {{ healthData.alerts.warnings.length }}</p>
               <p><span class="mr-2 inline-block h-3 w-3 rounded-sm bg-red-500"></span>Critical: {{ healthData.alerts.critical.length }}</p>
             </div>
@@ -1924,7 +1924,7 @@
             <div>
 
               <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">
-                Configure the order in which requests move through approval.
+                {{ "Configure the order in which requests move through approval." | languageText }}
               </p>
 
             </div>
@@ -1932,7 +1932,7 @@
             <div
               class="rounded-lg border border-indigo-100 dark:border-indigo-800 bg-indigo-50 px-4 py-3 text-sm text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300"
             >
-              Changes to the hierarchy affect the approval workflow.
+              {{ "Changes to the hierarchy affect the approval workflow." | languageText }}
             </div>
 
           </div>
@@ -1945,14 +1945,14 @@
             <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:bg-slate-900 dark:border-slate-800">
 
               <div class="mb-6">
-                <h2 class="text-lg font-semibold text-slate-900 dark:text-white">Workflow Preview</h2>
-                <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Current approval flow</p>
+                <h2 class="text-lg font-semibold text-slate-900 dark:text-white">{{ "Workflow Preview" | languageText }}</h2>
+                <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">{{ "Current approval flow" | languageText }}</p>
               </div>
 
               @if (hierarchyLoading) {
 
                 <div class="flex min-h-[400px] items-center justify-center">
-                  <div class="text-sm text-slate-500 dark:text-slate-400">Loading workflow...</div>
+                  <div class="text-sm text-slate-500 dark:text-slate-400">{{ "Loading workflow..." | languageText }}</div>
                 </div>
 
               } @else if (hierarchyLoadError) {
@@ -1966,8 +1966,8 @@
                 <div class="flex min-h-[400px] items-center justify-center rounded-xl border border-dashed border-slate-300 dark:border-slate-700">
                   <div class="text-center">
                     <div class="mb-2 text-3xl">↕</div>
-                    <p class="font-medium text-slate-700 dark:text-slate-200">No approval levels found</p>
-                    <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Add an approval level to create the workflow.</p>
+                    <p class="font-medium text-slate-700 dark:text-slate-200">{{ "No approval levels found" | languageText }}</p>
+                    <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">{{ "Add an approval level to create the workflow." | languageText }}</p>
                   </div>
                 </div>
 
@@ -2010,8 +2010,8 @@
               <div class="mb-6 flex items-start justify-between gap-4">
 
                 <div>
-                  <h2 class="text-lg font-semibold text-slate-900 dark:text-white">Approval Levels</h2>
-                  <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Manage the roles in your approval workflow.</p>
+                  <h2 class="text-lg font-semibold text-slate-900 dark:text-white">{{ "Approval Levels" | languageText }}</h2>
+                  <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">{{ "Manage the roles in your approval workflow." | languageText }}</p>
                 </div>
 
                 <button
@@ -2020,7 +2020,7 @@
                   class="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700"
                 >
                   <span class="text-lg leading-none">+</span>
-                  Add Level
+                  {{ "Add Level" | languageText }}
                 </button>
 
               </div>
@@ -2040,14 +2040,14 @@
               @if (hierarchyLoading) {
 
                 <div class="py-10 text-center text-sm text-slate-500 dark:text-slate-400">
-                  Loading approval levels...
+                  {{ "Loading approval levels..." | languageText }}
                 </div>
 
               } @else if (hierarchy.length === 0) {
 
                 <div class="rounded-xl border border-dashed border-slate-300 p-8 text-center dark:border-slate-700">
-                  <p class="font-medium text-slate-700 dark:text-slate-200">No approval levels configured.</p>
-                  <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Use "Add Level" to create the first level.</p>
+                  <p class="font-medium text-slate-700 dark:text-slate-200">{{ "No approval levels configured." | languageText }}</p>
+                  <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">{{ "Use \"Add Level\" to create the first level." | languageText }}</p>
                 </div>
 
               } @else {
@@ -2063,7 +2063,7 @@
                       </div>
 
                       <div class="min-w-0 flex-1">
-                        <div class="text-xs font-medium uppercase tracking-wide text-slate-400">Approval Role</div>
+                        <div class="text-xs font-medium uppercase tracking-wide text-slate-400">{{ "Approval Role" | languageText }}</div>
                         <div class="truncate font-semibold text-slate-900 dark:text-white">{{ level.role }}</div>
                       </div>
 
@@ -2074,7 +2074,7 @@
                           (click)="openEditHierarchy(level)"
                           class="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-600 transition hover:border-indigo-300 hover:text-indigo-600 dark:bg-slate-900 dark:text-slate-300 dark:border-slate-800"
                         >
-                          Edit
+                          {{ "Edit" | languageText }}
                         </button>
 
                         <button
@@ -2082,7 +2082,7 @@
                           (click)="deleteHierarchy(level)"
                           class="rounded-lg border border-red-200 bg-white px-3 py-2 text-sm font-medium text-red-600 transition hover:bg-red-50 dark:bg-slate-900"
                         >
-                          Delete
+                          {{ "Delete" | languageText }}
                         </button>
 
                       </div>
@@ -2138,25 +2138,25 @@
                 }
 
                 <div>
-                  <label class="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-200">Approval Level</label>
+                  <label class="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-200">{{ "Approval Level" | languageText }}</label>
                   <input
                     type="number"
                     min="1"
                     [(ngModel)]="hierarchyForm.approval_level"
                     class="w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 dark:border-slate-700 dark:focus:ring-indigo-900"
                   />
-                  <p class="mt-1.5 text-xs text-slate-400">The order in which this role approves requests (1 = first).</p>
+                  <p class="mt-1.5 text-xs text-slate-400">{{ "The order in which this role approves requests (1 = first)." | languageText }}</p>
                 </div>
 
                 <div>
-                  <label class="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-200">Role</label>
+                  <label class="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-200">{{ "Role" | languageText }}</label>
                   <input
                     type="text"
                     [(ngModel)]="hierarchyForm.role"
                     placeholder="e.g. Manager, Assistant Manager, HR"
                     class="w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 dark:border-slate-700 dark:focus:ring-indigo-900"
                   />
-                  <p class="mt-1.5 text-xs text-slate-400">The value will be saved in uppercase.</p>
+                  <p class="mt-1.5 text-xs text-slate-400">{{ "The value will be saved in uppercase." | languageText }}</p>
                 </div>
 
               </div>
@@ -2168,7 +2168,7 @@
                   (click)="closeHierarchyModal()"
                   class="rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 dark:bg-slate-900 dark:text-slate-200 dark:border-slate-700 dark:hover:bg-slate-800"
                 >
-                  Cancel
+                  {{ "Cancel" | languageText }}
                 </button>
 
                 <button
@@ -2178,7 +2178,7 @@
                   class="rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   @if (hierarchySaving) {
-                    <span>Saving...</span>
+                    <span>{{ "Saving..." | languageText }}</span>
                   } @else {
                     <span>{{ editingHierarchy ? 'Save Changes' : 'Add Level' }}</span>
                   }
@@ -2210,10 +2210,10 @@
 
             <div>
               <h1 class="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
-                Account Settings
+                {{ "Account Settings" | languageText }}
               </h1>
               <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">
-                Manage your account details and login activity.
+                {{ "Manage your account details and login activity." | languageText }}
               </p>
             </div>
 
@@ -2232,13 +2232,12 @@
                       </svg>
                     </div>
                     <h3 class="text-lg font-semibold text-slate-900 dark:text-white">
-                      Login Activity
+                      {{ "Login Activity" | languageText }}
                     </h3>
                   </div>
 
                   <p class="mt-3 text-sm leading-6 text-slate-500 dark:text-slate-400">
-                    View the devices currently logged into your account, including device type,
-                    location, IP address, login time and last active time.
+                    {{ "View the devices currently logged into your account, including device type, location, IP address, login time and last active time." | languageText }}
                   </p>
                 </div>
 
@@ -2251,23 +2250,23 @@
                     <rect x="3" y="4" width="13" height="12" rx="1.5"></rect>
                     <path d="M8 20h8M10 16v4M19 8h2v9h-6v-1"></path>
                   </svg>
-                  Show All Devices
+                  {{ "Show All Devices" | languageText }}
                 </button>
 
               </div>
 
               <div class="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-3">
                 <div class="rounded-xl bg-slate-50 p-4 dark:bg-slate-950">
-                  <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">Current session</p>
-                  <p class="mt-1 text-sm font-semibold text-slate-800 dark:text-slate-200">Protected by session validation</p>
+                  <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">{{ "Current session" | languageText }}</p>
+                  <p class="mt-1 text-sm font-semibold text-slate-800 dark:text-slate-200">{{ "Protected by session validation" | languageText }}</p>
                 </div>
                 <div class="rounded-xl bg-slate-50 p-4 dark:bg-slate-950">
-                  <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">Device records</p>
-                  <p class="mt-1 text-sm font-semibold text-slate-800 dark:text-slate-200">Stored in session history</p>
+                  <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">{{ "Device records" | languageText }}</p>
+                  <p class="mt-1 text-sm font-semibold text-slate-800 dark:text-slate-200">{{ "Stored in session history" | languageText }}</p>
                 </div>
                 <div class="rounded-xl bg-slate-50 p-4 dark:bg-slate-950">
-                  <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">Management</p>
-                  <p class="mt-1 text-sm font-semibold text-slate-800 dark:text-slate-200">View or sign out devices</p>
+                  <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">{{ "Management" | languageText }}</p>
+                  <p class="mt-1 text-sm font-semibold text-slate-800 dark:text-slate-200">{{ "View or sign out devices" | languageText }}</p>
                 </div>
               </div>
 
@@ -2293,14 +2292,14 @@
                   <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path d="M19 12H5M12 19l-7-7 7-7"></path>
                   </svg>
-                  Back to Account Settings
+                  {{ "Back to Account Settings" | languageText }}
                 </button>
 
                 <h1 class="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
-                  Logged-in Devices
+                  {{ "Logged-in Devices" | languageText }}
                 </h1>
                 <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">
-                  Manage devices that have recently accessed your account.
+                  {{ "Manage devices that have recently accessed your account." | languageText }}
                 </p>
               </div>
 
@@ -2314,7 +2313,7 @@
                   <path d="M10 17l5-5-5-5M15 12H3"></path>
                   <path d="M13 4h6a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-6"></path>
                 </svg>
-                Logout All Devices
+                {{ "Logout All Devices" | languageText }}
               </button>
 
             </div>
@@ -2324,7 +2323,7 @@
               <div class="flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 px-5 py-4 dark:border-red-900/70 dark:bg-red-950/30">
                 <div class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-red-600 text-xs font-bold text-white">!</div>
                 <div class="flex-1">
-                  <p class="text-sm font-semibold text-red-800 dark:text-red-300">Unable to load device information</p>
+                  <p class="text-sm font-semibold text-red-800 dark:text-red-300">{{ "Unable to load device information" | languageText }}</p>
                   <p class="mt-1 text-sm text-red-700 dark:text-red-400">{{ devicesErrorMessage }}</p>
                 </div>
                 <button
@@ -2332,7 +2331,7 @@
                   (click)="loadLoggedInDevices()"
                   class="rounded-lg bg-red-100 px-3 py-1.5 text-xs font-semibold text-red-700 transition hover:bg-red-200 dark:bg-red-900/40 dark:text-red-300"
                 >
-                  Retry
+                  {{ "Retry" | languageText }}
                 </button>
               </div>
             }
@@ -2343,9 +2342,9 @@
               <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
                 <div class="flex items-center justify-between gap-4">
                   <div>
-                    <p class="text-sm font-medium text-slate-500 dark:text-slate-400">Total Devices</p>
+                    <p class="text-sm font-medium text-slate-500 dark:text-slate-400">{{ "Total Devices" | languageText }}</p>
                     <p class="mt-2 text-3xl font-bold tracking-tight text-slate-900 dark:text-white">{{ totalDevices }}</p>
-                    <p class="mt-1 text-xs text-slate-400 dark:text-slate-500">All session records</p>
+                    <p class="mt-1 text-xs text-slate-400 dark:text-slate-500">{{ "All session records" | languageText }}</p>
                   </div>
                   <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 dark:bg-indigo-950/40 dark:text-indigo-400">
                     <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
@@ -2358,9 +2357,9 @@
               <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
                 <div class="flex items-center justify-between gap-4">
                   <div>
-                    <p class="text-sm font-medium text-slate-500 dark:text-slate-400">Active Devices</p>
+                    <p class="text-sm font-medium text-slate-500 dark:text-slate-400">{{ "Active Devices" | languageText }}</p>
                     <p class="mt-2 text-3xl font-bold tracking-tight text-emerald-600">{{ activeDeviceCount }}</p>
-                    <p class="mt-1 text-xs text-slate-400 dark:text-slate-500">Currently active sessions</p>
+                    <p class="mt-1 text-xs text-slate-400 dark:text-slate-500">{{ "Currently active sessions" | languageText }}</p>
                   </div>
                   <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400">
                     <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
@@ -2373,9 +2372,9 @@
               <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
                 <div class="flex items-center justify-between gap-4">
                   <div>
-                    <p class="text-sm font-medium text-slate-500 dark:text-slate-400">Inactive Devices</p>
+                    <p class="text-sm font-medium text-slate-500 dark:text-slate-400">{{ "Inactive Devices" | languageText }}</p>
                     <p class="mt-2 text-3xl font-bold tracking-tight text-slate-700 dark:text-slate-200">{{ inactiveDeviceCount }}</p>
-                    <p class="mt-1 text-xs text-slate-400 dark:text-slate-500">Inactive session records</p>
+                    <p class="mt-1 text-xs text-slate-400 dark:text-slate-500">{{ "Inactive session records" | languageText }}</p>
                   </div>
                   <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400">
                     <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
@@ -2392,7 +2391,7 @@
 
               <div class="flex flex-col gap-4 border-b border-slate-200 px-6 py-5 sm:flex-row sm:items-center sm:justify-between dark:border-slate-800">
                 <div>
-                  <h3 class="text-lg font-semibold text-slate-900 dark:text-white">Your Devices</h3>
+                  <h3 class="text-lg font-semibold text-slate-900 dark:text-white">{{ "Your Devices" | languageText }}</h3>
                   <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
                     Showing {{ devicesPaginationStart }}–{{ devicesPaginationEnd }} of {{ totalDevices }} device{{ totalDevices === 1 ? '' : 's' }}
                   </p>
@@ -2407,14 +2406,14 @@
                   <svg class="h-4 w-4" [class.animate-spin]="devicesLoading" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path d="M20 11a8 8 0 0 0-14.9-3M4 5v4h4M4 13a8 8 0 0 0 14.9 3M20 19v-4h-4"></path>
                   </svg>
-                  Refresh
+                  {{ "Refresh" | languageText }}
                 </button>
               </div>
 
               @if (devicesLoading) {
                 <div class="px-6 py-16 text-center">
                   <div class="mx-auto h-9 w-9 animate-spin rounded-full border-2 border-slate-200 border-t-indigo-600 dark:border-slate-700 dark:border-t-indigo-400"></div>
-                  <p class="mt-4 text-sm text-slate-500 dark:text-slate-400">Loading logged-in devices...</p>
+                  <p class="mt-4 text-sm text-slate-500 dark:text-slate-400">{{ "Loading logged-in devices..." | languageText }}</p>
                 </div>
               }
 
@@ -2425,9 +2424,9 @@
                       <rect x="3" y="4" width="13" height="12" rx="1.5"></rect><path d="M8 20h8M10 16v4M19 8h2v9h-6v-1"></path>
                     </svg>
                   </div>
-                  <h4 class="mt-4 text-base font-semibold text-slate-900 dark:text-white">No device records found</h4>
+                  <h4 class="mt-4 text-base font-semibold text-slate-900 dark:text-white">{{ "No device records found" | languageText }}</h4>
                   <p class="mx-auto mt-1 max-w-md text-sm text-slate-500 dark:text-slate-400">
-                    No session records are currently available for this account.
+                    {{ "No session records are currently available for this account." | languageText }}
                   </p>
                 </div>
               }
@@ -2437,12 +2436,12 @@
                   <table class="min-w-[980px] w-full">
                     <thead class="border-b border-slate-200 bg-slate-50 dark:border-slate-800 dark:bg-slate-950">
                       <tr>
-                        <th class="whitespace-nowrap px-6 py-4 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Device</th>
-                        <th class="whitespace-nowrap px-6 py-4 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Location</th>
-                        <th class="whitespace-nowrap px-6 py-4 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">IP Address</th>
-                        <th class="whitespace-nowrap px-6 py-4 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Login Time</th>
-                        <th class="whitespace-nowrap px-6 py-4 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Last Active</th>
-                        <th class="whitespace-nowrap px-6 py-4 text-center text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Status</th>
+                        <th class="whitespace-nowrap px-6 py-4 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">{{ "Device" | languageText }}</th>
+                        <th class="whitespace-nowrap px-6 py-4 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">{{ "Location" | languageText }}</th>
+                        <th class="whitespace-nowrap px-6 py-4 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">{{ "IP Address" | languageText }}</th>
+                        <th class="whitespace-nowrap px-6 py-4 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">{{ "Login Time" | languageText }}</th>
+                        <th class="whitespace-nowrap px-6 py-4 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">{{ "Last Active" | languageText }}</th>
+                        <th class="whitespace-nowrap px-6 py-4 text-center text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">{{ "Status" | languageText }}</th>
                       </tr>
                     </thead>
 
@@ -2501,13 +2500,13 @@
                             @if (isDeviceActive(device)) {
                               <span class="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400">
                                 <span class="h-1.5 w-1.5 rounded-full bg-emerald-600"></span>
-                                Active
+                                {{ "Active" | languageText }}
                               </span>
                             }
                             @else {
                               <span class="inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-500 dark:bg-slate-800 dark:text-slate-400">
                                 <span class="h-1.5 w-1.5 rounded-full bg-slate-400"></span>
-                                Inactive
+                                {{ "Inactive" | languageText }}
                               </span>
                             }
                           </td>
@@ -2522,9 +2521,9 @@
                 @if (devicesTotalPages > 1) {
                   <div class="flex flex-col gap-4 border-t border-slate-200 bg-slate-50 px-6 py-4 sm:flex-row sm:items-center sm:justify-between dark:border-slate-800 dark:bg-slate-950">
                     <p class="text-sm text-slate-500 dark:text-slate-400">
-                      Showing <span class="font-semibold text-slate-700 dark:text-slate-200">{{ devicesPaginationStart }}</span>
-                      to <span class="font-semibold text-slate-700 dark:text-slate-200">{{ devicesPaginationEnd }}</span>
-                      of <span class="font-semibold text-slate-700 dark:text-slate-200">{{ totalDevices }}</span>
+                      {{ "Showing" | languageText }} <span class="font-semibold text-slate-700 dark:text-slate-200">{{ devicesPaginationStart }}</span>
+                      {{ "to" | languageText }} <span class="font-semibold text-slate-700 dark:text-slate-200">{{ devicesPaginationEnd }}</span>
+                      {{ "of" | languageText }} <span class="font-semibold text-slate-700 dark:text-slate-200">{{ totalDevices }}</span>
                     </p>
 
                     <div class="flex items-center gap-1.5">
@@ -2534,7 +2533,7 @@
                         [disabled]="devicesCurrentPage === 1"
                         class="inline-flex h-9 items-center justify-center rounded-lg border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-600 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-40 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800"
                       >
-                        Previous
+                        {{ "Previous" | languageText }}
                       </button>
 
                       @for (page of devicesPageNumbers; track page) {
@@ -2558,7 +2557,7 @@
                         [disabled]="devicesCurrentPage === devicesTotalPages"
                         class="inline-flex h-9 items-center justify-center rounded-lg border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-600 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-40 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800"
                       >
-                        Next
+                        {{ "Next" | languageText }}
                       </button>
                     </div>
                   </div>
@@ -2613,7 +2612,7 @@
             </h3>
 
             <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">
-              Enter the user information below.
+              {{ "Enter the user information below." | languageText }}
             </p>
 
           </div>
@@ -2637,7 +2636,7 @@
           <div>
 
             <label class="mb-2 block text-sm font-semibold text-slate-800 dark:text-slate-100">
-              Name
+              {{ "Name" | languageText }}
             </label>
 
             <input
@@ -2653,7 +2652,7 @@
           <div>
 
             <label class="mb-2 block text-sm font-semibold text-slate-800 dark:text-slate-100">
-              Email
+              {{ "Email" | languageText }}
             </label>
 
             <input
@@ -2668,7 +2667,7 @@
 <div>
 
   <label class="mb-2 block text-sm font-semibold text-slate-800 dark:text-slate-100">
-    Phone Number
+    {{ "Phone Number" | languageText }}
   </label>
 
   <input
@@ -2685,7 +2684,7 @@
           <div>
 
             <label class="mb-2 block text-sm font-semibold text-slate-800 dark:text-slate-100">
-              Role
+              {{ "Role" | languageText }}
             </label>
 
             <select
@@ -2694,15 +2693,15 @@
             >
 
               <option value="ADMIN">
-                Admin
+                {{ "Admin" | languageText }}
               </option>
 
               <option value="EMPLOYEE">
-                Employee / Field Staff
+                {{ "Employee / Field Staff" | languageText }}
               </option>
 
               <option value="REVIEWER">
-                Reviewer
+                {{ "Reviewer" | languageText }}
               </option>
 
             </select>
@@ -2716,7 +2715,7 @@
           >
 
             <p class="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-              Approval Position
+              {{ "Approval Position" | languageText }}
             </p>
 
             <p class="mt-2 text-sm font-semibold text-slate-900 dark:text-white">
@@ -2738,7 +2737,7 @@
             (click)="closeUserModal()"
             class="rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-5 py-2.5 text-sm font-semibold text-slate-700 dark:text-slate-200 transition hover:bg-slate-100 dark:hover:bg-slate-800"
           >
-            Cancel
+            {{ "Cancel" | languageText }}
           </button>
 
 
@@ -2747,7 +2746,7 @@
             (click)="saveUser()"
             class="rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700 hover:shadow-md"
           >
-            Save
+            {{ "Save" | languageText }}
           </button>
 
         </div>
@@ -2781,7 +2780,7 @@
           <div>
 
             <h3 class="text-lg font-bold text-slate-900 dark:text-white">
-              Change Role
+              {{ "Change Role" | languageText }}
             </h3>
 
             @if (selectedRoleUser) {
@@ -2810,7 +2809,7 @@
         <div class="px-6 py-6">
 
           <label class="mb-2 block text-sm font-semibold text-slate-800 dark:text-slate-100">
-            Role
+            {{ "Role" | languageText }}
           </label>
 
           <select
@@ -2819,11 +2818,11 @@
           >
 
             <option value="EMPLOYEE">
-              Employee / Field Staff
+              {{ "Employee / Field Staff" | languageText }}
             </option>
 
             <option value="REVIEWER">
-              Reviewer
+              {{ "Reviewer" | languageText }}
             </option>
 
           </select>
@@ -2841,7 +2840,7 @@
             (click)="closeRoleModal()"
             class="rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-5 py-2.5 text-sm font-semibold text-slate-700 dark:text-slate-200 transition hover:bg-slate-100 dark:hover:bg-slate-800"
           >
-            Cancel
+            {{ "Cancel" | languageText }}
           </button>
 
 
@@ -2850,7 +2849,7 @@
             (click)="updateUserRole()"
             class="rounded-xl bg-purple-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-purple-700 hover:shadow-md"
           >
-            Update Role
+            {{ "Update Role" | languageText }}
           </button>
 
         </div>

@@ -22,6 +22,8 @@ import {
 
 import { AuthService } from '../services/auth';
 import { SessionPopupComponent } from '../components/session-popup/session-popup';
+import { AppLanguageService } from '../services/app-language';
+import { LanguageTextPipe } from '../pipes/language-text.pipe';
 
 import {
   SessionService,
@@ -63,7 +65,8 @@ type SettingsView =
   imports: [
     CommonModule,
     FormsModule,
-    SessionPopupComponent
+    SessionPopupComponent,
+    LanguageTextPipe
   ],
   templateUrl: './admin.html',
 })
@@ -219,7 +222,7 @@ export class Admin implements OnInit, OnDestroy {
   profileName = '';
 
   private readonly profileApiUrl =
-    'http://192.168.29.69:3001/api/profile/me';
+    'http://192.168.29.68:3001/api/profile/me';
 
   private systemThemeMediaQuery: MediaQueryList | null = null;
 
@@ -366,6 +369,7 @@ export class Admin implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private cdr: ChangeDetectorRef,
+    private language: AppLanguageService,
     private http: HttpClient
   ) {}
 
@@ -405,6 +409,7 @@ export class Admin implements OnInit, OnDestroy {
 
     this.route.queryParamMap.subscribe((params) => {
 
+      this.language.setLanguage(params.get('lang'));
       const urlToken = params.get('token');
 
       if (urlToken) {
@@ -2784,7 +2789,7 @@ export class Admin implements OnInit, OnDestroy {
 
 
     this.authService.logout(
-      'http://192.168.29.69:8200/'
+      'http://192.168.29.68:8200/'
     );
 
   }

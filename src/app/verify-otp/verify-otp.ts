@@ -13,8 +13,8 @@ import { Router } from '@angular/router';
 
 import { UserSessionService } from '../services/user-session.service';
 
-const API = 'http://192.168.29.69:8080/api';
-const DESTINATION_APP = 'http://192.168.29.69:4200';
+const API = 'http://192.168.29.68:8080/api';
+const DESTINATION_APP = 'http://192.168.29.68:4200';
 
 @Component({
   selector: 'app-verify-otp',
@@ -184,7 +184,7 @@ export class VerifyOtpComponent implements OnInit {
           setTimeout(() => {
 
             window.location.href =
-              'http://192.168.29.69:8200/welcome';
+              'http://192.168.29.68:8200/welcome';
 
           }, 100);
 
@@ -302,8 +302,9 @@ export class VerifyOtpComponent implements OnInit {
         ? 'admin'
         : 'manager';
 
+    const language = localStorage.getItem('selectedLanguage') === 'hi' ? 'hi' : 'en';
     window.location.assign(
-      `${DESTINATION_APP}/${destination}?token=${encodeURIComponent(token)}`
+      `${DESTINATION_APP}/${destination}?token=${encodeURIComponent(token)}&lang=${language}`
     );
   }
 
