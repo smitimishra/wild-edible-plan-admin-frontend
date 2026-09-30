@@ -95,10 +95,13 @@ export class Admin implements OnInit, OnDestroy {
   // ============================================================
 
   users: AdminUser[] = [];
+  private usersRequestInFlight = false;
 
   blockedUsers: BlockedUser[] = [];
 
   blockedUsersLoading = false;
+  private blockedUsersRequestInFlight = false;
+  private blockedUsersRefreshTimer: ReturnType<typeof setInterval> | null = null;
 
   filteredUsers: AdminUser[] = [];
 
@@ -150,6 +153,8 @@ export class Admin implements OnInit, OnDestroy {
 
   successMessage = '';
 
+  private unblockSuccessToastTimer: ReturnType<typeof setTimeout> | null = null;
+
 
   // ============================================================
   // USER MODAL
@@ -178,6 +183,8 @@ export class Admin implements OnInit, OnDestroy {
   // ============================================================
 
   openActionMenuId: number | null = null;
+  actionMenuTop = 0;
+  actionMenuLeft = 0;
 
 
   // ============================================================
@@ -222,7 +229,7 @@ export class Admin implements OnInit, OnDestroy {
   profileName = '';
 
   private readonly profileApiUrl =
-    'http://192.168.29.68:3001/api/profile/me';
+    'http://192.168.29.70:3001/api/profile/me';
 
   private systemThemeMediaQuery: MediaQueryList | null = null;
 
@@ -566,6 +573,11 @@ export class Admin implements OnInit, OnDestroy {
       this.stopHealthRefresh();
     }
 
+    if (menu === 'users') {
+      this.startBlockedUsersRefresh();
+    } else {
+      this.stopBlockedUsersRefresh();
+    }
 
     if (menu === 'users') {
 
@@ -603,39 +615,33 @@ export class Admin implements OnInit, OnDestroy {
 
   showAllUsers(): void {
 
-    this.activeMenu = 'users';
+    this.setActiveMenu('users');
 
     this.userStatusFilter = 'all';
 
     this.currentPage = 1;
-
-    this.clearMessages();
 
   }
 
 
   showActiveUsers(): void {
 
-    this.activeMenu = 'users';
+    this.setActiveMenu('users');
 
     this.userStatusFilter = 'active';
 
     this.currentPage = 1;
-
-    this.clearMessages();
 
   }
 
 
   showInactiveUsers(): void {
 
-    this.activeMenu = 'users';
+    this.setActiveMenu('users');
 
     this.userStatusFilter = 'inactive';
 
     this.currentPage = 1;
-
-    this.clearMessages();
 
   }
 
@@ -704,11 +710,19 @@ export class Admin implements OnInit, OnDestroy {
   // LOAD USERS
   // ============================================================
 
-  loadUsers(): void {
+  loadUsers(showLoading = true): void {
+    if (this.usersRequestInFlight) {
+      return;
+    }
 
-    this.loading = true;
+    this.usersRequestInFlight = true;
+    if (showLoading) {
+      this.loading = true;
+    }
 
-    this.errorMessage = '';
+    if (showLoading) {
+      this.errorMessage = '';
+    }
 
 
     this.adminService.getUsers().subscribe({
@@ -718,6 +732,7 @@ export class Admin implements OnInit, OnDestroy {
         this.users =
           response.users || [];
 
+        this.usersRequestInFlight = false;
 
         this.applySearch();
 
@@ -738,9 +753,13 @@ export class Admin implements OnInit, OnDestroy {
         );
 
 
-        this.errorMessage =
-          error?.error?.message ||
-          'Unable to load users';
+        this.usersRequestInFlight = false;
+
+        if (showLoading) {
+          this.errorMessage =
+            error?.error?.message ||
+            'Unable to load users';
+        }
 
 
         this.loading = false;
@@ -754,22 +773,49 @@ export class Admin implements OnInit, OnDestroy {
 
   }
 
-  loadBlockedUsers(): void {
-    this.blockedUsersLoading = true;
+  loadBlockedUsers(showLoading = true): void {
+    if (this.blockedUsersRequestInFlight) {
+      return;
+    }
 
+    this.blockedUsersRequestInFlight = true;
+    if (showLoading) {
+      this.blockedUsersLoading = true;
+    }
     this.adminService.getBlockedUsers().subscribe({
       next: (response) => {
         this.blockedUsers = response.blocked_users || [];
+        this.blockedUsersRequestInFlight = false;
         this.blockedUsersLoading = false;
-        this.cdr.detectChanges();
+        this.cdr.markForCheck();
       },
       error: (error) => {
         console.error('Failed to load blocked users:', error);
         this.errorMessage = error?.error?.message || 'Unable to load blocked users';
+        this.blockedUsersRequestInFlight = false;
         this.blockedUsersLoading = false;
-        this.cdr.detectChanges();
+        this.cdr.markForCheck();
       }
     });
+  }
+
+  private startBlockedUsersRefresh(): void {
+    this.stopBlockedUsersRefresh();
+    this.loadUsers(false);
+    this.loadBlockedUsers(false);
+    this.blockedUsersRefreshTimer = setInterval(() => {
+      if (this.activeMenu === 'users') {
+        this.loadUsers(false);
+        this.loadBlockedUsers(false);
+      }
+    }, 5000);
+  }
+
+  private stopBlockedUsersRefresh(): void {
+    if (this.blockedUsersRefreshTimer !== null) {
+      clearInterval(this.blockedUsersRefreshTimer);
+      this.blockedUsersRefreshTimer = null;
+    }
   }
 
   unblockUser(user: BlockedUser): void {
@@ -781,6 +827,16 @@ export class Admin implements OnInit, OnDestroy {
     this.adminService.unblockUser(user.user_id).subscribe({
       next: () => {
         this.successMessage = 'User unblocked successfully';
+        if (this.unblockSuccessToastTimer !== null) {
+          clearTimeout(this.unblockSuccessToastTimer);
+        }
+        this.unblockSuccessToastTimer = setTimeout(() => {
+          if (this.successMessage === 'User unblocked successfully') {
+            this.successMessage = '';
+            this.cdr.markForCheck();
+          }
+          this.unblockSuccessToastTimer = null;
+        }, 3000);
         this.loadBlockedUsers();
       },
       error: (error) => {
@@ -848,8 +904,6 @@ export class Admin implements OnInit, OnDestroy {
 
     }
 
-
-    this.currentPage = 1;
 
     this.correctUserPage();
 
@@ -973,6 +1027,39 @@ export class Admin implements OnInit, OnDestroy {
       this.filteredUsersByStatus.length
     );
 
+  }
+
+  formatLastLogin(value: string | null | undefined): string {
+    if (!value) {
+      return 'Never';
+    }
+
+    const timestamp = new Date(value).getTime();
+    if (Number.isNaN(timestamp)) {
+      return 'Never';
+    }
+
+    const elapsedSeconds = Math.max(0, Math.floor((Date.now() - timestamp) / 1000));
+    if (elapsedSeconds < 60) {
+      return 'just now';
+    }
+
+    const units: Array<[number, string]> = [
+      [60 * 60 * 24 * 365, 'year'],
+      [60 * 60 * 24 * 30, 'month'],
+      [60 * 60 * 24, 'day'],
+      [60 * 60, 'hour'],
+      [60, 'minute']
+    ];
+
+    for (const [unitSeconds, unitName] of units) {
+      const count = Math.floor(elapsedSeconds / unitSeconds);
+      if (count >= 1) {
+        return `${count} ${unitName}${count === 1 ? '' : 's'} ago`;
+      }
+    }
+
+    return 'just now';
   }
 
 
@@ -1950,16 +2037,90 @@ export class Admin implements OnInit, OnDestroy {
   // ============================================================
 
   toggleActionMenu(
-    userId: number
+    userId: number,
+    event: MouseEvent
   ): void {
 
-    this.openActionMenuId =
-      this.openActionMenuId === userId
-        ? null
-        : userId;
+    if (this.openActionMenuId === userId) {
+      this.closeActionMenu();
+      return;
+    }
 
+    this.openActionMenuId = userId;
+
+    const trigger = event.currentTarget;
+    if (!(trigger instanceof HTMLElement)) {
+      return;
+    }
+
+    this.positionActionMenu(trigger.getBoundingClientRect());
+
+    requestAnimationFrame(() => {
+      if (this.openActionMenuId !== userId) {
+        return;
+      }
+
+      const menu = document.querySelector<HTMLElement>('[data-user-action-menu]');
+      if (menu) {
+        this.positionActionMenu(
+          trigger.getBoundingClientRect(),
+          menu.getBoundingClientRect().height
+        );
+      }
+    });
   }
 
+  private positionActionMenu(
+    triggerRect: DOMRect,
+    menuHeight = 160
+  ): void {
+    const viewportPadding = 8;
+    const menuWidth = 176;
+    const gap = 8;
+    const spaceBelow = window.innerHeight - triggerRect.bottom;
+    const showAbove = spaceBelow < menuHeight + gap &&
+      triggerRect.top > spaceBelow;
+    const preferredTop = showAbove
+      ? triggerRect.top - menuHeight - gap
+      : triggerRect.bottom + gap;
+
+    this.actionMenuTop = Math.max(
+      viewportPadding,
+      Math.min(preferredTop, window.innerHeight - menuHeight - viewportPadding)
+    );
+    this.actionMenuLeft = Math.max(
+      viewportPadding,
+      Math.min(
+        triggerRect.right - menuWidth,
+        window.innerWidth - menuWidth - viewportPadding
+      )
+    );
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClickForActionMenu(event: MouseEvent): void {
+    if (this.openActionMenuId === null) {
+      return;
+    }
+
+    const target = event.target;
+    if (
+      target instanceof Element &&
+      (
+        target.closest('[data-user-action-menu-trigger]') ||
+        target.closest('[data-user-action-menu]')
+      )
+    ) {
+      return;
+    }
+
+    this.closeActionMenu();
+  }
+
+  @HostListener('window:scroll')
+  onWindowScrollForActionMenu(): void {
+    this.closeActionMenu();
+  }
 
   closeActionMenu(): void {
 
@@ -2789,7 +2950,7 @@ export class Admin implements OnInit, OnDestroy {
 
 
     this.authService.logout(
-      'http://192.168.29.68:8200/'
+      'http://192.168.29.70:8200/'
     );
 
   }
@@ -2882,6 +3043,11 @@ export class Admin implements OnInit, OnDestroy {
 
   clearMessages(): void {
 
+    if (this.unblockSuccessToastTimer !== null) {
+      clearTimeout(this.unblockSuccessToastTimer);
+      this.unblockSuccessToastTimer = null;
+    }
+
     this.errorMessage = '';
 
     this.successMessage = '';
@@ -2951,6 +3117,11 @@ export class Admin implements OnInit, OnDestroy {
   ngOnDestroy(): void {
 
     this.stopHealthRefresh();
+    this.stopBlockedUsersRefresh();
+    if (this.unblockSuccessToastTimer !== null) {
+      clearTimeout(this.unblockSuccessToastTimer);
+      this.unblockSuccessToastTimer = null;
+    }
     this.removeSystemThemeListener();
 
   }

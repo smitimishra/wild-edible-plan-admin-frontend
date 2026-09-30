@@ -11,7 +11,7 @@ import { SessionPopupComponent } from '../../components/session-popup/session-po
 import { AppLanguageService } from '../../services/app-language';
 import { LanguageTextPipe } from '../../pipes/language-text.pipe';
 
-const API = 'http://192.168.29.68:3001/api';
+const API = 'http://192.168.29.70:3001/api';
 const PLANT_IMAGE_BASE_URL = 'http://192.168.29.98:8080/';
 
 @Component({
@@ -1551,6 +1551,6 @@ export class Manager implements OnInit, OnDestroy {
       return;
     }
 
-    this.authService.logout('http://192.168.29.68:8200/');
+    this.authService.logout('http://192.168.29.70:8200/');
   }
 }

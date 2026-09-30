@@ -2,7 +2,7 @@ import { Injectable, NgZone, OnDestroy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 
-const LOGIN_PORTAL_URL = 'http://192.168.29.68:8200/welcome';
+const LOGIN_PORTAL_URL = 'http://192.168.29.70:8200/welcome';
 
 const POLL_INTERVAL_MS = 15_000;
 const MOUSE_DEBOUNCE_MS = 5_000;
@@ -13,7 +13,7 @@ const MOUSE_DEBOUNCE_MS = 5_000;
 export class AuthService implements OnDestroy {
   // BACKEND API
 
-  private apiUrl = 'http://192.168.29.68:3001/api/auth';
+  private apiUrl = 'http://192.168.29.70:3001/api/auth';
 
   // SESSION STATE
 
@@ -252,13 +252,28 @@ getUser(): any {
   logout(redirectUrl?: string): void {
     this.stopSessionPolling();
 
-    localStorage.removeItem('token');
+    const token = this.getToken();
+    const finishLogout = (): void => {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
 
-    localStorage.removeItem('user');
+      if (redirectUrl && typeof window !== 'undefined') {
+        window.location.href = redirectUrl;
+      }
+    };
 
-    if (redirectUrl && typeof window !== 'undefined') {
-      window.location.href = redirectUrl;
+    if (!token) {
+      finishLogout();
+      return;
     }
+
+    this.http.post(`${this.apiUrl}/logout`, { token }).subscribe({
+      next: () => finishLogout(),
+      error: (error) => {
+        console.error('Failed to invalidate login session during logout:', error);
+        finishLogout();
+      }
+    });
   }
 
   // START SESSION POLLING

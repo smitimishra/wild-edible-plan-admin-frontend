@@ -17,6 +17,8 @@ export interface AdminUser {
   approval_position: string | null;
   approval_position_id: number | null;
   is_active: boolean;
+  is_logged_in: boolean;
+  last_login: string | null;
   created_at: string;
 }
 
@@ -36,6 +38,7 @@ export interface BlockedUser {
   user_id: number;
   user_name: string;
   email_id: string;
+  role: string;
   blocked_at: string;
 }
 
@@ -135,7 +138,7 @@ export interface HealthResponse {
 })
 export class AdminService {
   private apiUrl =
-    'http://192.168.29.68:3001/api/admin';
+    'http://192.168.29.70:3001/api/admin';
 
   constructor(
     private http: HttpClient

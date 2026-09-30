@@ -312,7 +312,7 @@ export class UsersComponent implements OnInit {
         this.unblockLoading   = false;
         this.showUnblockModal = false;
         this.unblockTarget    = null;
-        this.showSuccess('User unblocked successfully.');
+        this.showSuccess('User unblocked successfully.', 3000);
       },
       error: err => {
         this.unblockLoading   = false;
@@ -325,24 +325,25 @@ export class UsersComponent implements OnInit {
   // ── Toast helpers ─────────────────────────────────────────
   private msgTimer: ReturnType<typeof setTimeout> | null = null;
 
-  showSuccess(msg: string): void {
+  showSuccess(msg: string, duration = 5000): void {
     this.successMsg = msg;
     this.errorMsg   = '';
-    this.clearMsgAfter();
+    this.clearMsgAfter(duration);
   }
 
   showError(msg: string): void {
     this.errorMsg   = msg;
     this.successMsg = '';
-    this.clearMsgAfter();
+    this.clearMsgAfter(5000);
   }
 
-  private clearMsgAfter(): void {
+  private clearMsgAfter(duration: number): void {
     if (this.msgTimer) clearTimeout(this.msgTimer);
     this.msgTimer = setTimeout(() => {
       this.successMsg = '';
       this.errorMsg   = '';
-    }, 5000);
+      this.msgTimer = null;
+    }, duration);
   }
 
   // ── Misc helpers ─────────────────────────────────────────
