@@ -8,6 +8,7 @@ import { DatePipe, DecimalPipe, TitleCasePipe } from '@angular/common';
 import { AuthService } from '../../services/auth';
 import { RequestService } from '../../services/request';
 import { SessionPopupComponent } from '../../components/session-popup/session-popup';
+import { LanguageToggleComponent } from '../../components/language-toggle/language-toggle';
 import { AppLanguageService } from '../../services/app-language';
 import { LanguageTextPipe } from '../../pipes/language-text.pipe';
 
@@ -16,7 +17,7 @@ const PLANT_IMAGE_BASE_URL = 'http://192.168.29.98:8080/';
 
 @Component({
   selector: 'app-manager',
-  imports: [FormsModule, DatePipe, TitleCasePipe, SessionPopupComponent, LanguageTextPipe],
+  imports: [FormsModule, DatePipe, TitleCasePipe, SessionPopupComponent, LanguageToggleComponent, LanguageTextPipe],
   templateUrl: './manager.html',
 })
 export class Manager implements OnInit, OnDestroy {

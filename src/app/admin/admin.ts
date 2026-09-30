@@ -22,6 +22,7 @@ import {
 
 import { AuthService } from '../services/auth';
 import { SessionPopupComponent } from '../components/session-popup/session-popup';
+import { LanguageToggleComponent } from '../components/language-toggle/language-toggle';
 import { AppLanguageService } from '../services/app-language';
 import { LanguageTextPipe } from '../pipes/language-text.pipe';
 
@@ -66,6 +67,7 @@ type SettingsView =
     CommonModule,
     FormsModule,
     SessionPopupComponent,
+    LanguageToggleComponent,
     LanguageTextPipe
   ],
   templateUrl: './admin.html',
